@@ -27,7 +27,7 @@ export function HomePage() {
   const openNow = enriched.filter(isOpenNow).slice(0, 3)
 
   return (
-    <div className="space-y-7 pb-2">
+    <div className="mobile-page pb-2">
       <HomeHero />
       <HomeLocationPill />
       <HomeQuickActions />
@@ -40,11 +40,11 @@ export function HomePage() {
         toggleFavourite={toggleFavourite}
       />
 
-      <div className="rounded-2xl border border-dashed border-hunter/20 bg-hunter-light/30 p-5 text-center space-y-3">
-        <p className="text-sm text-sage-700 leading-relaxed">
+      <div className="ios-card p-4 text-center space-y-3 sm:p-5">
+        <p className="text-[15px] text-sage-600 leading-relaxed">
           Know a great inclusive place? Help other families discover it.
         </p>
-        <Button asChild variant="secondary" className="gap-2">
+        <Button asChild variant="secondary" size="lg" className="gap-2">
           <Link to="/add-service">
             <ReilyIconGlyph name="add-service" className="h-4 w-4 text-hunter" />
             Suggest a place

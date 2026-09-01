@@ -14,18 +14,15 @@ const FEATURED_CATEGORIES = [
 
 export function HomeCategoryStrip() {
   return (
-    <section aria-labelledby="home-categories-heading" className="space-y-4">
-      <div className="home-section-header">
-        <ReilyIcon name="explore" size="sm" variant="gold" label="" />
+    <section aria-labelledby="home-categories-heading" className="space-y-3">
+      <div className="home-section-header px-1">
         <div>
-          <h2 id="home-categories-heading" className="text-lg font-semibold text-sage-900">
-            What are you looking for?
-          </h2>
-          <p className="text-sm text-sage-600">Tap a category — each opens places with that focus</p>
+          <h2 id="home-categories-heading">What are you looking for?</h2>
+          <p className="text-[15px] text-sage-500 mt-0.5">Swipe to browse</p>
         </div>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2 snap-x -mx-1 px-1">
+      <div className="mobile-scroll-x flex gap-3 pb-1">
         {FEATURED_CATEGORIES.map((cat) => {
           const icon = getCategoryIcon(cat)
           const href =
@@ -36,11 +33,11 @@ export function HomeCategoryStrip() {
             <Link
               key={cat}
               to={href}
-              className="flex min-w-[108px] snap-start flex-col items-center gap-2 rounded-2xl border border-sage-100 bg-white p-4 shadow-sm transition hover:border-hunter/25 hover:shadow-md focus-ring"
+              className="ios-card flex min-w-[112px] snap-start flex-col items-center gap-2.5 p-4 touch-scale"
               aria-label={cat}
             >
               <ReilyIcon name={icon.name} variant={icon.variant} size="md" label="" />
-              <span className="text-center text-xs font-medium text-sage-700 leading-tight">
+              <span className="text-center text-[13px] font-medium text-sage-700 leading-tight">
                 {cat}
               </span>
             </Link>
@@ -48,8 +45,8 @@ export function HomeCategoryStrip() {
         })}
       </div>
 
-      <Button asChild variant="outline" className="w-full border-hunter/20 text-hunter hover:bg-hunter-light">
-        <Link to="/explore">Browse all {CATEGORIES.length} categories</Link>
+      <Button asChild variant="secondary" size="lg">
+        <Link to="/explore">All {CATEGORIES.length} categories</Link>
       </Button>
     </section>
   )

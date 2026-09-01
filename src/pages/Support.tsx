@@ -163,13 +163,14 @@ export function SupportPage() {
             aria-hidden
           />
           <Input
+            variant="search"
             value={filters.search}
             onChange={(e) => {
               setActiveSection(null)
               setFilters({ ...filters, search: e.target.value })
             }}
-            placeholder="Search by name, topic or need"
-            className="pl-10 rounded-2xl border-sage-100 bg-white"
+            placeholder="Search support"
+            className="pl-10"
             aria-label="Search support services"
           />
           {filters.search && (
@@ -188,7 +189,7 @@ export function SupportPage() {
           <button
             type="button"
             onClick={() => setFiltersOpen((open) => !open)}
-            className="flex w-full items-center justify-between rounded-2xl border border-sage-100 bg-white px-4 py-3 text-sm text-sage-700 hover:border-sage-200 focus-ring min-h-11"
+            className="ios-group flex w-full items-center justify-between px-4 py-3.5 text-[17px] text-sage-900 touch-scale focus-ring min-h-[50px]"
           >
             <span>
               {hasActiveFilters && !filters.search
@@ -203,7 +204,7 @@ export function SupportPage() {
         )}
 
         {filtersOpen && !isBrowsingSection && (
-          <div className="rounded-2xl border border-sage-100 bg-white p-4 space-y-3">
+          <div className="ios-group p-4 space-y-3">
             <Select
               value={filters.topic ?? 'all'}
               onValueChange={(v) => {

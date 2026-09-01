@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ReilyIcon } from '@/components/icons'
+import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useApp } from '@/context/AppContext'
 import { enrichService } from '@/lib/filters'
+import { Search } from 'lucide-react'
 
 export function FavouritesPage() {
   const { favourites, services, location, isFavourite, toggleFavourite } = useApp()
@@ -40,20 +42,26 @@ export function FavouritesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header>
+    <div className="space-y-5">
+      <MobilePageHeader
+        title="Saved"
+        subtitle={`${favourites.length} ${favourites.length === 1 ? 'place' : 'places'}`}
+      />
+      <header className="hidden lg:block">
         <h1 className="text-2xl font-bold text-sage-900">Favourites</h1>
         <p className="text-sage-600">{favourites.length} saved places</p>
       </header>
 
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-          <ReilyIcon name="search" size="xs" variant="cream" tile={false} glyphClassName="text-sage-400" />
-        </span>
+        <Search
+          className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-sage-400"
+          aria-hidden
+        />
         <Input
+          variant="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search favourites"
+          placeholder="Search saved"
           className="pl-10"
           aria-label="Search favourites"
         />

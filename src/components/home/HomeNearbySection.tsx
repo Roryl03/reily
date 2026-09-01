@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { ReilyIcon } from '@/components/icons'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,19 +23,18 @@ export function HomeNearbySection({
   if (!hasRecommended && !hasOpen) return null
 
   return (
-    <section aria-labelledby="nearby-heading" className="space-y-4">
-      <div className="home-section-header">
-        <ReilyIcon name="compass" size="sm" variant="sage" label="" />
+    <section aria-labelledby="nearby-heading" className="space-y-3">
+      <div className="home-section-header px-1">
         <div>
-          <h2 id="nearby-heading" className="text-lg font-semibold text-sage-900">
-            A few places nearby
+          <h2 id="nearby-heading" className="text-[20px] font-semibold tracking-tight text-sage-900">
+            Nearby
           </h2>
-          <p className="text-sm text-sage-600">Hand-picked suggestions — explore when you&apos;re ready</p>
+          <p className="text-[15px] text-sage-500 mt-0.5">When you&apos;re ready to explore</p>
         </div>
       </div>
 
       {hasRecommended && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           {recommended.slice(0, 2).map((s) => (
             <ServiceCard
               key={s.id}
@@ -51,19 +49,16 @@ export function HomeNearbySection({
 
       {hasOpen && (
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <ReilyIcon name="open-now" size="xs" variant="gold" tile={false} label="" />
-            <p className="text-sm font-medium text-sage-700">Open right now</p>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-1 snap-x">
+          <p className="px-1 text-[15px] font-medium text-sage-700">Open right now</p>
+          <div className="mobile-scroll-x flex gap-2.5 pb-0.5">
             {openNow.slice(0, 3).map((s) => (
               <Link
                 key={s.id}
                 to={`/service/${s.id}`}
-                className="min-w-[200px] snap-start rounded-2xl border border-sage-100 bg-white p-4 shadow-sm hover:border-hunter/20 hover:shadow-md focus-ring"
+                className="ios-card min-w-[180px] snap-start p-4 touch-scale"
               >
-                <p className="font-medium text-sage-900 line-clamp-1">{s.name}</p>
-                <p className="text-sm text-sage-600">{s.town}</p>
+                <p className="text-[17px] font-medium text-sage-900 line-clamp-1">{s.name}</p>
+                <p className="text-[15px] text-sage-600">{s.town}</p>
                 <Badge variant="success" className="mt-2">
                   Open now
                 </Badge>
@@ -73,7 +68,7 @@ export function HomeNearbySection({
         </div>
       )}
 
-      <Button asChild variant="outline" className="w-full border-sage-200">
+      <Button asChild variant="secondary" size="lg">
         <Link to="/explore">See everything nearby</Link>
       </Button>
     </section>

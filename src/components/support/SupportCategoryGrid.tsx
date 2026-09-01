@@ -66,7 +66,7 @@ export function SupportCategoryGrid({
   onSelect: (section: SupportSection) => void
 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="space-y-2">
       {SUPPORT_SECTIONS.map((section) => {
         const count = counts.get(section.id) ?? 0
         if (count === 0) return null
@@ -77,16 +77,16 @@ export function SupportCategoryGrid({
             key={section.id}
             type="button"
             onClick={() => onSelect(section.id)}
-            className="group flex w-full items-center gap-3 rounded-2xl border border-sage-100 bg-white p-4 text-left shadow-sm transition hover:border-sage-200 hover:shadow-md focus-ring min-h-[5.5rem]"
+            className="ios-card group flex w-full items-center gap-3 p-4 text-left touch-scale focus-ring min-h-[60px] sm:min-h-[5.5rem]"
           >
             <ReilyIcon name={meta.icon} size="md" variant={meta.variant} />
             <div className="min-w-0 flex-1">
-              <p className="font-medium text-sage-900 leading-snug">{sectionLabel(section.id)}</p>
-              <p className="mt-0.5 text-sm text-sage-600 line-clamp-2">{meta.hint}</p>
-              <p className="mt-1 text-xs text-sage-500">{count} services</p>
+              <p className="text-[17px] font-medium text-sage-900 leading-snug">{sectionLabel(section.id)}</p>
+              <p className="mt-0.5 text-[15px] text-sage-600 line-clamp-2">{meta.hint}</p>
+              <p className="mt-1 text-[13px] text-sage-500">{count} services</p>
             </div>
             <ChevronRight
-              className="h-5 w-5 shrink-0 text-sage-400 transition group-hover:translate-x-0.5 group-hover:text-sage-600"
+              className="h-5 w-5 shrink-0 text-sage-300"
               aria-hidden
             />
           </button>

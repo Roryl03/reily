@@ -1,6 +1,8 @@
 import { Plus } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { NAV_ICON_CONFIG, ReilyIcon, ReilyLogoWordmark } from '@/components/icons'
+import { MobileHeader } from '@/components/layout/MobileHeader'
+import { MobileTabBar } from '@/components/layout/MobileTabBar'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -15,6 +17,7 @@ const navItems = [
 export function AppLayout() {
   const location = useLocation()
   const showFab = ['/explore', '/map'].includes(location.pathname)
+  const isMapPage = location.pathname === '/map'
 
   return (
     <div className="min-h-dvh bg-cream-200">
@@ -45,7 +48,7 @@ export function AppLayout() {
           <div className="border-t border-sage-100 p-4">
             <NavLink
               to="/add-service"
-              className="flex items-center justify-center gap-2 rounded-xl bg-sage-500 px-4 py-3 text-sm font-medium text-white hover:bg-sage-600 focus-ring min-h-11"
+              className="flex items-center justify-center gap-2 rounded-xl bg-hunter px-4 py-3 text-sm font-medium text-white hover:bg-sage-600 focus-ring min-h-11"
             >
               <Plus className="h-4 w-4" aria-hidden />
               Add service
@@ -54,42 +57,26 @@ export function AppLayout() {
         )}
       </aside>
 
-      <main className="lg:pl-64">
-        <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 lg:pb-8">
+      <div className="lg:pl-64">
+        <MobileHeader />
+        <main
+          className={cn(
+            'mx-auto max-w-5xl px-4 lg:px-6 lg:pb-8 lg:pt-6',
+            isMapPage
+              ? 'pb-3 pt-2'
+              : 'pb-[calc(49px+env(safe-area-inset-bottom,0px)+1rem)] pt-2',
+          )}
+        >
           <Outlet />
-        </div>
-      </main>
+        </main>
+      </div>
 
-      <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-sage-100 bg-white safe-bottom lg:hidden"
-        aria-label="Main navigation"
-      >
-        <div className="mx-auto flex max-w-lg items-stretch justify-around px-1 py-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                cn(
-                  'flex flex-1 flex-col items-center gap-0.5 rounded-lg px-0.5 py-1.5 text-[10px] font-medium transition-colors focus-ring min-h-14 justify-center leading-tight',
-                  isActive ? 'text-hunter' : 'text-sage-400',
-                  item.to === '/support' && isActive && 'text-blue-muted',
-                )
-              }
-              aria-label={item.label}
-            >
-              <ReilyIcon name={item.name} size="sm" variant={item.variant} />
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-      </nav>
+      <MobileTabBar />
 
       {showFab && (
         <NavLink
           to="/add-service"
-          className="fixed bottom-20 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-sage-500 text-white shadow-lg hover:bg-sage-600 focus-ring lg:hidden"
+          className="fixed right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-hunter text-white shadow-[0_4px_16px_rgba(53,94,59,0.35)] active:scale-95 transition-transform focus-ring lg:hidden bottom-[calc(49px+env(safe-area-inset-bottom,0px)+0.75rem)]"
           aria-label="Add service"
         >
           <Plus className="h-6 w-6" strokeWidth={2} aria-hidden />

@@ -1,7 +1,7 @@
-import { List, SlidersHorizontal } from 'lucide-react'
+import { List, Search, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ReilyIcon } from '@/components/icons'
+import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
@@ -53,20 +53,24 @@ export function ExplorePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header>
+    <div className="space-y-5 sm:space-y-6">
+      <MobilePageHeader title="Explore" subtitle="Find inclusive places near you" />
+      <header className="hidden lg:block">
         <h1 className="text-2xl font-bold text-sage-900">Explore</h1>
         <p className="text-sage-600">Find inclusive places near you</p>
       </header>
 
+      <div className="sticky top-[calc(2.75rem+env(safe-area-inset-top,0px))] z-20 -mx-4 space-y-3 border-b border-black/[0.06] bg-cream-200/90 px-4 py-3 backdrop-blur-2xl backdrop-saturate-150 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0">
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-          <ReilyIcon name="search" size="sm" variant="cream" tile={false} glyphClassName="text-sage-600" />
-        </span>
+        <Search
+          className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-sage-400"
+          aria-hidden
+        />
         <Input
+          variant="search"
           value={filters.search}
           onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          placeholder="Search places, activities or services"
+          placeholder="Search places"
           className="pl-10"
           aria-label="Search services"
         />
@@ -95,12 +99,13 @@ export function ExplorePage() {
           Filters
         </Button>
 
-        <Button variant="ghost" asChild size="sm">
+        <Button variant="ghost" asChild size="sm" className="hidden sm:inline-flex">
           <Link to="/map">
             <List className="h-4 w-4" />
             Map view
           </Link>
         </Button>
+      </div>
       </div>
 
       {showFilters && (

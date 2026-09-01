@@ -5,9 +5,11 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ReilyIcon } from '@/components/icons'
+import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { LocationButton, LocationSearch } from '@/components/location/LocationSearch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { IOSGroup, IOSRow } from '@/components/ui/ios-group'
 import { Label } from '@/components/ui/input'
 import {
   Select,
@@ -44,11 +46,20 @@ export function ProfilePage() {
   const submissions = dataService.getUserSubmissions()
 
   return (
-    <div className="space-y-8">
-      <header>
+    <div className="space-y-5 lg:space-y-8">
+      <MobilePageHeader title="Profile" subtitle="Preferences and settings" />
+      <header className="hidden lg:block">
         <h1 className="text-2xl font-bold text-sage-900">Profile & preferences</h1>
         <p className="text-sage-600">No registration required for this mockup</p>
       </header>
+
+      <IOSGroup className="lg:hidden">
+        <IOSRow href="/favourites">
+          <ReilyIcon name="favourites" size="sm" variant="terracotta" label="" />
+          <span className="flex-1">Saved places</span>
+          <span className="text-[15px] text-sage-500">{favourites.length}</span>
+        </IOSRow>
+      </IOSGroup>
 
       {/* Location */}
       <Card>

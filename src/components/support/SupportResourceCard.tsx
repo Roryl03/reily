@@ -28,7 +28,7 @@ export function SupportResourceCard({
     return (
       <Link
         to={`/support/${resource.id}`}
-        className="flex items-center gap-3 rounded-2xl border border-sage-100 bg-white p-4 shadow-sm transition hover:border-sage-200 hover:shadow-md focus-ring min-h-[4.5rem]"
+        className="ios-card flex items-center gap-3 p-4 touch-scale min-h-[52px] focus-ring"
       >
         <ReilyIcon
           name={resource.isHelpline ? 'support-services' : 'community-groups'}
@@ -36,10 +36,10 @@ export function SupportResourceCard({
           variant={resource.isHelpline ? 'terracotta' : 'blue'}
         />
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-sage-900 leading-snug">{resource.name}</p>
-          <p className="mt-0.5 text-sm text-sage-600 line-clamp-2">{resource.shortDescription}</p>
+          <p className="text-[17px] font-medium text-sage-900 leading-snug">{resource.name}</p>
+          <p className="mt-0.5 text-[15px] text-sage-600 line-clamp-2">{resource.shortDescription}</p>
           {resource.phone && (
-            <p className="mt-1 text-sm font-medium text-blue-muted">{resource.phone}</p>
+            <p className="mt-1 text-[15px] font-semibold text-blue-muted">{resource.phone}</p>
           )}
         </div>
         {resource.isHelpline && (

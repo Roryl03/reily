@@ -6,11 +6,12 @@ export function ReilyBrandMark({
   className,
   label = 'Reily',
 }: {
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   label?: string
 }) {
   const sizes = {
+    xs: { box: 'h-8 w-8 rounded-lg', icon: 16 },
     sm: { box: 'h-10 w-10 rounded-xl', icon: 20 },
     md: { box: 'h-14 w-14 rounded-2xl', icon: 28 },
     lg: { box: 'h-20 w-20 rounded-2xl', icon: 40 },

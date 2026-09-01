@@ -1,5 +1,4 @@
 import { Phone } from 'lucide-react'
-import { ReilyIcon } from '@/components/icons'
 import { formatPhoneLink } from '@/lib/utils'
 import type { SupportResource } from '@/types/supportResource'
 
@@ -17,36 +16,33 @@ export function SupportQuickHelp({
   if (quick.length === 0) return null
 
   return (
-    <section aria-labelledby="quick-help-heading" className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <ReilyIcon name="support-services" size="sm" variant="blue" />
-          <h2 id="quick-help-heading" className="font-medium text-sage-900">
-            Need someone to talk to?
-          </h2>
-        </div>
+    <section aria-labelledby="quick-help-heading" className="space-y-2">
+      <div className="flex items-center justify-between px-1">
+        <h2 id="quick-help-heading" className="text-[20px] font-semibold tracking-tight text-sage-900">
+          Need someone to talk to?
+        </h2>
         <button
           type="button"
           onClick={onViewHelplines}
-          className="text-sm font-medium text-blue-muted hover:text-sage-800 focus-ring rounded px-1"
+          className="text-[15px] font-semibold text-blue-muted touch-scale rounded-lg px-1 focus-ring"
         >
-          All helplines
+          All
         </button>
       </div>
 
-      <div className="rounded-2xl border border-blue-muted/20 bg-blue-muted-light/60 p-3 space-y-2">
+      <div className="ios-group">
         {quick.map((r) => (
           <a
             key={r.id}
             href={r.phone ? formatPhoneLink(r.phone) : undefined}
-            className="flex items-center justify-between gap-3 rounded-xl bg-white/90 px-4 py-3 transition hover:bg-white focus-ring min-h-11"
+            className="ios-row touch-scale active:bg-blue-muted-light/30"
           >
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-sage-900 truncate">{r.name}</p>
-              {r.hours && <p className="text-xs text-sage-500 truncate">{r.hours}</p>}
+            <div className="min-w-0 flex-1">
+              <p className="text-[17px] font-medium text-sage-900 truncate">{r.name}</p>
+              {r.hours && <p className="text-[13px] text-sage-500 truncate">{r.hours}</p>}
             </div>
             {r.phone && (
-              <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-blue-muted">
+              <span className="flex shrink-0 items-center gap-1.5 text-[15px] font-semibold text-blue-muted">
                 <Phone className="h-4 w-4" aria-hidden />
                 {r.phone}
               </span>
