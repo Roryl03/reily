@@ -11,7 +11,7 @@ const badgeVariants = cva(
         secondary: 'bg-blue-muted-light text-blue-muted',
         accent: 'bg-terracotta-light text-terracotta',
         outline: 'border border-sage-200 text-sage-600',
-        success: 'bg-green-100 text-green-800',
+        success: 'bg-hunter-light text-sage-800',
         warning: 'bg-amber-100 text-amber-800',
       },
     },

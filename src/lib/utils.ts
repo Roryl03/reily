@@ -57,7 +57,7 @@ export async function fileToDataUrl(file: File): Promise<string> {
 
 export function getCategoryColor(category: string): string {
   const colors: Record<string, string> = {
-    Activities: '#6B8F71',
+    Activities: '#355E3B',
     'Food and drink': '#C4785A',
     'Parks and outdoors': '#5A8FA8',
     'Support services': '#8B7BA8',
@@ -70,7 +70,7 @@ export function getCategoryColor(category: string): string {
     Haircuts: '#A87B6B',
     'Community groups': '#7B8FA8',
   }
-  return colors[category] ?? '#6B8F71'
+  return colors[category] ?? '#355E3B'
 }
 
 export function getPlaceholderImage(category: string): string {

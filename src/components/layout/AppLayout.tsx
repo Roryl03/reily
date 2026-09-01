@@ -31,7 +31,7 @@ export function AppLayout() {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-ring min-h-11',
-                  isActive ? 'bg-sage-100 text-sage-800' : 'text-sage-600 hover:bg-sage-50',
+                  isActive ? 'bg-hunter-light text-hunter' : 'text-sage-600 hover:bg-sage-50',
                   item.to === '/support' && !isActive && 'text-blue-muted',
                 )
               }
@@ -73,7 +73,7 @@ export function AppLayout() {
               className={({ isActive }) =>
                 cn(
                   'flex flex-1 flex-col items-center gap-0.5 rounded-lg px-0.5 py-1.5 text-[10px] font-medium transition-colors focus-ring min-h-14 justify-center leading-tight',
-                  isActive ? 'text-sage-800' : 'text-sage-400',
+                  isActive ? 'text-hunter' : 'text-sage-400',
                   item.to === '/support' && isActive && 'text-blue-muted',
                 )
               }

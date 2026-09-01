@@ -16,12 +16,12 @@ interface ServiceCardProps {
 }
 
 const CATEGORY_GLYPH_COLOR: Record<ReilyColorVariant, string> = {
-  sage: 'text-sage-800',
-  blue: 'text-[#3d7288]',
-  terracotta: 'text-[#a86145]',
-  gold: 'text-[#96753a]',
-  lavender: 'text-[#6f5f88]',
-  cream: 'text-sage-800',
+  sage: 'text-hunter',
+  blue: 'text-blue-muted',
+  terracotta: 'text-terracotta',
+  gold: 'text-gold',
+  lavender: 'text-lavender',
+  cream: 'text-sage-700',
 }
 
 export function ServiceCard({
@@ -54,9 +54,10 @@ export function ServiceCard({
         >
           <ReilyIconGlyph
             name="favourites"
+            filled={isFavourite}
             className={cn(
               'h-5 w-5',
-              isFavourite ? 'text-terracotta [&>path]:fill-terracotta [&>path]:stroke-terracotta' : 'text-sage-700',
+              isFavourite ? 'text-terracotta' : 'text-sage-500',
             )}
           />
         </button>

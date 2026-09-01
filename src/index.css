@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sage-50: #f4f7f4;
-  --color-sage-100: #e4ebe5;
-  --color-sage-200: #c9d7cb;
-  --color-sage-300: #a3b9a7;
-  --color-sage-400: #7a9a80;
-  --color-sage-500: #6b8f71;
-  --color-sage-600: #527358;
-  --color-sage-700: #425c47;
-  --color-sage-800: #374a3b;
-  --color-sage-900: #2f3e32;
+  /* Hunter green scale — rich forest primary with soft tints for calm UI */
+  --color-sage-50: #f2f6f3;
+  --color-sage-100: #e0ebe2;
+  --color-sage-200: #c4d8c8;
+  --color-sage-300: #98b5a0;
+  --color-sage-400: #5c8264;
+  --color-sage-500: #355e3b;
+  --color-sage-600: #2d4f33;
+  --color-sage-700: #264329;
+  --color-sage-800: #213920;
+  --color-sage-900: #1a2f1c;
+
+  --color-hunter: #355e3b;
+  --color-hunter-light: #e0ebe2;
 
   --color-cream-50: #fdfbf7;
   --color-cream-100: #f9f5ed;
@@ -60,7 +64,11 @@
   }
 
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-200;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hunter/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-200;
+  }
+
+  .home-section-header {
+    @apply flex items-start gap-3 border-l-[3px] border-hunter/25 pl-4;
   }
 }
 
