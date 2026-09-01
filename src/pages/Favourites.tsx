@@ -1,6 +1,6 @@
-import { Heart, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ReilyIcon } from '@/components/icons'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,9 +29,7 @@ export function FavouritesPage() {
   if (favourites.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-sage-100">
-          <Heart className="h-10 w-10 text-sage-400" aria-hidden />
-        </div>
+        <ReilyIcon name="favourites" size="xl" variant="terracotta" label="Favourites" />
         <h1 className="text-2xl font-bold text-sage-900">Favourites</h1>
         <p className="max-w-sm text-sage-600">Save places you would like to remember.</p>
         <Button asChild>
@@ -49,7 +47,9 @@ export function FavouritesPage() {
       </header>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sage-400" aria-hidden />
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+          <ReilyIcon name="search" size="xs" variant="cream" tile={false} glyphClassName="text-sage-400" />
+        </span>
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}

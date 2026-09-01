@@ -1,14 +1,10 @@
 import {
-  AlertTriangle,
   ChevronRight,
-  FileText,
-  Heart,
-  MapPin,
   RotateCcw,
   Trash2,
-  Upload,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { ReilyIcon } from '@/components/icons'
 import { LocationButton, LocationSearch } from '@/components/location/LocationSearch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -58,7 +54,7 @@ export function ProfilePage() {
       <Card>
         <CardContent className="space-y-4 p-5">
           <h2 className="font-semibold text-sage-900 flex items-center gap-2">
-            <MapPin className="h-5 w-5" aria-hidden />
+            <ReilyIcon name="location" size="sm" variant="sage" />
             Location
           </h2>
           {location && <p className="text-sm text-sage-600">{location.label}</p>}
@@ -149,7 +145,7 @@ export function ProfilePage() {
           className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm hover:shadow-md focus-ring"
         >
           <span className="flex items-center gap-3">
-            <Heart className="h-5 w-5 text-terracotta" aria-hidden />
+            <ReilyIcon name="favourites" size="sm" variant="terracotta" />
             <span className="font-medium text-sage-900">Favourites</span>
           </span>
           <span className="text-sm text-sage-500">{favourites.length}</span>
@@ -160,7 +156,7 @@ export function ProfilePage() {
           className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm hover:shadow-md focus-ring"
         >
           <span className="flex items-center gap-3">
-            <Upload className="h-5 w-5 text-sage-600" aria-hidden />
+            <ReilyIcon name="add-service" size="sm" variant="sage" />
             <span className="font-medium text-sage-900">My submissions</span>
           </span>
           <span className="flex items-center gap-2 text-sm text-sage-500">
@@ -174,7 +170,7 @@ export function ProfilePage() {
           className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm hover:shadow-md focus-ring"
         >
           <span className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-sage-600" aria-hidden />
+            <ReilyIcon name="sen-session" size="sm" variant="blue" />
             <span className="font-medium text-sage-900">Submitted reports</span>
           </span>
           <span className="flex items-center gap-2 text-sm text-sage-500">
@@ -188,7 +184,7 @@ export function ProfilePage() {
       <Card>
         <CardContent className="space-y-3 p-5">
           <h2 className="font-semibold text-sage-900 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-600" aria-hidden />
+            <ReilyIcon name="booking-required" size="sm" variant="gold" />
             Data management
           </h2>
           <p className="text-sm text-sage-600">

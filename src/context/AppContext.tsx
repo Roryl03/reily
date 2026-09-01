@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { filterServices, sortServices } from '@/lib/filters'
 import { dataService } from '@/lib/storage'
+import { initializeSupportStorage } from '@/lib/supportStorage'
 import type {
   Service,
   ServiceFilters,
@@ -75,6 +76,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     dataService.initializeStorage()
+    initializeSupportStorage()
     setServices(dataService.loadServices())
     setPreferences(dataService.loadPreferences())
     setLocationState(dataService.loadLocation())

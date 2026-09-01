@@ -1,7 +1,12 @@
 import type { AccessibilityFeatures } from '@/types/service'
+import { FEATURE_ICON_CONFIG, ReilyIconInline } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 
-const BADGE_MAP: { key: keyof AccessibilityFeatures; label: string; variant?: 'default' | 'secondary' | 'accent' }[] = [
+const BADGE_MAP: {
+  key: keyof AccessibilityFeatures
+  label: string
+  variant?: 'default' | 'secondary' | 'accent'
+}[] = [
   { key: 'autismFriendly', label: 'Autism-friendly', variant: 'secondary' },
   { key: 'quietHour', label: 'Quiet hour', variant: 'accent' },
   { key: 'senSpecific', label: 'SEN session', variant: 'accent' },
@@ -14,6 +19,10 @@ const BADGE_MAP: { key: keyof AccessibilityFeatures; label: string; variant?: 'd
   { key: 'trainedStaff', label: 'Aware staff' },
   { key: 'freeEntry', label: 'Free entry', variant: 'success' as 'default' },
   { key: 'bookingRequired', label: 'Booking required', variant: 'warning' as 'default' },
+  { key: 'indoor', label: 'Indoor' },
+  { key: 'outdoor', label: 'Outdoor' },
+  { key: 'disabledParking', label: 'Parking available' },
+  { key: 'freeParking', label: 'Free parking' },
 ]
 
 export function ServiceBadges({
@@ -29,11 +38,22 @@ export function ServiceBadges({
 
   return (
     <div className="flex flex-wrap gap-1.5" role="list" aria-label="Accessibility features">
-      {shown.map((b) => (
-        <Badge key={b.key} variant={b.variant ?? 'default'} role="listitem">
-          {b.label}
-        </Badge>
-      ))}
+      {shown.map((b) => {
+        const iconConfig = FEATURE_ICON_CONFIG[b.key]
+        return (
+          <Badge
+            key={b.key}
+            variant={b.variant ?? 'default'}
+            role="listitem"
+            className="gap-1.5 pl-2"
+          >
+            {iconConfig && (
+              <ReilyIconInline name={iconConfig.name} variant={iconConfig.variant} />
+            )}
+            {b.label}
+          </Badge>
+        )
+      })}
       {remaining > 0 && (
         <Badge variant="outline" role="listitem">
           +{remaining} more

@@ -1,4 +1,5 @@
 import { seedServices } from '@/data/seedServices'
+import { initializeSupportStorage } from '@/lib/supportStorage'
 import { generateId } from '@/lib/utils'
 import type {
   RecentlyViewed,
@@ -151,10 +152,13 @@ export function clearDemoData(): void {
   writeJson(KEYS.services, community)
 }
 
-export function resetApp(): void {
-  Object.values(KEYS).forEach((key) => localStorage.removeItem(key))
-  initializeStorage()
-}
+export function   resetApp(): void {
+    Object.values(KEYS).forEach((key) => localStorage.removeItem(key))
+    localStorage.removeItem('reily_support_resources')
+    localStorage.removeItem('reily_support_version')
+    initializeStorage()
+    initializeSupportStorage()
+  }
 
 // Supabase-ready interface — swap implementation later
 export const dataService = {

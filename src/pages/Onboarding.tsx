@@ -1,6 +1,7 @@
-import { Loader2, MapPin } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ReilyBrandMark, ReilyIcon } from '@/components/icons'
 import { LocationButton, LocationSearch } from '@/components/location/LocationSearch'
 import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
@@ -25,9 +26,7 @@ export function OnboardingPage() {
     <div className="flex min-h-dvh flex-col items-center justify-center bg-cream-200 px-6 py-12">
       <div className="w-full max-w-md space-y-8 text-center">
         <div className="space-y-3">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-sage-500 text-3xl text-white">
-            🌿
-          </div>
+          <ReilyBrandMark size="lg" className="mx-auto" />
           <h1 className="text-3xl font-bold text-sage-800">Find places that understand.</h1>
           <p className="text-lg text-sage-600">
             Discover inclusive activities, services and venues near you.
@@ -62,7 +61,7 @@ export function OnboardingPage() {
               <p className="text-sm text-sage-800">{locationError}</p>
               <LocationSearch onSuccess={finish} />
               <Button variant="outline" size="sm" onClick={useDemo} className="w-full">
-                <MapPin className="h-4 w-4" />
+                <ReilyIcon name="location" size="xs" variant="sage" tile={false} />
                 Use demo location (Randalstown)
               </Button>
             </div>
@@ -86,8 +85,9 @@ export function OnboardingGuard({ children }: { children: React.ReactNode }) {
 
   if (locationLoading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center">
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-sage-500" aria-label="Loading" />
+        <p className="text-sm text-sage-600">Finding your location…</p>
       </div>
     )
   }

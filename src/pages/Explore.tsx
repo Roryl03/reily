@@ -1,6 +1,7 @@
-import { List, Search, SlidersHorizontal } from 'lucide-react'
+import { List, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { ReilyIcon } from '@/components/icons'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
@@ -59,7 +60,9 @@ export function ExplorePage() {
       </header>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sage-400" aria-hidden />
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+          <ReilyIcon name="search" size="sm" variant="cream" tile={false} glyphClassName="text-sage-600" />
+        </span>
         <Input
           value={filters.search}
           onChange={(e) => setFilters({ ...filters, search: e.target.value })}

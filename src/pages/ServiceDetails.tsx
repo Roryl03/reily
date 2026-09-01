@@ -1,8 +1,6 @@
 import {
   Calendar,
   ExternalLink,
-  Heart,
-  MapPin,
   Navigation,
   Phone,
   Share2,
@@ -10,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { ReilyIconGlyph } from '@/components/icons'
 import { CommunityBadge, DemoBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -108,8 +107,9 @@ export function ServiceDetailsPage() {
           className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow focus-ring"
           aria-label={isFavourite(service.id) ? 'Remove from favourites' : 'Add to favourites'}
         >
-          <Heart
-            className={`h-5 w-5 ${isFavourite(service.id) ? 'fill-terracotta text-terracotta' : 'text-sage-600'}`}
+          <ReilyIconGlyph
+            name="favourites"
+            className={`h-5 w-5 ${isFavourite(service.id) ? 'text-terracotta [&>path]:fill-terracotta' : 'text-sage-600'}`}
           />
         </button>
       </div>
@@ -129,8 +129,8 @@ export function ServiceDetailsPage() {
         </div>
 
         <div className="flex flex-wrap gap-4 text-sm text-sage-600">
-          <span className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" aria-hidden />
+          <span className="flex items-center gap-1.5">
+            <ReilyIconGlyph name="location" className="h-4 w-4 text-sage-500" />
             {service.address}, {service.town}, {service.postcode}
           </span>
           {enriched.distanceMiles !== undefined && (

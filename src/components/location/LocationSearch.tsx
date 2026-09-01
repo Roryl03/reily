@@ -1,5 +1,6 @@
-import { Loader2, MapPin, Search } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { ReilyIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useApp } from '@/context/AppContext'
@@ -23,7 +24,9 @@ export function LocationSearch({ onSuccess }: { onSuccess?: () => void }) {
     <div className="space-y-2">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sage-400" aria-hidden />
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+            <ReilyIcon name="search" size="sm" variant="cream" tile={false} glyphClassName="text-sage-600" />
+          </span>
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -70,7 +73,12 @@ export function LocationButton({
         </>
       ) : (
         <>
-          <MapPin className="h-4 w-4" aria-hidden />
+          <ReilyIcon
+            name="location"
+            size="xs"
+            variant={variant === 'default' ? 'cream' : 'sage'}
+            className={variant === 'default' ? '!bg-white/20' : undefined}
+          />
           Use my current location
         </>
       )}
@@ -84,7 +92,7 @@ export function LocationDisplay() {
 
   return (
     <p className="flex items-center gap-2 text-sm text-sage-600">
-      <MapPin className="h-4 w-4 shrink-0 text-sage-500" aria-hidden />
+      <ReilyIcon name="location" size="xs" variant="sage" tile={false} />
       <span>{location.label}</span>
       {location.isDemo && (
         <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-800">Demo location</span>

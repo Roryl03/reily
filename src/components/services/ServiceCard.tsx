@@ -1,5 +1,6 @@
-import { Heart, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { getCategoryIcon, ReilyIconGlyph } from '@/components/icons'
+import type { ReilyColorVariant } from '@/components/icons'
 import { CommunityBadge, DemoBadge, OpenStatusBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,6 +15,15 @@ interface ServiceCardProps {
   compact?: boolean
 }
 
+const CATEGORY_GLYPH_COLOR: Record<ReilyColorVariant, string> = {
+  sage: 'text-sage-800',
+  blue: 'text-[#3d7288]',
+  terracotta: 'text-[#a86145]',
+  gold: 'text-[#96753a]',
+  lavender: 'text-[#6f5f88]',
+  cream: 'text-sage-800',
+}
+
 export function ServiceCard({
   service,
   isFavourite,
@@ -22,6 +32,7 @@ export function ServiceCard({
 }: ServiceCardProps) {
   const image = service.images[0] ?? getPlaceholderImage(service.category)
   const status = formatOpenStatus(service.openStatus)
+  const categoryIcon = getCategoryIcon(service.category)
 
   return (
     <Card className="overflow-hidden">
@@ -41,16 +52,28 @@ export function ServiceCard({
           className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-sm focus-ring"
           aria-label={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
         >
-          <Heart
-            className={cn('h-5 w-5', isFavourite ? 'fill-terracotta text-terracotta' : 'text-sage-600')}
+          <ReilyIconGlyph
+            name="favourites"
+            className={cn(
+              'h-5 w-5',
+              isFavourite ? 'text-terracotta [&>path]:fill-terracotta [&>path]:stroke-terracotta' : 'text-sage-700',
+            )}
           />
         </button>
       </div>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <h3 className="text-lg font-semibold text-sage-900">{service.name}</h3>
-            <p className="text-sm text-sage-600">{service.category}</p>
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-sage-200 bg-sage-100 shadow-sm">
+              <ReilyIconGlyph
+                name={categoryIcon.name}
+                className={cn('h-5 w-5', CATEGORY_GLYPH_COLOR[categoryIcon.variant])}
+              />
+            </span>
+            <div>
+              <h3 className="text-lg font-semibold text-sage-900">{service.name}</h3>
+              <p className="text-sm text-sage-600">{service.category}</p>
+            </div>
           </div>
           <div className="flex flex-wrap gap-1">
             {service.source === 'demo' && <DemoBadge />}
@@ -60,8 +83,8 @@ export function ServiceCard({
 
         <div className="flex flex-wrap items-center gap-3 text-sm text-sage-600">
           {service.distanceMiles !== undefined && (
-            <span className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" aria-hidden />
+            <span className="flex items-center gap-1.5">
+              <ReilyIconGlyph name="location" className="h-4 w-4 text-sage-700" />
               {formatDistance(service.distanceMiles)}
             </span>
           )}

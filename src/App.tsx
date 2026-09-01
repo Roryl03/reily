@@ -13,6 +13,8 @@ import {
   SubmittedReportsPage,
 } from '@/pages/Profile'
 import { ServiceDetailsPage } from '@/pages/ServiceDetails'
+import { SupportDetailPage } from '@/pages/SupportDetail'
+import { SupportPage } from '@/pages/Support'
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="my-submissions" element={<MySubmissionsPage />} />
               <Route path="submitted-reports" element={<SubmittedReportsPage />} />
+              <Route path="support" element={<SupportPage />} />
+              <Route path="support/:id" element={<SupportDetailPage />} />
               <Route path="service/:id" element={<ServiceDetailsPage />} />
               <Route path="add-service" element={<AddServicePage />} />
               <Route path="edit-service/:id" element={<EditServicePage />} />
