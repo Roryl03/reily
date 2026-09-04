@@ -117,6 +117,7 @@ export async function fetchServices(): Promise<Service[]> {
   const { data, error } = await supabase
     .from('services')
     .select('*')
+    .neq('source', 'demo')
     .order('updated_at', { ascending: false })
 
   if (error) throw new Error(error.message)

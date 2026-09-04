@@ -240,3 +240,8 @@ export const NI_TOWNS: Record<string, { lat: number; lng: number; label: string 
 export function isPublicService(service: Service): boolean {
   return service.verificationStatus !== 'pending'
 }
+
+/** Real listings only — excludes demo seed data (used when Supabase is the source of truth). */
+export function isLiveService(service: Service): boolean {
+  return service.source !== 'demo' && isPublicService(service)
+}

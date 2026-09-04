@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
 import { isSupabaseEnabled } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
-import { isPublicService } from '@/types/service'
+import { isLiveService } from '@/types/service'
 import type { Service } from '@/types/service'
 
 type AdminTab = 'facilities' | 'requests'
@@ -22,10 +22,10 @@ export function AdminFacilitiesPage() {
   } = useApp()
 
   const facilities = (isSupabaseEnabled
-    ? services.filter(isPublicService)
+    ? services.filter(isLiveService)
     : services.filter(
         (s) =>
-          isPublicService(s) &&
+          isLiveService(s) &&
           (s.submittedByCurrentUser || s.source === 'community'),
       )
   ).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))

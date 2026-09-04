@@ -22,7 +22,7 @@ import type {
   UserLocation,
   UserPreferences,
 } from '@/types/service'
-import { DEFAULT_FILTERS, DEFAULT_PREFERENCES, DEMO_LOCATION, isPublicService, NI_TOWNS } from '@/types/service'
+import { DEFAULT_FILTERS, DEFAULT_PREFERENCES, DEMO_LOCATION, isLiveService, NI_TOWNS } from '@/types/service'
 
 interface AppContextValue {
   services: Service[]
@@ -323,8 +323,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const filteredServices = useMemo(() => {
-    const publicServices = services.filter(isPublicService)
-    const filtered = filterServices(publicServices, filters, location)
+    const visible = services.filter(isLiveService)
+    const filtered = filterServices(visible, filters, location)
     return sortServices(filtered, sort)
   }, [services, filters, location, sort])
 
