@@ -16,12 +16,12 @@ export function HomeHero() {
       <HeroBackdrop />
 
       <div className="relative space-y-2.5 sm:space-y-3">
-        <p className="text-[13px] font-semibold uppercase tracking-wider text-hunter/80">
+        <p className="font-decorative text-2xl text-hunter leading-none">
           Welcome
         </p>
         <h1
           id="home-hero-heading"
-          className="text-[28px] font-bold leading-[1.15] tracking-tight text-sage-900 sm:text-3xl"
+          className="font-display text-3xl leading-[1.15] text-sage-900 sm:text-4xl"
         >
           Take your time - we&apos;ll help you find your way
         </h1>

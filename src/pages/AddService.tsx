@@ -250,7 +250,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-sage-100">
           <Check className="h-8 w-8 text-sage-600" aria-hidden />
         </div>
-        <h1 className="text-2xl font-bold text-sage-900">
+        <h1 className="font-display text-3xl text-sage-900">
           {isRequest
             ? 'Request submitted!'
             : isEdit
@@ -306,7 +306,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
           </Button>
         )}
         <div>
-          <h1 className="text-2xl font-bold text-sage-900">
+          <h1 className="font-display text-3xl text-sage-900">
             {isRequest
               ? 'Submit your facility'
               : isEdit
@@ -345,7 +345,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
           <div className="space-y-2">
             <Label htmlFor="name">Service or venue name *</Label>
             <Input id="name" value={data.name ?? ''} onChange={(e) => update({ name: e.target.value })} />
-            {errors.name && <p className="text-sm text-terracotta" role="alert">{errors.name}</p>}
+            {errors.name && <p className="text-sm text-error" role="alert">{errors.name}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
@@ -359,7 +359,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
           <div className="space-y-2">
             <Label htmlFor="short">Short description *</Label>
             <Input id="short" value={data.shortDescription ?? ''} onChange={(e) => update({ shortDescription: e.target.value })} />
-            {errors.shortDescription && <p className="text-sm text-terracotta" role="alert">{errors.shortDescription}</p>}
+            {errors.shortDescription && <p className="text-sm text-error" role="alert">{errors.shortDescription}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="full">Full description</Label>
@@ -387,13 +387,13 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
           <div className="space-y-2">
             <Label htmlFor="address">Address line *</Label>
             <Input id="address" value={data.address ?? ''} onChange={(e) => update({ address: e.target.value })} />
-            {errors.address && <p className="text-sm text-terracotta" role="alert">{errors.address}</p>}
+            {errors.address && <p className="text-sm text-error" role="alert">{errors.address}</p>}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="town">Town *</Label>
               <Input id="town" value={data.town ?? ''} onChange={(e) => update({ town: e.target.value })} />
-              {errors.town && <p className="text-sm text-terracotta" role="alert">{errors.town}</p>}
+              {errors.town && <p className="text-sm text-error" role="alert">{errors.town}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="county">County</Label>
@@ -403,7 +403,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
           <div className="space-y-2">
             <Label htmlFor="postcode">Postcode *</Label>
             <Input id="postcode" value={data.postcode ?? ''} onChange={(e) => update({ postcode: e.target.value })} />
-            {errors.postcode && <p className="text-sm text-terracotta" role="alert">{errors.postcode}</p>}
+            {errors.postcode && <p className="text-sm text-error" role="alert">{errors.postcode}</p>}
           </div>
           <div className="flex flex-wrap gap-2">
             <LocationButton
@@ -566,7 +566,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
               accept="image/*"
               onChange={(e) => handleImage(e.target.files?.[0] ?? null)}
             />
-            {imageError && <p className="text-sm text-terracotta" role="alert">{imageError}</p>}
+            {imageError && <p className="text-sm text-error" role="alert">{imageError}</p>}
             {data.images?.[0] && (
               <ServiceImage
                 src={data.images[0]}
@@ -604,7 +604,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
         ) : (
           <div className="flex flex-col items-end gap-2">
             {submitError && (
-              <p className="text-sm text-terracotta" role="alert">
+              <p className="text-sm text-error" role="alert">
                 {submitError}
               </p>
             )}

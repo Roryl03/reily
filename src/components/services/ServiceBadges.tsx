@@ -86,7 +86,7 @@ export function DemoBadge() {
 
 export function CommunityBadge() {
   return (
-    <Badge variant="secondary" className="bg-blue-muted-light text-blue-muted">
+    <Badge variant="secondary" className="bg-hunter-light text-hunter">
       Community submitted
     </Badge>
   )

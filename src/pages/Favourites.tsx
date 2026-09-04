@@ -31,7 +31,7 @@ export function FavouritesPage() {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
         <ReilyIcon name="favourites" size="xl" variant="terracotta" label="Favourites" />
-        <h1 className="text-2xl font-bold text-sage-900">Favourites</h1>
+        <h1 className="font-display text-3xl text-sage-900">Favourites</h1>
         <p className="max-w-sm text-sage-600">Save places you would like to remember.</p>
         <Button asChild>
           <Link to="/explore">Explore services</Link>
@@ -47,7 +47,7 @@ export function FavouritesPage() {
         subtitle={`${favourites.length} ${favourites.length === 1 ? 'place' : 'places'}`}
       />
       <header className="hidden lg:block">
-        <h1 className="text-2xl font-bold text-sage-900">Favourites</h1>
+        <h1 className="font-display text-3xl text-sage-900">Favourites</h1>
         <p className="text-sage-600">{favourites.length} saved places</p>
       </header>
 

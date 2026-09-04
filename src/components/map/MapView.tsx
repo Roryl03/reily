@@ -158,7 +158,7 @@ function DraggableMarker({
   lng: number
   onMove?: (lat: number, lng: number) => void
 }) {
-  const icon = createIcon('#355E3B')
+  const icon = createIcon('#0B3D2E')
   return (
     <Marker
       position={[lat, lng]}

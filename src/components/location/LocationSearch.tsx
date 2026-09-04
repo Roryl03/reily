@@ -55,7 +55,7 @@ export function LocationSearch({
         </Button>
       </div>
       {error && (
-        <p className="text-[15px] text-terracotta" role="alert">
+        <p className="text-base text-error" role="alert">
           {error}
         </p>
       )}

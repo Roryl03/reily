@@ -18,7 +18,7 @@ interface ServiceCardProps {
 
 const CATEGORY_GLYPH_COLOR: Record<ReilyColorVariant, string> = {
   sage: 'text-hunter',
-  blue: 'text-blue-muted',
+  blue: 'text-hunter',
   terracotta: 'text-terracotta',
   gold: 'text-gold',
   lavender: 'text-lavender',

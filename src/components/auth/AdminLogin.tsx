@@ -22,7 +22,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
     <Card className="mx-auto max-w-md">
       <CardContent className="space-y-4 p-6">
         <div className="space-y-1 text-center">
-          <h1 className="text-xl font-bold text-sage-900">Manage facilities</h1>
+          <h1 className="font-display text-2xl text-sage-900">Manage facilities</h1>
           <p className="text-sm text-sage-600">Enter your admin email to continue.</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -39,7 +39,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
             />
           </div>
           {error && (
-            <p className="text-sm text-terracotta" role="alert">
+            <p className="text-sm text-error" role="alert">
               {error}
             </p>
           )}

@@ -47,7 +47,7 @@ export function AdminFacilitiesPage() {
     <div className="space-y-6 pb-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-sage-900">Manage facilities</h1>
+          <h1 className="font-display text-3xl text-sage-900">Manage facilities</h1>
           <p className="text-sage-600 mt-1">Add, edit, review or remove listings on Reilly.</p>
         </div>
         <Button asChild className="shrink-0 gap-2">

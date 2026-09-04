@@ -10,7 +10,7 @@ export const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      'peer h-5 w-5 shrink-0 rounded-md border-2 border-sage-300 focus-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-sage-500 data-[state=checked]:bg-sage-500',
+      'peer h-5 w-5 shrink-0 rounded-md border-2 border-border focus-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-hunter data-[state=checked]:bg-hunter',
       className,
     )}
     {...props}
@@ -36,7 +36,7 @@ export function CheckboxField({
   return (
     <label htmlFor={id} className="flex items-center gap-3 cursor-pointer min-h-11 py-1">
       <Checkbox id={id} checked={checked} onCheckedChange={onCheckedChange} />
-      <span className="text-sm text-sage-800">{label}</span>
+      <span className="text-base text-sage-800">{label}</span>
     </label>
   )
 }

@@ -47,7 +47,7 @@ export function ProfilePage() {
     <div className="space-y-5 lg:space-y-8">
       <MobilePageHeader title="Profile" subtitle="Preferences and settings" />
       <header className="hidden lg:block">
-        <h1 className="text-2xl font-bold text-sage-900">Profile & preferences</h1>
+        <h1 className="font-display text-3xl text-sage-900">Profile & preferences</h1>
         <p className="text-sage-600">No registration required for this mockup</p>
       </header>
 
@@ -217,7 +217,7 @@ export function MySubmissionsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-sage-900">My submissions</h1>
+        <h1 className="font-display text-3xl text-sage-900">My submissions</h1>
         <p className="text-sage-600">Services you&apos;ve added to Reilly</p>
       </header>
 
@@ -275,7 +275,7 @@ export function SubmittedReportsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-sage-900">Submitted reports</h1>
+        <h1 className="font-display text-3xl text-sage-900">Submitted reports</h1>
         <p className="text-sage-600">Corrections you&apos;ve reported locally</p>
       </header>
 

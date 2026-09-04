@@ -29,7 +29,7 @@ export const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border border-sage-100 bg-white p-6 shadow-xl duration-200 max-h-[90vh] overflow-y-auto',
+        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border border-border bg-surface p-6 shadow-xl duration-200 max-h-[90vh] overflow-y-auto',
         className,
       )}
       {...props}
@@ -51,7 +51,7 @@ export function DialogHeader({ className, ...props }: React.HTMLAttributes<HTMLD
 export function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-lg font-semibold text-sage-900', className)}
+      className={cn('text-lg font-display text-sage-900', className)}
       {...props}
     />
   )

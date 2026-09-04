@@ -20,8 +20,8 @@ export function AppLayout() {
 
   return (
     <div className="min-h-dvh bg-cream-200">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-sage-100 bg-white lg:flex lg:flex-col">
-        <div className="border-b border-sage-100 p-6">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-border bg-surface lg:flex lg:flex-col">
+        <div className="border-b border-border p-6">
           <ReilyLogoWordmark />
         </div>
         <nav className="flex-1 space-y-1 p-4" aria-label="Main navigation">
@@ -33,8 +33,7 @@ export function AppLayout() {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-ring min-h-11',
-                  isActive ? 'bg-hunter-light text-hunter' : 'text-sage-600 hover:bg-sage-50',
-                  item.to === '/support' && !isActive && 'text-blue-muted',
+                  isActive ? 'bg-hunter-light text-hunter font-semibold' : 'text-sage-500 hover:bg-sage-50',
                 )
               }
             >

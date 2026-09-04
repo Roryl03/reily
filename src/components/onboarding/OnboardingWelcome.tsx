@@ -53,7 +53,7 @@ export function OnboardingWelcome({
             <ReilyLogoFull size="lg" />
           </div>
           <div className="space-y-2 pt-1">
-            <h1 className="text-[28px] font-bold leading-tight tracking-tight text-sage-900 sm:text-3xl">
+            <h1 className="font-display text-3xl leading-tight text-sage-900 sm:text-4xl">
               You&apos;re in the right place
             </h1>
             <p className="text-[17px] leading-relaxed text-sage-600">
@@ -106,7 +106,7 @@ export function OnboardingWelcome({
           <div className="ios-card p-5 space-y-4">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-muted-light">
-                <Search className="h-7 w-7 text-blue-muted" strokeWidth={1.75} aria-hidden />
+                <Search className="h-7 w-7 text-hunter" strokeWidth={1.75} aria-hidden />
               </div>
               <div className="min-w-0 flex-1 space-y-1 text-left">
                 <p className="text-[17px] font-semibold text-sage-900">Or type your town</p>

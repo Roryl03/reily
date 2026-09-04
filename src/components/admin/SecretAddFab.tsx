@@ -16,7 +16,7 @@ export function SecretAddFab() {
   return (
     <Link
       to={addUrl}
-      className="fixed right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-hunter text-white shadow-[0_4px_16px_rgba(53,94,59,0.35)] active:scale-95 transition-transform focus-ring lg:hidden bottom-[calc(49px+env(safe-area-inset-bottom,0px)+0.75rem)]"
+      className="fixed right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-hunter text-white shadow-[0_4px_16px_rgba(11,61,46,0.35)] active:scale-95 transition-transform focus-ring lg:hidden bottom-[calc(49px+env(safe-area-inset-bottom,0px)+0.75rem)]"
       aria-label="Add facility"
     >
       <Plus className="h-6 w-6" strokeWidth={2} aria-hidden />

@@ -59,28 +59,28 @@ export const VARIANT_STYLES: Record<
   { tile: string; glyph: string }
 > = {
   sage: {
-    tile: 'bg-white ring-1 ring-hunter/12 shadow-[0_1px_3px_rgba(26,47,28,0.06)]',
+    tile: 'bg-hunter-light ring-1 ring-hunter/12',
     glyph: 'text-hunter',
   },
   blue: {
-    tile: 'bg-white ring-1 ring-blue-muted/15 shadow-[0_1px_3px_rgba(53,94,59,0.04)]',
-    glyph: 'text-blue-muted',
+    tile: 'bg-hunter-light ring-1 ring-sage-accent/25',
+    glyph: 'text-hunter',
   },
   terracotta: {
-    tile: 'bg-white ring-1 ring-terracotta/15 shadow-[0_1px_3px_rgba(196,120,90,0.06)]',
-    glyph: 'text-terracotta',
+    tile: 'bg-terracotta-light ring-1 ring-coral/30',
+    glyph: 'text-sage-900',
   },
   gold: {
-    tile: 'bg-white ring-1 ring-gold/20 shadow-[0_1px_3px_rgba(184,149,79,0.06)]',
-    glyph: 'text-gold',
+    tile: 'bg-gold-light ring-1 ring-gold/35',
+    glyph: 'text-sage-900',
   },
   lavender: {
-    tile: 'bg-white ring-1 ring-lavender/15 shadow-[0_1px_3px_rgba(139,123,168,0.06)]',
-    glyph: 'text-lavender',
+    tile: 'bg-hunter-light ring-1 ring-sage-accent/25',
+    glyph: 'text-hunter',
   },
   cream: {
-    tile: 'bg-white ring-1 ring-sage-200/80 shadow-sm',
-    glyph: 'text-sage-700',
+    tile: 'bg-surface ring-1 ring-border',
+    glyph: 'text-sage-800',
   },
 }
 

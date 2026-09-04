@@ -130,7 +130,7 @@ export function ServiceDetailsPage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-sage-900">{service.name}</h1>
+          <h1 className="font-display text-3xl text-sage-900">{service.name}</h1>
           <p className="text-sage-600">{service.category}</p>
         </div>
 

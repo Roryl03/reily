@@ -58,7 +58,7 @@ export function ExplorePage() {
     <div className="space-y-5 sm:space-y-6">
       <MobilePageHeader title="Explore" subtitle="Find inclusive places near you" />
       <header className="hidden lg:block">
-        <h1 className="text-2xl font-bold text-sage-900">Explore</h1>
+        <h1 className="font-display text-3xl text-sage-900">Explore</h1>
         <p className="text-sage-600">Find inclusive places near you</p>
       </header>
 

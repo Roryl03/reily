@@ -39,7 +39,7 @@ export function SupportResourceCard({
           <p className="text-[17px] font-medium text-sage-900 leading-snug">{resource.name}</p>
           <p className="mt-0.5 text-[15px] text-sage-600 line-clamp-2">{resource.shortDescription}</p>
           {resource.phone && (
-            <p className="mt-1 text-[15px] font-semibold text-blue-muted">{resource.phone}</p>
+            <p className="mt-1 text-[15px] font-semibold text-hunter">{resource.phone}</p>
           )}
         </div>
         {resource.isHelpline && (
@@ -75,7 +75,7 @@ export function SupportResourceCard({
             </div>
             <p className="text-sm text-sage-600">{resource.shortDescription}</p>
             {showSection && (
-              <p className="text-xs text-blue-muted font-medium">{sectionLabel(resource.section)}</p>
+              <p className="text-xs text-hunter font-medium">{sectionLabel(resource.section)}</p>
             )}
           </div>
         </div>
@@ -93,7 +93,7 @@ export function SupportResourceCard({
         <div className="space-y-2 text-sm text-sage-700">
           {resource.phone && (
             <p className="flex items-center gap-2">
-              <Phone className="h-4 w-4 shrink-0 text-blue-muted" aria-hidden />
+              <Phone className="h-4 w-4 shrink-0 text-hunter" aria-hidden />
               <a
                 href={formatPhoneLink(resource.phone)}
                 className="font-semibold text-sage-900 hover:text-sage-600 focus-ring rounded"
@@ -184,7 +184,7 @@ export function SupportHelplineStrip({ resources }: { resources: SupportResource
             className="flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm hover:shadow-md focus-ring min-h-11"
           >
             <span className="text-sm font-medium text-sage-800">{r.name}</span>
-            {r.phone && <span className="text-sm font-bold text-terracotta">{r.phone}</span>}
+            {r.phone && <span className="text-sm font-semibold text-hunter">{r.phone}</span>}
           </a>
         ))}
       </div>

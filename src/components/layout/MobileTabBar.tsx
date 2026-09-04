@@ -37,17 +37,14 @@ function TabItem({
             className={cn(
               'h-6 w-6 transition-colors duration-150',
               isActive
-                ? to === '/support'
-                  ? 'text-blue-muted'
-                  : 'text-hunter'
+                ? 'text-hunter'
                 : 'text-sage-400',
             )}
           />
           <span
             className={cn(
               'truncate text-[10px] font-medium leading-none max-w-full',
-              isActive ? 'text-hunter' : 'text-sage-500',
-              isActive && to === '/support' && 'text-blue-muted',
+              isActive ? 'text-hunter font-semibold' : 'text-sage-500',
             )}
           >
             {label}

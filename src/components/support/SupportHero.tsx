@@ -5,12 +5,12 @@ export function SupportHero() {
       className="ios-card relative overflow-hidden px-4 py-5 sm:px-7 sm:py-8"
     >
       <div className="relative space-y-2.5">
-        <p className="text-[13px] font-semibold uppercase tracking-wider text-lavender">
+        <p className="text-[13px] font-semibold uppercase tracking-wider text-sage-accent">
           A gentle place to start
         </p>
         <h1
           id="support-hero-heading"
-          className="text-[28px] font-bold leading-[1.15] tracking-tight text-sage-900 sm:text-3xl"
+          className="font-display text-3xl leading-[1.15] text-sage-900 sm:text-4xl"
         >
           You&apos;re doing your best - and help is here
         </h1>
