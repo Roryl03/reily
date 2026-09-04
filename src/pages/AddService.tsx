@@ -27,6 +27,7 @@ import type {
   SensoryInformation,
   WeekOpeningHours,
 } from '@/types/service'
+import { IRISH_COUNTIES } from '@/data/irishCounties'
 import { CATEGORIES, DEMO_LOCATION } from '@/types/service'
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const
@@ -397,7 +398,21 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="county">County</Label>
-              <Input id="county" value={data.county ?? ''} onChange={(e) => update({ county: e.target.value })} />
+              <Select
+                value={data.county ?? 'Antrim'}
+                onValueChange={(v) => update({ county: v })}
+              >
+                <SelectTrigger id="county">
+                  <SelectValue placeholder="Select county" />
+                </SelectTrigger>
+                <SelectContent>
+                  {IRISH_COUNTIES.map((county) => (
+                    <SelectItem key={county} value={county}>
+                      {county}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="space-y-2">

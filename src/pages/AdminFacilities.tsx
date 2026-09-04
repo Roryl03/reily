@@ -1,18 +1,26 @@
 import { Check, Plus, Trash2, X } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { AdminDashboard } from '@/components/admin/AdminDashboard'
 import { ServiceImage } from '@/components/services/ServiceImage'
+import { ServiceShareButton } from '@/components/services/ServiceShareDialog'
 import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
+import { computeAdminStats } from '@/lib/adminStats'
 import { isSupabaseEnabled } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 import { isLiveService } from '@/types/service'
 import type { Service } from '@/types/service'
 
-type AdminTab = 'facilities' | 'requests'
+type AdminTab = 'dashboard' | 'facilities' | 'requests'
+
+function parseAdminTab(value: string | null): AdminTab {
+  if (value === 'facilities' || value === 'requests' || value === 'dashboard') return value
+  return 'dashboard'
+}
 
 export function AdminFacilitiesPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const tab = (searchParams.get('tab') === 'requests' ? 'requests' : 'facilities') as AdminTab
+  const tab = parseAdminTab(searchParams.get('tab'))
   const {
     services,
     servicesLoading,
@@ -34,8 +42,10 @@ export function AdminFacilitiesPage() {
     .filter((s) => s.verificationStatus === 'pending')
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 
+  const stats = computeAdminStats(services)
+
   const setTab = (next: AdminTab) => {
-    if (next === 'facilities') {
+    if (next === 'dashboard') {
       searchParams.delete('tab')
     } else {
       searchParams.set('tab', next)
@@ -63,6 +73,20 @@ export function AdminFacilitiesPage() {
         role="tablist"
         aria-label="Admin sections"
       >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'dashboard'}
+          className={cn(
+            'flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors focus-ring',
+            tab === 'dashboard'
+              ? 'bg-white text-sage-900 shadow-sm'
+              : 'text-sage-600 hover:text-sage-800',
+          )}
+          onClick={() => setTab('dashboard')}
+        >
+          Dashboard
+        </button>
         <button
           type="button"
           role="tab"
@@ -100,6 +124,8 @@ export function AdminFacilitiesPage() {
 
       {servicesLoading ? (
         <p className="text-center text-sage-600 py-12">Loading…</p>
+      ) : tab === 'dashboard' ? (
+        <AdminDashboard stats={stats} />
       ) : tab === 'requests' ? (
         requests.length === 0 ? (
           <div className="ios-card p-8 text-center">
@@ -161,6 +187,7 @@ export function AdminFacilitiesPage() {
                   <Button asChild size="sm" variant="secondary">
                     <Link to={`/add-service/edit/${s.id}`}>Edit</Link>
                   </Button>
+                  <ServiceShareButton service={s} />
                   <Button
                     size="sm"
                     variant="destructive"
