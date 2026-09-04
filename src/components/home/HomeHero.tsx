@@ -23,10 +23,10 @@ export function HomeHero() {
           id="home-hero-heading"
           className="font-display text-3xl leading-[1.15] text-sage-900 sm:text-4xl"
         >
-          Take your time - we&apos;ll help you find your way
+          Find inclusive places, support and trusted resources
         </h1>
         <p className="text-[15px] leading-relaxed text-sage-600 sm:max-w-md sm:text-base">
-          Support, quiet outings, and places that understand - start wherever feels right.
+          For parents and carers - discover somewhere new and know what to expect before you go.
         </p>
       </div>
     </section>
