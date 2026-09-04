@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { AskReillyLogo } from './AskReillyLogo'
 
 export function ReilyBrandMark({
@@ -13,7 +14,7 @@ export function ReilyBrandMark({
 }
 
 export function ReilyLogoWordmark({ className }: { className?: string }) {
-  return <AskReillyLogo size="md" className={className} />
+  return <AskReillyLogo size="lg" className={className} />
 }
 
 export function ReilyLogoFull({
@@ -21,10 +22,11 @@ export function ReilyLogoFull({
   size = 'md',
 }: {
   className?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
 }) {
-  const logoSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md'
-  return <AskReillyLogo size={logoSize} className={className} />
+  const logoSize =
+    size === 'sm' ? 'sm' : size === 'xl' ? 'xl' : size === 'lg' ? 'lg' : 'md'
+  return <AskReillyLogo size={logoSize} className={cn('mx-auto', className)} />
 }
 
 export { ReilyLogoMark } from './ReilyLogoMark'

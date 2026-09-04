@@ -21,8 +21,8 @@ export function AppLayout() {
   return (
     <div className="min-h-dvh bg-cream-200">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-border bg-surface lg:flex lg:flex-col">
-        <div className="border-b border-border p-6">
-          <ReilyLogoWordmark />
+        <div className="border-b border-border px-6 py-7">
+          <ReilyLogoWordmark className="max-w-full" />
         </div>
         <nav className="flex-1 space-y-1 p-4" aria-label="Main navigation">
           {navItems.map((item) => (

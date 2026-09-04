@@ -5,13 +5,13 @@ import { AskReillyLogo } from '@/components/icons/AskReillyLogo'
 export function MobileHeader() {
   return (
     <header className="ios-nav-bar sticky top-0 z-30 lg:hidden">
-      <div className="flex h-11 items-center px-4">
+      <div className="flex min-h-14 items-center px-4 py-2">
         <Link
           to="/"
           className="touch-scale flex items-center rounded-lg focus-ring"
           aria-label="Ask Reilly home"
         >
-          <AskReillyLogo size="sm" />
+          <AskReillyLogo size="md" className="max-w-[min(100vw-2rem,16rem)]" />
         </Link>
       </div>
     </header>

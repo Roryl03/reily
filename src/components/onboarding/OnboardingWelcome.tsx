@@ -50,7 +50,7 @@ export function OnboardingWelcome({
         {/* Welcome header */}
         <div className="space-y-5 text-center">
           <div className="flex justify-center">
-            <ReilyLogoFull size="lg" />
+            <ReilyLogoFull size="xl" />
           </div>
           <div className="space-y-2 pt-1">
             <h1 className="font-display text-3xl leading-tight text-sage-900 sm:text-4xl">
