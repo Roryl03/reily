@@ -14,6 +14,7 @@ import {
   canSaveToCameraRoll,
   downloadDataUrl,
   generateShareImage,
+  getAskReillyLogoDataUrl,
   saveImageToCameraRoll,
   shareImageFilename,
   urlToDataUrl,
@@ -46,8 +47,9 @@ export function ServiceShareButton({ service }: { service: Service }) {
 }
 
 export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShareDialogProps) {
-  const exportRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
   const [imageSrc, setImageSrc] = useState<string | null>(null)
+  const [logoSrc, setLogoSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [exportReady, setExportReady] = useState(false)
   const [savingAction, setSavingAction] = useState<SaveAction | null>(null)
@@ -61,6 +63,7 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   useEffect(() => {
     if (!open) {
       setImageSrc(null)
+      setLogoSrc(null)
       setExportReady(false)
       setError(null)
       return
@@ -73,19 +76,31 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
 
     void (async () => {
       try {
-        const resolved = await resolveServiceImageSrc(service.images[0], service.category)
+        const [resolved, logoDataUrl] = await Promise.all([
+          resolveServiceImageSrc(service.images[0], service.category),
+          getAskReillyLogoDataUrl(),
+        ])
+
         let dataUrl = await urlToDataUrl(resolved)
         if (!dataUrl.startsWith('data:')) {
           dataUrl = await urlToDataUrl(getPlaceholderImage(service.category))
         }
-        if (!cancelled) setImageSrc(dataUrl)
+
+        if (!cancelled) {
+          setImageSrc(dataUrl)
+          setLogoSrc(logoDataUrl)
+        }
       } catch {
         if (!cancelled) {
           try {
-            const fallback = await urlToDataUrl(getPlaceholderImage(service.category))
+            const [fallback, logoDataUrl] = await Promise.all([
+              urlToDataUrl(getPlaceholderImage(service.category)),
+              getAskReillyLogoDataUrl(),
+            ])
             setImageSrc(fallback)
+            setLogoSrc(logoDataUrl)
           } catch {
-            setError('Could not load the service image.')
+            setError('Could not load images for the share card.')
           }
         }
       } finally {
@@ -99,25 +114,25 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   }, [open, service.images, service.category])
 
   useEffect(() => {
-    if (!imageSrc || !exportRef.current) {
+    if (!imageSrc || !logoSrc || !cardRef.current) {
       setExportReady(false)
       return
     }
 
     let cancelled = false
-    void waitForImages(exportRef.current).then(() => {
+    void waitForImages(cardRef.current).then(() => {
       if (!cancelled) setExportReady(true)
     })
 
     return () => {
       cancelled = true
     }
-  }, [imageSrc])
+  }, [imageSrc, logoSrc])
 
   const generatePng = useCallback(async () => {
-    if (!exportRef.current) throw new Error('Share card not ready')
-    await waitForImages(exportRef.current)
-    return generateShareImage(exportRef.current)
+    if (!cardRef.current) throw new Error('Share card not ready')
+    await waitForImages(cardRef.current)
+    return generateShareImage(cardRef.current)
   }, [])
 
   const handleDownload = useCallback(async () => {
@@ -147,7 +162,8 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   }, [generatePng, service.id, service.name])
 
   const busy = savingAction !== null
-  const canSave = Boolean(imageSrc && exportReady && !loading && !busy)
+  const assetsReady = Boolean(imageSrc && logoSrc)
+  const canSave = assetsReady && exportReady && !loading && !busy
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -164,26 +180,22 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
             <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
             Preparing preview…
           </div>
-        ) : error && !imageSrc ? (
+        ) : error && !assetsReady ? (
           <p className="py-8 text-center text-error">{error}</p>
-        ) : imageSrc ? (
-          <>
-            <div className="flex justify-center rounded-xl bg-sage-100 p-4">
-              <ServiceShareCard service={service} imageSrc={imageSrc} />
-            </div>
-            {/* Off-screen card used only for export — avoids dialog borders in the PNG */}
-            <div
-              aria-hidden
-              className="pointer-events-none fixed left-[-9999px] top-0 opacity-0"
-            >
-              <ServiceShareCard ref={exportRef} service={service} imageSrc={imageSrc} />
-            </div>
-          </>
+        ) : assetsReady && imageSrc && logoSrc ? (
+          <div className="flex justify-center rounded-xl bg-sage-100 p-4">
+            <ServiceShareCard
+              ref={cardRef}
+              service={service}
+              imageSrc={imageSrc}
+              logoSrc={logoSrc}
+            />
+          </div>
         ) : null}
 
-        {error && imageSrc && <p className="text-sm text-error">{error}</p>}
+        {error && assetsReady && <p className="text-sm text-error">{error}</p>}
 
-        {cameraRollAvailable && imageSrc && !loading && (
+        {cameraRollAvailable && assetsReady && !loading && (
           <p className="text-xs text-sage-500">
             Tap Add to camera roll, then choose Save Image on iPhone or Save to Photos on Android.
           </p>

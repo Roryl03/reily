@@ -1,8 +1,11 @@
 import { toPng } from 'html-to-image'
+import { ASK_REILLY_LOGO_SRC } from '@/components/icons/AskReillyLogo'
 
 /** Instagram feed post - 1:1 square at 1080px. */
 export const SHARE_IMAGE_SIZE = 1080
 export const SHARE_IMAGE_PREVIEW_SIZE = 540
+
+let cachedLogoDataUrl: string | null = null
 
 function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -49,10 +52,14 @@ export async function urlToDataUrl(url: string): Promise<string> {
   }
 }
 
+export async function getAskReillyLogoDataUrl(): Promise<string> {
+  if (cachedLogoDataUrl) return cachedLogoDataUrl
+  cachedLogoDataUrl = await urlToDataUrl(ASK_REILLY_LOGO_SRC)
+  return cachedLogoDataUrl
+}
+
 export async function waitForImages(element: HTMLElement): Promise<void> {
-  const images = [...element.querySelectorAll('img')].filter(
-    (img) => !img.classList.contains('hidden'),
-  )
+  const images = [...element.querySelectorAll('img')]
 
   await Promise.all(
     images.map(

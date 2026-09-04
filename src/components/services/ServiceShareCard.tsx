@@ -1,7 +1,6 @@
 import { forwardRef, type ReactNode } from 'react'
 import { getCategoryIcon, ReilyIconGlyph } from '@/components/icons'
 import type { ReilyColorVariant } from '@/components/icons'
-import { ASK_REILLY_LOGO_SRC, AskReillyLogo } from '@/components/icons/AskReillyLogo'
 import { CommunityBadge, OpenStatusBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { enrichService } from '@/lib/filters'
 import { SHARE_IMAGE_PREVIEW_SIZE } from '@/lib/generateShareImage'
@@ -21,11 +20,12 @@ const CATEGORY_GLYPH_COLOR: Record<ReilyColorVariant, string> = {
 interface ServiceShareCardProps {
   service: Service
   imageSrc: string
+  logoSrc: string
   className?: string
 }
 
 export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps>(
-  function ServiceShareCard({ service, imageSrc, className }, ref) {
+  function ServiceShareCard({ service, imageSrc, logoSrc, className }, ref) {
     const enriched = enrichService(service)
     const status = formatOpenStatus(enriched.openStatus)
     const categoryIcon = getCategoryIcon(service.category)
@@ -48,7 +48,12 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
           >
             Now on
           </p>
-          <AskReillyLogo size="md" className="mt-2 mx-auto object-center" />
+          <img
+            src={logoSrc}
+            alt="Ask Reilly"
+            className="mt-2 block h-14 w-auto max-w-[min(100%,18rem)] object-contain"
+            decoding="sync"
+          />
         </div>
 
         <div className="mt-3 overflow-hidden rounded-2xl bg-white">
@@ -105,8 +110,6 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
         <p className="mt-3 text-center text-[10px] text-sage-500">
           Find more on Ask Reilly · askreillyni.com
         </p>
-
-        <img src={ASK_REILLY_LOGO_SRC} alt="" className="hidden" aria-hidden />
       </div>
     )
   },
