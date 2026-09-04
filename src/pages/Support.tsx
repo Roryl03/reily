@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, ChevronDown, Search, X } from 'lucide-react'
+import { ArrowLeft, ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { SupportCategoryGrid } from '@/components/support/SupportCategoryGrid'
 import { SupportHero } from '@/components/support/SupportHero'
@@ -8,7 +8,7 @@ import { SupportResourceCard } from '@/components/support/SupportResourceCard'
 import { ReilyIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/ui/search-input'
 import {
   Select,
   SelectContent,
@@ -43,7 +43,7 @@ const SECTION_INTROS: Partial<Record<SupportSection, string>> = {
   'community-inclusion':
     'Inclusive activities, baby banks, libraries and community resources near you.',
   'local-clubs':
-    'Parent groups, youth clubs and local networks — often the most reassuring first step.',
+    'Parent groups, youth clubs and local networks - often the most reassuring first step.',
   'accessible-sensory':
     'Quieter sessions, sensory spaces, adapted activities and autism-aware services.',
   'accessible-transport':
@@ -157,33 +157,16 @@ export function SupportPage() {
       )}
 
       <div className="space-y-3">
-        <div className="relative">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sage-500"
-            aria-hidden
-          />
-          <Input
-            variant="search"
-            value={filters.search}
-            onChange={(e) => {
-              setActiveSection(null)
-              setFilters({ ...filters, search: e.target.value })
-            }}
-            placeholder="Search support"
-            className="pl-10"
-            aria-label="Search support services"
-          />
-          {filters.search && (
-            <button
-              type="button"
-              onClick={() => setFilters({ ...filters, search: '' })}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-sage-500 hover:text-sage-800 focus-ring"
-              aria-label="Clear search"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={filters.search}
+          onChange={(e) => {
+            setActiveSection(null)
+            setFilters({ ...filters, search: e.target.value })
+          }}
+          onClear={() => setFilters({ ...filters, search: '' })}
+          placeholder="Search support"
+          aria-label="Search support services"
+        />
 
         {!isBrowsingSection && (
           <button
@@ -308,7 +291,7 @@ export function SupportPage() {
                 Browse by category
               </h2>
               <p className="text-sm text-sage-600 mt-0.5">
-                Choose one area to explore — no need to take it all in at once.
+                Choose one area to explore - no need to take it all in at once.
               </p>
             </div>
             <SupportCategoryGrid counts={sectionCounts} onSelect={openSection} />

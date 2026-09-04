@@ -160,7 +160,7 @@ export function   resetApp(): void {
     initializeSupportStorage()
   }
 
-// Supabase-ready interface — swap implementation later
+// Supabase-ready interface - swap implementation later
 export const dataService = {
   initializeStorage,
   loadServices,

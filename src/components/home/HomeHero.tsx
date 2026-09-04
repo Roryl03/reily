@@ -23,10 +23,10 @@ export function HomeHero() {
           id="home-hero-heading"
           className="text-[28px] font-bold leading-[1.15] tracking-tight text-sage-900 sm:text-3xl"
         >
-          Take your time — we&apos;ll help you find your way
+          Take your time - we&apos;ll help you find your way
         </h1>
         <p className="text-[15px] leading-relaxed text-sage-600 sm:max-w-md sm:text-base">
-          Support, quiet outings, and places that understand — start wherever feels right.
+          Support, quiet outings, and places that understand - start wherever feels right.
         </p>
       </div>
     </section>

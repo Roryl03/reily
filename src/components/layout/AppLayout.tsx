@@ -1,5 +1,5 @@
-import { Plus } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { SecretAddFab, SecretAddSidebarLink } from '@/components/admin/SecretAddFab'
 import { NAV_ICON_CONFIG, ReilyIcon, ReilyLogoWordmark } from '@/components/icons'
 import { MobileHeader } from '@/components/layout/MobileHeader'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
@@ -16,7 +16,6 @@ const navItems = [
 
 export function AppLayout() {
   const location = useLocation()
-  const showFab = ['/explore', '/map'].includes(location.pathname)
   const isMapPage = location.pathname === '/map'
 
   return (
@@ -44,17 +43,7 @@ export function AppLayout() {
             </NavLink>
           ))}
         </nav>
-        {showFab && (
-          <div className="border-t border-sage-100 p-4">
-            <NavLink
-              to="/add-service"
-              className="flex items-center justify-center gap-2 rounded-xl bg-hunter px-4 py-3 text-sm font-medium text-white hover:bg-sage-600 focus-ring min-h-11"
-            >
-              <Plus className="h-4 w-4" aria-hidden />
-              Add service
-            </NavLink>
-          </div>
-        )}
+        <SecretAddSidebarLink />
       </aside>
 
       <div className="lg:pl-64">
@@ -72,16 +61,7 @@ export function AppLayout() {
       </div>
 
       <MobileTabBar />
-
-      {showFab && (
-        <NavLink
-          to="/add-service"
-          className="fixed right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-hunter text-white shadow-[0_4px_16px_rgba(53,94,59,0.35)] active:scale-95 transition-transform focus-ring lg:hidden bottom-[calc(49px+env(safe-area-inset-bottom,0px)+0.75rem)]"
-          aria-label="Add service"
-        >
-          <Plus className="h-6 w-6" strokeWidth={2} aria-hidden />
-        </NavLink>
-      )}
+      <SecretAddFab />
     </div>
   )
 }

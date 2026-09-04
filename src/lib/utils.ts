@@ -27,13 +27,41 @@ export function formatWebsiteUrl(url?: string): string | undefined {
   return `https://${url}`
 }
 
-export function getDirectionsUrl(lat: number, lng: number, _name?: string): string {
-  return `https://www.openstreetmap.org/directions?to=${lat},${lng}#map=15/${lat}/${lng}`
+export function isAppleMapsPreferred(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent
+  const isIOS = /iPad|iPhone|iPod/.test(ua)
+  const isIPadOS = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+  const isMac = /Mac OS X/.test(ua) && !isIPadOS
+  return isIOS || isIPadOS || isMac
+}
+
+export function getAppleMapsDirectionsUrl(lat: number, lng: number, name?: string): string {
+  const coords = `${lat},${lng}`
+  if (name) {
+    return `https://maps.apple.com/?daddr=${encodeURIComponent(name)}&ll=${coords}`
+  }
+  return `https://maps.apple.com/?daddr=${coords}`
+}
+
+export function getGoogleMapsDirectionsUrl(lat: number, lng: number, name?: string): string {
+  const params = new URLSearchParams({
+    api: '1',
+    destination: name ? `${name}@${lat},${lng}` : `${lat},${lng}`,
+  })
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+
+/** Opens Apple Maps on iOS/macOS, Google Maps elsewhere */
+export function getDirectionsUrl(lat: number, lng: number, name?: string): string {
+  return isAppleMapsPreferred()
+    ? getAppleMapsDirectionsUrl(lat, lng, name)
+    : getGoogleMapsDirectionsUrl(lat, lng, name)
 }
 
 export function shareService(name: string, url: string): void {
   if (navigator.share) {
-    void navigator.share({ title: name, text: `Check out ${name} on Reily`, url })
+    void navigator.share({ title: name, text: `Check out ${name} on Reilly`, url })
   } else {
     void navigator.clipboard.writeText(url)
   }

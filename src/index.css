@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Hunter green scale — rich forest primary with soft tints for calm UI */
+  /* Hunter green scale - rich forest primary with soft tints for calm UI */
   --color-sage-50: #f2f6f3;
   --color-sage-100: #e0ebe2;
   --color-sage-200: #c4d8c8;
@@ -126,7 +126,16 @@
   }
 
   .ios-search {
-    @apply min-h-10 w-full rounded-[10px] border-0 bg-sage-100/80 px-4 text-[17px] text-sage-900 placeholder:text-sage-400;
+    @apply min-h-10 w-full appearance-none rounded-[10px] border-0 bg-sage-100/80 pr-4 text-[17px] text-sage-900 placeholder:text-sage-400;
+    padding-left: 3rem;
+    -webkit-appearance: none;
+  }
+
+  .ios-search::-webkit-search-decoration,
+  .ios-search::-webkit-search-cancel-button,
+  .ios-search::-webkit-search-results-button {
+    display: none;
+    -webkit-appearance: none;
   }
 
   .ios-search:focus-visible {

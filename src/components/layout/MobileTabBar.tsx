@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { NAV_ICON_CONFIG, ReilyIconGlyph } from '@/components/icons'
 import { cn } from '@/lib/utils'
 
-/** iOS HIG recommends 3–5 tabs; Saved lives on Home + Profile */
+/** iOS HIG recommends 3-5 tabs; Saved lives on Home + Profile */
 const navItems = [
   { to: '/', label: 'Home', end: true, ...NAV_ICON_CONFIG[0] },
   { to: '/support', label: 'Support', end: false, ...NAV_ICON_CONFIG[1] },

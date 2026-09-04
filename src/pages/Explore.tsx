@@ -1,11 +1,12 @@
-import { List, Search, SlidersHorizontal } from 'lucide-react'
+import { List, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
+import { ListYourFacilityCta } from '@/components/services/ListYourFacilityCta'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/ui/search-input'
 import {
   Select,
   SelectContent,
@@ -14,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useApp } from '@/context/AppContext'
+import { isSecretAddSearch } from '@/lib/config'
 import { DEFAULT_FILTERS, type SortOption } from '@/types/service'
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -61,20 +63,17 @@ export function ExplorePage() {
       </header>
 
       <div className="sticky top-[calc(2.75rem+env(safe-area-inset-top,0px))] z-20 -mx-4 space-y-3 border-b border-black/[0.06] bg-cream-200/90 px-4 py-3 backdrop-blur-2xl backdrop-saturate-150 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:py-0">
-      <div className="relative">
-        <Search
-          className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-sage-400"
-          aria-hidden
-        />
-        <Input
-          variant="search"
+        <SearchInput
           value={filters.search}
           onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           placeholder="Search places"
-          className="pl-10"
           aria-label="Search services"
         />
-      </div>
+        {isSecretAddSearch(filters.search) && (
+          <p className="text-[13px] text-hunter font-medium px-0.5">
+            Admin mode - tap + to add a facility
+          </p>
+        )}
 
       <div className="flex flex-wrap items-center gap-3">
         <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
@@ -124,10 +123,8 @@ export function ExplorePage() {
             <Button variant="secondary" onClick={widenSearch}>
               Search a wider area
             </Button>
-            <Button asChild>
-              <Link to="/add-service">Add a service</Link>
-            </Button>
           </div>
+          <ListYourFacilityCta variant="bare" className="mt-4" />
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

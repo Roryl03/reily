@@ -27,7 +27,7 @@ export const seedServices: Service[] = [
     category: 'Cinema',
     shortDescription: 'Monthly relaxed screenings with lowered sound and gentle lighting.',
     fullDescription:
-      'Demonstration listing: A fictional cinema offering monthly sensory-friendly film screenings. Lights stay dimmed, volume is reduced, and movement around the auditorium is welcome. Staff receive awareness training. This is sample data for the Reily mockup — not a verified real venue.',
+      'Demonstration listing: A fictional cinema offering monthly sensory-friendly film screenings. Lights stay dimmed, volume is reduced, and movement around the auditorium is welcome. Staff receive awareness training. This is sample data for the Reilly mockup - not a verified real venue.',
     address: '12 High Street',
     town: 'Belfast',
     county: 'Antrim',
@@ -76,7 +76,7 @@ export const seedServices: Service[] = [
         title: 'Relaxed family screening',
         date: '2026-09-06',
         startTime: '10:30',
-        description: 'Demo event — sensory-friendly Saturday morning film',
+        description: 'Demo event - sensory-friendly Saturday morning film',
       },
     ],
     parkingInformation: 'Multi-storey car park 200m away. Blue badge spaces available.',
@@ -125,10 +125,10 @@ export const seedServices: Service[] = [
     goodToKnow: {
       noiseLevels: 'Music off during SEN sessions',
       lighting: 'Standard lighting, calm room with dimmer',
-      queues: 'Pre-booked sessions only — no walk-ins',
+      queues: 'Pre-booked sessions only - no walk-ins',
       quietRetreat: 'Dedicated calm room with beanbags and ear defenders',
     },
-    ageRange: '0–12 years',
+    ageRange: '0-12 years',
     pricing: '£8 per child (demo)',
     bookingRequired: true,
     quietHours: [],
@@ -179,16 +179,16 @@ export const seedServices: Service[] = [
       lightingLevel: 'moderate',
       queueLevel: 'short',
       quietSpaceAvailable: true,
-      busyPeriods: 'Lunchtime 12–2pm',
+      busyPeriods: 'Lunchtime 12-2pm',
     },
     goodToKnow: {
-      noiseLevels: 'Background music off during quiet hours (9–11am)',
+      noiseLevels: 'Background music off during quiet hours (9-11am)',
       lighting: 'Natural light, no flickering fluorescents',
-      queues: 'Order at counter — visual menu boards available',
+      queues: 'Order at counter - visual menu boards available',
       quietRetreat: 'Back room with fewer tables, available on request',
     },
     ageRange: 'All ages',
-    pricing: 'Moderate — sandwiches from £5 (demo)',
+    pricing: 'Moderate - sandwiches from £5 (demo)',
     quietHours: [
       { day: 'monday', start: '09:00', end: '11:00', label: 'Quiet morning' },
       { day: 'tuesday', start: '09:00', end: '11:00', label: 'Quiet morning' },
@@ -245,7 +245,7 @@ export const seedServices: Service[] = [
     goodToKnow: {
       noiseLevels: 'Generally peaceful; busier near play area at weekends',
       lighting: 'Open outdoor space',
-      queues: 'No queues — open access',
+      queues: 'No queues - open access',
       quietRetreat: 'Riverside bench areas away from play equipment',
     },
     ageRange: 'All ages',
@@ -295,8 +295,8 @@ export const seedServices: Service[] = [
       lightingLevel: 'moderate',
       queueLevel: 'none',
     },
-    ageRange: 'Adults — childcare not provided',
-    pricing: 'Free — donations welcome',
+    ageRange: 'Adults - childcare not provided',
+    pricing: 'Free - donations welcome',
     events: [
       {
         id: 'e5',
@@ -355,10 +355,10 @@ export const seedServices: Service[] = [
       quietSpaceAvailable: true,
     },
     goodToKnow: {
-      noiseLevels: 'Quiet appointments — no dryer noise unless requested',
+      noiseLevels: 'Quiet appointments - no dryer noise unless requested',
       lighting: 'Adjustable chair lighting',
       queues: 'By appointment only',
-      quietRetreat: 'Waiting area can be skipped — go straight to chair',
+      quietRetreat: 'Waiting area can be skipped - go straight to chair',
     },
     ageRange: 'Children and adults',
     pricing: 'Children\'s cut from £12 (demo)',
@@ -421,7 +421,7 @@ export const seedServices: Service[] = [
     category: 'Activities',
     shortDescription: 'Inclusive activity centre with adaptive equipment and trained instructors.',
     fullDescription:
-      'Demonstration listing: Fictional family activity centre in Belfast offering inclusive sports, arts, and play sessions with adaptive equipment. Demonstration data for Reily.',
+      'Demonstration listing: Fictional family activity centre in Belfast offering inclusive sports, arts, and play sessions with adaptive equipment. Demonstration data for Reilly.',
     address: '45 Ormeau Road',
     town: 'Belfast',
     county: 'Antrim',
@@ -454,9 +454,9 @@ export const seedServices: Service[] = [
       noiseLevel: 'lively',
       lightingLevel: 'bright',
       queueLevel: 'moderate',
-      busyPeriods: 'After-school 3:30–6pm',
+      busyPeriods: 'After-school 3:30-6pm',
     },
-    ageRange: '2–16 years',
+    ageRange: '2-16 years',
     pricing: 'Sessions from £6 (demo)',
     senSessions: [
       {
@@ -620,8 +620,8 @@ export const seedServices: Service[] = [
       lightingLevel: 'bright',
       queueLevel: 'none',
     },
-    ageRange: '5–16 years',
-    pricing: 'Free — funded programme (demo)',
+    ageRange: '5-16 years',
+    pricing: 'Free - funded programme (demo)',
     senSessions: [
       {
         day: 'saturday',
@@ -678,7 +678,7 @@ export const seedServices: Service[] = [
       queueLevel: 'short',
       quietSpaceAvailable: true,
     },
-    ageRange: 'Families — all ages',
+    ageRange: 'Families - all ages',
     pricing: 'Free',
     events: [
       {
@@ -737,7 +737,7 @@ export const seedServices: Service[] = [
       queueLevel: 'none',
       quietSpaceAvailable: true,
     },
-    ageRange: '5–18 years',
+    ageRange: '5-18 years',
     pricing: 'From £20/session (demo)',
     bookingRequired: true,
     verificationStatus: 'demo',

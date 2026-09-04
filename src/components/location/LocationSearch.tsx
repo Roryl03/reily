@@ -1,11 +1,17 @@
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { useState } from 'react'
 import { ReilyIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useApp } from '@/context/AppContext'
 
-export function LocationSearch({ onSuccess }: { onSuccess?: () => void }) {
+export function LocationSearch({
+  onSuccess,
+  compact = false,
+}: {
+  onSuccess?: () => void
+  compact?: boolean
+}) {
   const { searchByTownOrPostcode } = useApp()
   const [query, setQuery] = useState('')
   const [error, setError] = useState('')
@@ -22,25 +28,37 @@ export function LocationSearch({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-2">
+      <div className={compact ? 'flex gap-2' : 'space-y-3'}>
         <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-            <ReilyIcon name="search" size="sm" variant="cream" tile={false} glyphClassName="text-sage-600" />
-          </span>
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 z-10 h-[18px] w-[18px] -translate-y-1/2 text-sage-400"
+            aria-hidden
+          />
           <Input
+            variant="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Enter a town or postcode"
-            className="pl-10"
+            placeholder="Town or postcode"
+            autoComplete="off"
+            className="min-h-[50px]"
             aria-label="Town or postcode search"
           />
         </div>
-        <Button onClick={handleSearch} type="button">
-          Search
+        <Button
+          onClick={handleSearch}
+          type="button"
+          size="lg"
+          className={compact ? 'shrink-0' : 'w-full'}
+        >
+          {compact ? 'Go' : 'Find my area'}
         </Button>
       </div>
-      {error && <p className="text-sm text-terracotta" role="alert">{error}</p>}
+      {error && (
+        <p className="text-[15px] text-terracotta" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   )
 }
@@ -49,10 +67,14 @@ export function LocationButton({
   onComplete,
   variant = 'default',
   className,
+  label = 'Use my current location',
+  loadingLabel = 'Finding your location…',
 }: {
   onComplete?: () => void
   variant?: 'default' | 'secondary' | 'outline'
   className?: string
+  label?: string
+  loadingLabel?: string
 }) {
   const { requestCurrentLocation, locationLoading } = useApp()
 
@@ -68,8 +90,8 @@ export function LocationButton({
     >
       {locationLoading ? (
         <>
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-          Finding your location…
+          <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+          {loadingLabel}
         </>
       ) : (
         <>
@@ -79,7 +101,7 @@ export function LocationButton({
             variant={variant === 'default' ? 'cream' : 'sage'}
             className={variant === 'default' ? '!bg-white/20' : undefined}
           />
-          Use my current location
+          {label}
         </>
       )}
     </Button>

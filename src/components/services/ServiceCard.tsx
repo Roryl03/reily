@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom'
 import { getCategoryIcon, ReilyIconGlyph } from '@/components/icons'
 import type { ReilyColorVariant } from '@/components/icons'
 import { CommunityBadge, DemoBadge, OpenStatusBadge, ServiceBadges } from '@/components/services/ServiceBadges'
+import { ServiceImage } from '@/components/services/ServiceImage'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { formatOpenStatus } from '@/lib/openingHours'
-import { cn, formatDistance, getPlaceholderImage } from '@/lib/utils'
+import { cn, formatDistance } from '@/lib/utils'
 import type { ServiceWithMeta } from '@/types/service'
 
 interface ServiceCardProps {
@@ -30,18 +31,16 @@ export function ServiceCard({
   onToggleFavourite,
   compact = false,
 }: ServiceCardProps) {
-  const image = service.images[0] ?? getPlaceholderImage(service.category)
   const status = formatOpenStatus(service.openStatus)
   const categoryIcon = getCategoryIcon(service.category)
 
   return (
     <Card className="overflow-hidden">
       <div className="relative">
-        <img
-          src={image}
-          alt=""
+        <ServiceImage
+          src={service.images[0]}
+          category={service.category}
           className={cn('w-full object-cover', compact ? 'h-36' : 'h-44')}
-          loading="lazy"
         />
         <button
           type="button"

@@ -9,7 +9,10 @@ import {
 } from 'react'
 import { filterServices, sortServices } from '@/lib/filters'
 import { dataService } from '@/lib/storage'
+import { fetchServices, removeService, upsertService } from '@/lib/serviceRepository'
+import { isSupabaseEnabled } from '@/lib/supabase'
 import { initializeSupportStorage } from '@/lib/supportStorage'
+import { generateId } from '@/lib/utils'
 import type {
   Service,
   ServiceFilters,
@@ -19,10 +22,12 @@ import type {
   UserLocation,
   UserPreferences,
 } from '@/types/service'
-import { DEFAULT_FILTERS, DEFAULT_PREFERENCES, DEMO_LOCATION, NI_TOWNS } from '@/types/service'
+import { DEFAULT_FILTERS, DEFAULT_PREFERENCES, DEMO_LOCATION, isPublicService, NI_TOWNS } from '@/types/service'
 
 interface AppContextValue {
   services: Service[]
+  servicesLoading: boolean
+  servicesError: string | null
   preferences: UserPreferences
   location: UserLocation | null
   favourites: string[]
@@ -37,16 +42,18 @@ interface AppContextValue {
   requestCurrentLocation: () => Promise<void>
   searchByTownOrPostcode: (query: string) => boolean
   completeOnboarding: () => void
-  saveService: (service: Service) => Service
-  deleteService: (id: string) => void
-  duplicateService: (id: string) => Service | null
+  saveService: (service: Service) => Promise<Service>
+  deleteService: (id: string) => Promise<void>
+  acceptServiceRequest: (id: string) => Promise<void>
+  declineServiceRequest: (id: string) => Promise<void>
+  duplicateService: (id: string) => Promise<Service | null>
   toggleFavourite: (id: string) => boolean
   isFavourite: (id: string) => boolean
   updatePreferences: (prefs: Partial<UserPreferences>) => void
   saveReport: (report: Omit<ServiceReport, 'id' | 'createdAt'>) => void
   reports: ServiceReport[]
-  refreshServices: () => void
-  clearDemoData: () => void
+  refreshServices: () => Promise<void>
+  clearDemoData: () => Promise<void>
   resetApp: () => void
   getServiceById: (id: string) => Service | undefined
   addRecentlyViewed: (id: string) => void
@@ -57,6 +64,8 @@ const AppContext = createContext<AppContextValue | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [services, setServices] = useState<Service[]>([])
+  const [servicesLoading, setServicesLoading] = useState(isSupabaseEnabled)
+  const [servicesError, setServicesError] = useState<string | null>(null)
   const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES)
   const [location, setLocationState] = useState<UserLocation | null>(null)
   const [favourites, setFavourites] = useState<string[]>([])
@@ -67,27 +76,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [locationLoading, setLocationLoading] = useState(false)
   const [locationError, setLocationError] = useState<string | null>(null)
 
-  const refreshServices = useCallback(() => {
-    setServices(dataService.loadServices())
-    setFavourites(dataService.loadFavourites())
-    setReports(dataService.loadReports())
-    setRecentlyViewedIds(dataService.loadRecentlyViewed().map((r) => r.serviceId))
+  const loadServicesFromStore = useCallback(async () => {
+    if (isSupabaseEnabled) {
+      setServicesLoading(true)
+      setServicesError(null)
+      try {
+        const list = await fetchServices()
+        setServices(list)
+      } catch (err) {
+        setServicesError(err instanceof Error ? err.message : 'Failed to load services')
+        setServices([])
+      } finally {
+        setServicesLoading(false)
+      }
+    } else {
+      setServices(dataService.loadServices())
+    }
   }, [])
 
-  useEffect(() => {
-    dataService.initializeStorage()
-    initializeSupportStorage()
-    setServices(dataService.loadServices())
-    setPreferences(dataService.loadPreferences())
-    setLocationState(dataService.loadLocation())
+  const refreshServices = useCallback(async () => {
+    await loadServicesFromStore()
     setFavourites(dataService.loadFavourites())
     setReports(dataService.loadReports())
     setRecentlyViewedIds(dataService.loadRecentlyViewed().map((r) => r.serviceId))
+  }, [loadServicesFromStore])
+
+  useEffect(() => {
+    if (!isSupabaseEnabled) {
+      dataService.initializeStorage()
+    }
+    initializeSupportStorage()
+    void refreshServices()
+    setPreferences(dataService.loadPreferences())
+    setLocationState(dataService.loadLocation())
     setFilters((f) => ({
       ...f,
       radius: dataService.loadPreferences().searchRadius,
     }))
-  }, [])
+  }, [refreshServices])
 
   const setLocation = useCallback((loc: UserLocation) => {
     setLocationState(loc)
@@ -165,39 +191,89 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [preferences])
 
   const saveService = useCallback(
-    (service: Service) => {
+    async (service: Service) => {
+      if (isSupabaseEnabled) {
+        const saved = await upsertService(service)
+        await refreshServices()
+        return saved
+      }
       const saved = dataService.saveService(service)
-      refreshServices()
+      await refreshServices()
       return saved
     },
     [refreshServices],
   )
 
   const deleteService = useCallback(
-    (id: string) => {
-      dataService.deleteService(id)
-      refreshServices()
+    async (id: string) => {
+      if (isSupabaseEnabled) {
+        await removeService(id)
+      } else {
+        dataService.deleteService(id)
+      }
+      await refreshServices()
     },
     [refreshServices],
+  )
+
+  const acceptServiceRequest = useCallback(
+    async (id: string) => {
+      const request = services.find((s) => s.id === id)
+      if (!request || request.verificationStatus !== 'pending') return
+
+      const now = new Date().toISOString()
+      await saveService({
+        ...request,
+        verificationStatus: 'community',
+        updatedAt: now,
+        lastCheckedAt: now.split('T')[0],
+      })
+    },
+    [services, saveService],
+  )
+
+  const declineServiceRequest = useCallback(
+    async (id: string) => {
+      await deleteService(id)
+    },
+    [deleteService],
   )
 
   const duplicateService = useCallback(
-    (id: string) => {
-      const copy = dataService.duplicateService(id)
-      refreshServices()
-      return copy
+    async (id: string) => {
+      const original = services.find((s) => s.id === id)
+      if (!original) return null
+
+      const now = new Date().toISOString()
+      const copy: Service = {
+        ...original,
+        id: isSupabaseEnabled ? crypto.randomUUID() : generateId(),
+        name: `${original.name} (copy)`,
+        source: 'community',
+        verificationStatus: 'community',
+        submittedByCurrentUser: true,
+        createdAt: now,
+        updatedAt: now,
+      }
+
+      if (isSupabaseEnabled) {
+        const saved = await upsertService(copy)
+        await refreshServices()
+        return saved
+      }
+
+      const saved = dataService.saveService(copy)
+      await refreshServices()
+      return saved
     },
-    [refreshServices],
+    [services, refreshServices],
   )
 
-  const toggleFavourite = useCallback(
-    (id: string) => {
-      const result = dataService.toggleFavourite(id)
-      setFavourites(dataService.loadFavourites())
-      return result
-    },
-    [],
-  )
+  const toggleFavourite = useCallback((id: string) => {
+    const result = dataService.toggleFavourite(id)
+    setFavourites(dataService.loadFavourites())
+    return result
+  }, [])
 
   const isFavourite = useCallback((id: string) => favourites.includes(id), [favourites])
 
@@ -213,25 +289,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [preferences],
   )
 
-  const saveReport = useCallback(
-    (report: Omit<ServiceReport, 'id' | 'createdAt'>) => {
-      dataService.saveReport(report)
-      setReports(dataService.loadReports())
-    },
-    [],
-  )
+  const saveReport = useCallback((report: Omit<ServiceReport, 'id' | 'createdAt'>) => {
+    dataService.saveReport(report)
+    setReports(dataService.loadReports())
+  }, [])
 
-  const clearDemoData = useCallback(() => {
-    dataService.clearDemoData()
-    refreshServices()
-  }, [refreshServices])
+  const clearDemoData = useCallback(async () => {
+    if (isSupabaseEnabled) {
+      const demos = services.filter((s) => s.source === 'demo')
+      await Promise.all(demos.map((s) => removeService(s.id)))
+    } else {
+      dataService.clearDemoData()
+    }
+    await refreshServices()
+  }, [services, refreshServices])
 
   const resetApp = useCallback(() => {
     dataService.resetApp()
     setPreferences(DEFAULT_PREFERENCES)
     setLocationState(null)
     setFilters(DEFAULT_FILTERS)
-    refreshServices()
+    void refreshServices()
   }, [refreshServices])
 
   const getServiceById = useCallback(
@@ -245,12 +323,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const filteredServices = useMemo(() => {
-    const filtered = filterServices(services, filters, location)
+    const publicServices = services.filter(isPublicService)
+    const filtered = filterServices(publicServices, filters, location)
     return sortServices(filtered, sort)
   }, [services, filters, location, sort])
 
   const value: AppContextValue = {
     services,
+    servicesLoading,
+    servicesError,
     preferences,
     location,
     favourites,
@@ -267,6 +348,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     completeOnboarding,
     saveService,
     deleteService,
+    acceptServiceRequest,
+    declineServiceRequest,
     duplicateService,
     toggleFavourite,
     isFavourite,

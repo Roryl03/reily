@@ -1,7 +1,8 @@
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { MapPreview } from '@/components/map/MapView'
+import { ServiceImage } from '@/components/services/ServiceImage'
 import { LocationButton } from '@/components/location/LocationSearch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,6 +16,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useApp } from '@/context/AppContext'
+import { isSupabaseEnabled } from '@/lib/supabase'
+import { uploadServiceImage } from '@/lib/serviceImages'
 import { generateId, fileToDataUrl } from '@/lib/utils'
 import type {
   AccessibilityFeatures,
@@ -27,6 +30,8 @@ import type {
 import { CATEGORIES, DEMO_LOCATION } from '@/types/service'
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const
+
+type ServiceFormMode = 'admin' | 'request'
 
 const defaultHours = (): WeekOpeningHours =>
   Object.fromEntries(
@@ -84,11 +89,12 @@ const ACCESSIBILITY_OPTIONS: { key: keyof AccessibilityFeatures; label: string }
   { key: 'bookingRequired', label: 'Booking required' },
 ]
 
-export function AddServicePage() {
+export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
+  const isRequest = mode === 'request'
   const [searchParams] = useSearchParams()
   const { saveService, location, getServiceById } = useApp()
   const { id: editId } = useParams<{ id: string }>()
-  const isEdit = !!editId
+  const isEdit = !isRequest && !!editId
 
   const [step, setStep] = useState(1)
   const [data, setData] = useState<Partial<Service>>(emptyService())
@@ -96,6 +102,8 @@ export function AddServicePage() {
   const [imageError, setImageError] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [savedId, setSavedId] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   useEffect(() => {
     const lat = searchParams.get('lat')
@@ -154,22 +162,40 @@ export function AddServicePage() {
     if (!file) return
     setImageError('')
     try {
-      const url = await fileToDataUrl(file)
-      update({ images: [url] })
+      if (isSupabaseEnabled) {
+        const id = data.id ?? crypto.randomUUID()
+        try {
+          const url = await uploadServiceImage(file, id)
+          update({ id, images: [url] })
+        } catch {
+          // Storage RLS not configured yet - store inline so submit still works
+          const url = await fileToDataUrl(file)
+          update({ id, images: [url] })
+        }
+      } else {
+        const url = await fileToDataUrl(file)
+        update({ images: [url] })
+      }
     } catch (err) {
       setImageError(err instanceof Error ? err.message : 'Image upload failed')
     }
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (!validateStep(1) || !validateStep(2)) {
       setStep(1)
       return
     }
 
+    setSubmitting(true)
+    setSubmitError('')
+
     const now = new Date().toISOString()
+    const serviceId =
+      isEdit && editId ? editId : isSupabaseEnabled ? crypto.randomUUID() : generateId()
+
     const service: Service = {
-      id: isEdit && editId ? editId : generateId(),
+      id: serviceId,
       name: data.name!,
       category: (data.category ?? 'Activities') as Category,
       shortDescription: data.shortDescription!,
@@ -195,17 +221,27 @@ export function AddServicePage() {
       senSessions: data.senSessions,
       events: data.events,
       parkingInformation: data.parkingInformation,
-      verificationStatus: 'community',
+      verificationStatus: isRequest
+        ? 'pending'
+        : isEdit && data.verificationStatus
+          ? data.verificationStatus
+          : 'community',
       source: 'community',
       createdAt: isEdit && data.createdAt ? data.createdAt : now,
       updatedAt: now,
       lastCheckedAt: now.split('T')[0],
-      submittedByCurrentUser: true,
+      submittedByCurrentUser: !isRequest,
     }
 
-    saveService(service)
-    setSavedId(service.id)
-    setSubmitted(true)
+    try {
+      const saved = await saveService(service)
+      setSavedId(saved.id)
+      setSubmitted(true)
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Could not save service')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted && savedId) {
@@ -215,21 +251,34 @@ export function AddServicePage() {
           <Check className="h-8 w-8 text-sage-600" aria-hidden />
         </div>
         <h1 className="text-2xl font-bold text-sage-900">
-          {isEdit ? 'Service updated!' : 'Service submitted!'}
+          {isRequest
+            ? 'Request submitted!'
+            : isEdit
+              ? 'Facility updated!'
+              : 'Facility added!'}
         </h1>
         <p className="text-sage-600 max-w-sm">
-          Your service has been saved locally and marked as community submitted.
+          {isRequest
+            ? 'Thanks! The Reilly team will review your listing and email you if we need anything else.'
+            : `Your facility has been saved${isSupabaseEnabled ? '' : ' locally'} and is now live on Reilly.`}
         </p>
         <div className="flex flex-col gap-2 w-full max-w-xs">
-          <Button asChild>
-            <Link to={`/service/${savedId}`}>View service</Link>
-          </Button>
-          {!isEdit && (
-            <Button variant="secondary" onClick={() => { setSubmitted(false); setStep(1); setData(emptyService()); setSavedId(null) }}>
-              Add another
+          {!isRequest && (
+            <Button asChild>
+              <Link to={`/service/${savedId}`}>View facility</Link>
             </Button>
           )}
-          <Button variant="ghost" asChild>
+          {!isRequest && (
+            <Button variant="secondary" asChild>
+              <Link to="/add-service">Back to facilities</Link>
+            </Button>
+          )}
+          {!isEdit && !isRequest && (
+            <Button variant="secondary" asChild>
+              <Link to="/add-service/new">Add another</Link>
+            </Button>
+          )}
+          <Button variant={isRequest ? 'default' : 'ghost'} asChild>
             <Link to="/explore">Back to explore</Link>
           </Button>
         </div>
@@ -241,11 +290,44 @@ export function AddServicePage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-sage-900">
-          {isEdit ? 'Edit service' : 'Add a service'}
-        </h1>
-        <p className="text-sage-600">Step {step} of 5 — {steps[step - 1]}</p>
+      <header className="space-y-3">
+        {!isRequest && (
+          <Button variant="ghost" size="sm" className="-ml-2" asChild>
+            <Link to="/add-service">
+              <ChevronLeft className="h-4 w-4" /> Back to facilities
+            </Link>
+          </Button>
+        )}
+        {isRequest && (
+          <Button variant="ghost" size="sm" className="-ml-2" asChild>
+            <Link to="/explore">
+              <ChevronLeft className="h-4 w-4" /> Back to explore
+            </Link>
+          </Button>
+        )}
+        <div>
+          <h1 className="text-2xl font-bold text-sage-900">
+            {isRequest
+              ? 'Submit your facility'
+              : isEdit
+                ? 'Edit facility'
+                : 'Add a facility'}
+          </h1>
+          <p className="text-sage-600 mt-1">
+            Step {step} of 5 - {steps[step - 1]}
+          </p>
+        </div>
+        {isRequest && (
+          <Card className="border-amber-200 bg-amber-50/80">
+            <CardContent className="flex gap-3 p-4 text-sm text-amber-950">
+              <Clock className="h-5 w-5 shrink-0 text-amber-700" aria-hidden />
+              <p>
+                This form sends your details to our admins for review. We&apos;ll accept or
+                decline your listing - it won&apos;t appear on Reilly until it&apos;s approved.
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </header>
 
       <div className="flex gap-1">
@@ -374,7 +456,7 @@ export function AddServicePage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="age">Suitable age range</Label>
-            <Input id="age" value={data.ageRange ?? ''} onChange={(e) => update({ ageRange: e.target.value })} placeholder="e.g. 0–12 years" />
+            <Input id="age" value={data.ageRange ?? ''} onChange={(e) => update({ ageRange: e.target.value })} placeholder="e.g. 0-12 years" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -486,7 +568,11 @@ export function AddServicePage() {
             />
             {imageError && <p className="text-sm text-terracotta" role="alert">{imageError}</p>}
             {data.images?.[0] && (
-              <img src={data.images[0]} alt="Preview" className="h-40 w-full rounded-xl object-cover" />
+              <ServiceImage
+                src={data.images[0]}
+                category={(data.category ?? 'Activities') as Category}
+                className="h-40 w-full rounded-xl object-cover"
+              />
             )}
           </div>
           <Card>
@@ -508,7 +594,7 @@ export function AddServicePage() {
           </Button>
         ) : (
           <Button variant="ghost" asChild>
-            <Link to="/explore">Cancel</Link>
+            <Link to={isRequest ? '/explore' : '/add-service'}>Cancel</Link>
           </Button>
         )}
         {step < 5 ? (
@@ -516,9 +602,22 @@ export function AddServicePage() {
             Next <ChevronRight className="h-4 w-4" />
           </Button>
         ) : (
-          <Button onClick={submit}>
-            {isEdit ? 'Save changes' : 'Submit service'}
-          </Button>
+          <div className="flex flex-col items-end gap-2">
+            {submitError && (
+              <p className="text-sm text-terracotta" role="alert">
+                {submitError}
+              </p>
+            )}
+            <Button onClick={() => void submit()} disabled={submitting}>
+              {submitting
+                ? 'Saving…'
+                : isRequest
+                  ? 'Submit for review'
+                  : isEdit
+                    ? 'Save changes'
+                    : 'Publish facility'}
+            </Button>
+          </div>
         )}
       </div>
     </div>
@@ -539,7 +638,7 @@ function ReviewRow({
     <div className="flex items-start justify-between gap-4">
       <div>
         <p className="font-medium text-sage-800">{label}</p>
-        <p className="text-sage-600">{value || '—'}</p>
+        <p className="text-sage-600">{value || '-'}</p>
       </div>
       <Button variant="ghost" size="sm" onClick={onEdit}>Edit</Button>
     </div>
@@ -547,5 +646,9 @@ function ReviewRow({
 }
 
 export function EditServicePage() {
-  return <AddServicePage />
+  return <AddServicePage mode="admin" />
+}
+
+export function SubmitFacilityPage() {
+  return <AddServicePage mode="request" />
 }

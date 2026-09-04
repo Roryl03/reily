@@ -1,4 +1,5 @@
 import { haversineDistanceMiles, isWithinRadius } from '@/lib/distance'
+import { isSecretAddSearch } from '@/lib/config'
 import { getOpenStatus, hasQuietHourToday, hasSenSessionToday } from '@/lib/openingHours'
 import type {
   Service,
@@ -36,7 +37,7 @@ export function filterServices(
   location?: UserLocation | null,
 ): ServiceWithMeta[] {
   const enriched = services.map((s) => enrichService(s, location))
-  const search = filters.search.trim().toLowerCase()
+  const search = isSecretAddSearch(filters.search) ? '' : filters.search.trim().toLowerCase()
 
   return enriched.filter((service) => {
     if (search) {

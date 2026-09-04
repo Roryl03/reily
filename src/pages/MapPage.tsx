@@ -1,9 +1,9 @@
 import { Crosshair, List, SlidersHorizontal } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { MapPreviewCard, MapView } from '@/components/map/MapView'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
+import { ListYourFacilityCta } from '@/components/services/ListYourFacilityCta'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
@@ -99,11 +99,7 @@ export function MapPage() {
         </div>
       )}
 
-      <Button asChild variant="secondary" size="lg" className="w-full">
-        <Link to={`/add-service${location ? `?lat=${location.latitude}&lng=${location.longitude}` : ''}`}>
-          Add service at my location
-        </Link>
-      </Button>
+      <ListYourFacilityCta />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import type { SupportResource } from '@/types/supportResource'
 
-/** Remaining Reily Support Services Directory entries — sourced from official NI parent/SEN leaflet */
+/** Remaining Reily Support Services Directory entries - sourced from official NI parent/SEN leaflet */
 export const supportResourcesExtra: SupportResource[] = [
   // ── LEGAL, RIGHTS AND ADVICE ──
   {
@@ -127,7 +127,7 @@ export const supportResourcesExtra: SupportResource[] = [
     coverage: ['ni-wide', 'online'],
     phone: '0800 232 1271',
     textService: 'Text ADVICE to 07984 405248',
-    hours: 'Monday–Friday, 9am–5pm, excluding public holidays',
+    hours: 'Monday-Friday, 9am-5pm, excluding public holidays',
     isHelpline: true,
     isFree: true,
     verificationStatus: 'verified',
@@ -269,7 +269,7 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'financial-practical',
     shortDescription: 'Automatic reduction in childcare bills through participating providers.',
     fullDescription:
-      'Provides an automatic reduction in childcare bills through participating childcare providers. Can be used alongside Tax-Free Childcare.\n\nGeneral eligibility: Working parents with children aged 0–11 registered for Tax-Free Childcare.\n\nDisabled-child provision: Where a child receives DLA, eligibility extends until the September after their 16th birthday and the monthly cap doubles from £203 to £406.',
+      'Provides an automatic reduction in childcare bills through participating childcare providers. Can be used alongside Tax-Free Childcare.\n\nGeneral eligibility: Working parents with children aged 0-11 registered for Tax-Free Childcare.\n\nDisabled-child provision: Where a child receives DLA, eligibility extends until the September after their 16th birthday and the monthly cap doubles from £203 to £406.',
     topics: ['financial-practical', 'early-years'],
     coverage: ['ni-wide'],
     phone: '028 9066 2825',
@@ -306,7 +306,7 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'financial-practical',
     shortDescription: 'Keys for locked disabled toilets under the National Key Scheme.',
     fullDescription:
-      'Keys used to access locked disabled toilets operating under the National Key Scheme.\n\nPurchase locations:\n• The Braid, Ballymena: Monday–Friday, 9:30am–4:30pm\n• Carrickfergus Civic Centre: Monday–Friday, 9:30am–5pm\n\nPrice: £5.70 as of April 2026.',
+      'Keys used to access locked disabled toilets operating under the National Key Scheme.\n\nPurchase locations:\n• The Braid, Ballymena: Monday-Friday, 9:30am-4:30pm\n• Carrickfergus Civic Centre: Monday-Friday, 9:30am-5pm\n\nPrice: £5.70 as of April 2026.',
     topics: ['financial-practical'],
     coverage: ['mid-east-antrim', 'carrickfergus', 'larne'],
     provider: 'Mid and East Antrim Borough Council',
@@ -393,7 +393,7 @@ export const supportResourcesExtra: SupportResource[] = [
   },
   {
     id: 'chill',
-    name: 'CHILL – Carrickfergus Hub Improving Lives Locally',
+    name: 'CHILL - Carrickfergus Hub Improving Lives Locally',
     section: 'community-inclusion',
     shortDescription: 'Support, resources and safe space promoting positive mental health in Carrickfergus.',
     fullDescription:
@@ -428,7 +428,7 @@ export const supportResourcesExtra: SupportResource[] = [
   },
   {
     id: 'libraries-ni-larne',
-    name: 'Libraries NI – Larne Library',
+    name: 'Libraries NI - Larne Library',
     section: 'community-inclusion',
     shortDescription: 'Accessible libraries with Larne among NI\'s three Sensory Libraries.',
     fullDescription:
@@ -449,7 +449,7 @@ export const supportResourcesExtra: SupportResource[] = [
   // ── LOCAL CLUBS, GROUPS AND SOCIAL SUPPORT ──
   {
     id: 'super-kids',
-    name: 'Carrickfergus Community Forum – Super Kids',
+    name: 'Carrickfergus Community Forum - Super Kids',
     section: 'local-clubs',
     shortDescription: 'Activities and support for parents and children with additional needs.',
     fullDescription:
@@ -525,15 +525,15 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'carrickfergus-junior-gateway',
     name: 'Carrickfergus Junior Gateway Club',
     section: 'local-clubs',
-    shortDescription: 'Youth club for children and young people with learning disabilities, aged 8–18.',
+    shortDescription: 'Youth club for children and young people with learning disabilities, aged 8-18.',
     fullDescription:
-      'A youth club for children and young people with learning disabilities.\n\nAge range: 8–18.\nMeeting time: Thursdays, 6:30pm–8pm.',
+      'A youth club for children and young people with learning disabilities.\n\nAge range: 8-18.\nMeeting time: Thursdays, 6:30pm-8pm.',
     topics: ['community'],
     coverage: ['carrickfergus', 'east-antrim'],
     phone: '07894 864825',
     email: 'info@carrickjuniorgateway.org.uk',
-    ageFocus: '8–18 years',
-    hours: 'Thursdays, 6:30pm–8pm',
+    ageFocus: '8-18 years',
+    hours: 'Thursdays, 6:30pm-8pm',
     town: 'Carrickfergus',
     isHelpline: false,
     isFree: true,
@@ -546,15 +546,15 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'carrickfergus-junior-gateway-crossroads',
     name: 'Carrickfergus Junior Gateway Crossroads',
     section: 'local-clubs',
-    shortDescription: 'Youth club for young adults with learning disabilities, aged 15–29.',
+    shortDescription: 'Youth club for young adults with learning disabilities, aged 15-29.',
     fullDescription:
-      'A youth club for young adults with learning disabilities.\n\nAge range: 15–29.\nMeeting time: Thursdays, 8pm–10pm.',
+      'A youth club for young adults with learning disabilities.\n\nAge range: 15-29.\nMeeting time: Thursdays, 8pm-10pm.',
     topics: ['community'],
     coverage: ['carrickfergus', 'east-antrim'],
     phone: '07894 864825',
     email: 'info@carrickjuniorgateway.org.uk',
-    ageFocus: '15–29 years',
-    hours: 'Thursdays, 8pm–10pm',
+    ageFocus: '15-29 years',
+    hours: 'Thursdays, 8pm-10pm',
     town: 'Carrickfergus',
     isHelpline: false,
     isFree: true,
@@ -567,12 +567,12 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'rumbles',
     name: 'Rumbles Autism Group',
     section: 'local-clubs',
-    shortDescription: 'Early-intervention playgroup for children with additional needs, aged 2–5.',
+    shortDescription: 'Early-intervention playgroup for children with additional needs, aged 2-5.',
     fullDescription: 'An early-intervention playgroup for children with additional needs.',
     topics: ['autism', 'early-years', 'community'],
     coverage: ['newtownabbey'],
     phone: '07873 569329',
-    ageFocus: '2–5 years',
+    ageFocus: '2-5 years',
     town: 'Newtownabbey',
     isHelpline: false,
     isFree: true,
@@ -720,14 +720,14 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'carrick-nazarene-little-stars',
     name: 'Carrick Nazarene Little Stars',
     section: 'local-clubs',
-    shortDescription: 'Inclusive parent-and-toddler group for children with additional needs, aged 0–3.',
+    shortDescription: 'Inclusive parent-and-toddler group for children with additional needs, aged 0-3.',
     fullDescription:
-      'An inclusive parent-and-toddler group for children with additional needs. Children can explore, play and have a snack in a safe environment.\n\nAge range: 0–3.\nMeeting time: Tuesdays during term time, excluding the first Tuesday of each month, 10:30am–12pm.',
+      'An inclusive parent-and-toddler group for children with additional needs. Children can explore, play and have a snack in a safe environment.\n\nAge range: 0-3.\nMeeting time: Tuesdays during term time, excluding the first Tuesday of each month, 10:30am-12pm.',
     topics: ['early-years', 'community', 'sen-advice'],
     coverage: ['carrickfergus', 'east-antrim'],
     email: 'hello@carricknazarene.co.uk',
-    ageFocus: '0–3 years',
-    hours: 'Tuesdays term time (not first Tuesday), 10:30am–12pm',
+    ageFocus: '0-3 years',
+    hours: 'Tuesdays term time (not first Tuesday), 10:30am-12pm',
     notes: 'Location: Carrickfergus Church of the Nazarene',
     isHelpline: false,
     isFree: true,
@@ -762,12 +762,12 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'local-clubs',
     shortDescription: 'Day opportunities for young adults with learning disabilities, autism and additional needs.',
     fullDescription:
-      'A supportive and engaging day-opportunities environment for young adults with learning disabilities, autism and other additional needs.\n\nAge range: 18–30.\nExpected to open in September 2026.',
+      'A supportive and engaging day-opportunities environment for young adults with learning disabilities, autism and other additional needs.\n\nAge range: 18-30.\nExpected to open in September 2026.',
     topics: ['community'],
     coverage: ['ni-wide'],
     phone: '07493 050 435',
     email: 'info@aspiredayopportunities.com',
-    ageFocus: '18–30 years',
+    ageFocus: '18-30 years',
     isHelpline: false,
     isFree: false,
     verificationStatus: 'verified',
@@ -799,11 +799,11 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'local-clubs',
     shortDescription: 'Training, education and employment opportunities for young people.',
     fullDescription:
-      'Training, education and employment opportunities for young people.\n\nGeneral age range: 16–18. Age eligibility can vary for young people with a SEND diagnosis or care background.',
+      'Training, education and employment opportunities for young people.\n\nGeneral age range: 16-18. Age eligibility can vary for young people with a SEND diagnosis or care background.',
     topics: ['community', 'sen-advice'],
     coverage: ['east-antrim'],
     phone: '028 9336 4483',
-    ageFocus: '16–18 years (varies for SEND)',
+    ageFocus: '16-18 years (varies for SEND)',
     isHelpline: false,
     isFree: true,
     verificationStatus: 'verified',
@@ -819,7 +819,7 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Sensory-management pod for neurodivergent people to pause and regulate.',
     fullDescription:
-      'A sensory-management pod used in schools and public spaces. Provides neurodivergent people with a customisable digital environment involving light, sound and visuals, allowing them to pause, reset and regulate sensory experiences.\n\nTypical session: 5–15 minutes.',
+      'A sensory-management pod used in schools and public spaces. Provides neurodivergent people with a customisable digital environment involving light, sound and visuals, allowing them to pause, reset and regulate sensory experiences.\n\nTypical session: 5-15 minutes.',
     topics: ['autism', 'health-therapy'],
     coverage: ['ni-wide'],
     isHelpline: false,
@@ -831,7 +831,7 @@ export const supportResourcesExtra: SupportResource[] = [
   },
   {
     id: 'luxe-male-grooming',
-    name: 'Luxe Male Grooming – Autism Barber NI',
+    name: 'Luxe Male Grooming - Autism Barber NI',
     section: 'accessible-sensory',
     shortDescription: 'Autism-aware haircut service with quieter shop and silent clippers.',
     fullDescription:
@@ -890,10 +890,10 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Dedicated quieter access times at selected council play parks.',
     fullDescription:
-      'Dedicated quieter access times at selected council play parks.\n\nTimes: Wednesdays and Sundays, 2pm–3pm.\n\nLocations:\n• People\'s Park, Ballymena\n• Carnfunnock Country Park, Larne\n• Town Park, Larne\n• Marine Gardens, Carrickfergus',
+      'Dedicated quieter access times at selected council play parks.\n\nTimes: Wednesdays and Sundays, 2pm-3pm.\n\nLocations:\n• People\'s Park, Ballymena\n• Carnfunnock Country Park, Larne\n• Town Park, Larne\n• Marine Gardens, Carrickfergus',
     topics: ['community', 'autism'],
     coverage: ['mid-east-antrim', 'carrickfergus', 'larne'],
-    hours: 'Wednesdays and Sundays, 2pm–3pm',
+    hours: 'Wednesdays and Sundays, 2pm-3pm',
     provider: 'Mid and East Antrim Borough Council',
     isHelpline: false,
     isFree: true,
@@ -961,7 +961,7 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Dedicated quieter swimming-pool sessions at MEA leisure centres.',
     fullDescription:
-      'Dedicated quieter swimming-pool sessions.\n\nSessions:\n• Carrickfergus Amphitheatre: Mondays, 5pm–6pm\n• Larne Leisure Centre: Mondays, 4pm–5pm\n• Seven Towers Leisure Centre: Wednesdays, 4pm–5pm',
+      'Dedicated quieter swimming-pool sessions.\n\nSessions:\n• Carrickfergus Amphitheatre: Mondays, 5pm-6pm\n• Larne Leisure Centre: Mondays, 4pm-5pm\n• Seven Towers Leisure Centre: Wednesdays, 4pm-5pm',
     topics: ['community', 'autism'],
     coverage: ['carrickfergus', 'larne', 'mid-east-antrim'],
     provider: 'Mid and East Antrim Borough Council',
@@ -978,10 +978,10 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Inclusive soft-play sessions for children with disabilities or additional needs.',
     fullDescription:
-      'Inclusive soft-play sessions for children with disabilities or additional needs. Attendance is limited to create a calmer and more supportive environment.\n\nSensory support: Sensory packs can be borrowed from reception with a £5 refundable deposit.\n\nSessions: Monday, Wednesday and Friday, 10am–11am.',
+      'Inclusive soft-play sessions for children with disabilities or additional needs. Attendance is limited to create a calmer and more supportive environment.\n\nSensory support: Sensory packs can be borrowed from reception with a £5 refundable deposit.\n\nSessions: Monday, Wednesday and Friday, 10am-11am.',
     topics: ['autism', 'early-years', 'community'],
     coverage: ['mid-east-antrim'],
-    hours: 'Monday, Wednesday and Friday, 10am–11am',
+    hours: 'Monday, Wednesday and Friday, 10am-11am',
     provider: 'Mid and East Antrim Borough Council',
     isHelpline: false,
     isFree: false,
@@ -996,11 +996,11 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Bookable summer-camp sessions for children with additional or special needs.',
     fullDescription:
-      'Bookable summer-camp sessions for children with additional or special needs.\n\nAge range: 6–18.',
+      'Bookable summer-camp sessions for children with additional or special needs.\n\nAge range: 6-18.',
     topics: ['community', 'sen-advice'],
     coverage: ['mid-east-antrim'],
     website: 'https://www.midandeastantrim.gov.uk',
-    ageFocus: '6–18 years',
+    ageFocus: '6-18 years',
     provider: 'Mid and East Antrim Borough Council',
     isHelpline: false,
     isFree: false,
@@ -1015,7 +1015,7 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Pan-disability sports clubs and boccia sessions across Carrickfergus and Larne.',
     fullDescription:
-      'Disability sports clubs run by Mid and East Antrim Borough Council.\n\nCarrickfergus Junior Pan-Disability Sports Club: Mondays, 5pm–5:45pm\nCarrickfergus Adult Pan-Disability Sports Club: Tuesdays, 3:45pm–4:30pm\nLarne Boccia Club: Mondays, 4:30pm–5:15pm\nLarne Junior Pan-Disability Sports Club: Thursdays, 5pm–5:45pm\nLarne Adult Pan-Disability Sports Club: Thursdays, 4:15pm–5pm',
+      'Disability sports clubs run by Mid and East Antrim Borough Council.\n\nCarrickfergus Junior Pan-Disability Sports Club: Mondays, 5pm-5:45pm\nCarrickfergus Adult Pan-Disability Sports Club: Tuesdays, 3:45pm-4:30pm\nLarne Boccia Club: Mondays, 4:30pm-5:15pm\nLarne Junior Pan-Disability Sports Club: Thursdays, 5pm-5:45pm\nLarne Adult Pan-Disability Sports Club: Thursdays, 4:15pm-5pm',
     topics: ['community', 'health-therapy'],
     coverage: ['carrickfergus', 'larne', 'mid-east-antrim'],
     provider: 'Mid and East Antrim Borough Council',
@@ -1032,11 +1032,11 @@ export const supportResourcesExtra: SupportResource[] = [
     section: 'accessible-sensory',
     shortDescription: 'Football for ambulant boys and girls with learning or physical disabilities.',
     fullDescription:
-      'Football opportunities for ambulant boys and girls with learning or physical disabilities.\n\nAge range: 6–16.',
+      'Football opportunities for ambulant boys and girls with learning or physical disabilities.\n\nAge range: 6-16.',
     topics: ['community', 'health-therapy'],
     coverage: ['east-antrim'],
     website: 'https://www.greenislandfc.clubforce.com',
-    ageFocus: '6–16 years',
+    ageFocus: '6-16 years',
     town: 'Greenisland',
     isHelpline: false,
     isFree: true,
@@ -1276,7 +1276,7 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'lifeline',
     name: 'Lifeline',
     section: 'helplines',
-    shortDescription: 'Crisis helpline for people in distress or despair — available 24/7.',
+    shortDescription: 'Crisis helpline for people in distress or despair - available 24/7.',
     fullDescription:
       'Crisis helpline for people in distress or despair. Available 24 hours a day, 7 days a week.',
     topics: ['emotional-support'],
@@ -1295,7 +1295,7 @@ export const supportResourcesExtra: SupportResource[] = [
     id: 'samaritans',
     name: 'Samaritans',
     section: 'helplines',
-    shortDescription: 'Confidential emotional support — available 24/7.',
+    shortDescription: 'Confidential emotional support - available 24/7.',
     fullDescription:
       'Confidential emotional support for anyone in distress or struggling to cope. Available 24 hours a day, 7 days a week.',
     topics: ['emotional-support'],

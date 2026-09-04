@@ -1,6 +1,6 @@
-# Reily
+# Reilly
 
-A mobile-first web app helping parents and carers of children with additional needs discover suitable services, activities and accessible venues near their location — focused on Northern Ireland.
+A mobile-first web app helping parents and carers of children with additional needs discover suitable services, activities and accessible venues near their location - focused on Northern Ireland.
 
 ## Quick start
 
@@ -13,11 +13,11 @@ Open the URL shown in your terminal (typically `http://localhost:5173`).
 
 ## Features
 
-- **Location-aware discovery** — browser geolocation or town/postcode search
-- **Explore & map views** — filter, sort and browse 13 demo services across NI
-- **Service details** — accessibility badges, opening hours, directions, reports
-- **Add & manage services** — 5-step form with LocalStorage persistence
-- **Favourites & preferences** — saved locally, no registration required
+- **Location-aware discovery** - browser geolocation or town/postcode search
+- **Explore & map views** - filter, sort and browse 13 demo services across NI
+- **Service details** - accessibility badges, opening hours, directions, reports
+- **Add & manage services** - 5-step form with LocalStorage persistence
+- **Favourites & preferences** - saved locally, no registration required
 
 ## Tech stack
 

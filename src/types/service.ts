@@ -15,7 +15,7 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number]
 
-export type VerificationStatus = 'demo' | 'community' | 'verified' | 'unverified'
+export type VerificationStatus = 'demo' | 'community' | 'verified' | 'unverified' | 'pending'
 export type ServiceSource = 'demo' | 'community' | 'imported'
 
 export type NoiseLevel = 'quiet' | 'moderate' | 'lively' | 'variable'
@@ -234,4 +234,9 @@ export const NI_TOWNS: Record<string, { lat: number; lng: number; label: string 
   'bt41': { lat: 54.5656, lng: -6.3234, label: 'BT41 area' },
   'bt1': { lat: 54.5973, lng: -5.9301, label: 'Belfast city centre' },
   'bt52': { lat: 55.1316, lng: -6.6646, label: 'Coleraine area' },
+}
+
+/** Live listings shown in explore, map, home, etc. */
+export function isPublicService(service: Service): boolean {
+  return service.verificationStatus !== 'pending'
 }

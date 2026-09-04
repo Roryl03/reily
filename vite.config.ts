@@ -8,6 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Vercel Marketplace syncs SUPABASE_* - expose those alongside VITE_*
+  envPrefix: ['VITE_', 'SUPABASE_', 'NEXT_PUBLIC_SUPABASE_'],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

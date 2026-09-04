@@ -12,7 +12,7 @@ export function SupportHero() {
           id="support-hero-heading"
           className="text-[28px] font-bold leading-[1.15] tracking-tight text-sage-900 sm:text-3xl"
         >
-          You&apos;re doing your best — and help is here
+          You&apos;re doing your best - and help is here
         </h1>
         <p className="text-[15px] leading-relaxed text-sage-600 sm:max-w-xl">
           Navigating SEN support can feel overwhelming. We&apos;ve gathered trusted contacts so

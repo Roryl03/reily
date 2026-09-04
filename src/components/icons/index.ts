@@ -1,6 +1,7 @@
 export { ReilyIcon, ReilyIconInline } from './ReilyIcon'
 export { ReilyIconGlyph } from './ReilyIconGlyph'
-export { ReilyBrandMark, ReilyLogoWordmark } from './ReilyBrandMark'
+export { AskReillyLogo, ASK_REILLY_LOGO_SRC } from './AskReillyLogo'
+export { ReilyBrandMark, ReilyLogoFull, ReilyLogoMark, ReilyLogoWordmark } from './ReilyBrandMark'
 export {
   CATEGORY_ICON_CONFIG,
   FEATURE_ICON_CONFIG,

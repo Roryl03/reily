@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { useApp } from '@/context/AppContext'
-import { dataService } from '@/lib/storage'
+import { isSupabaseEnabled } from '@/lib/supabase'
 import type { RadiusOption } from '@/types/service'
 
 const RADIUS_OPTIONS: { value: string; label: string }[] = [
@@ -42,8 +42,6 @@ export function ProfilePage() {
     clearDemoData,
     resetApp,
   } = useApp()
-
-  const submissions = dataService.getUserSubmissions()
 
   return (
     <div className="space-y-5 lg:space-y-8">
@@ -113,9 +111,9 @@ export function ProfilePage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any age</SelectItem>
-                <SelectItem value="0-5">0–5 years</SelectItem>
-                <SelectItem value="5-12">5–12 years</SelectItem>
-                <SelectItem value="12-18">12–18 years</SelectItem>
+                <SelectItem value="0-5">0-5 years</SelectItem>
+                <SelectItem value="5-12">5-12 years</SelectItem>
+                <SelectItem value="12-18">12-18 years</SelectItem>
                 <SelectItem value="adult">Adults</SelectItem>
               </SelectContent>
             </Select>
@@ -163,20 +161,6 @@ export function ProfilePage() {
         </Link>
 
         <Link
-          to="/my-submissions"
-          className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm hover:shadow-md focus-ring"
-        >
-          <span className="flex items-center gap-3">
-            <ReilyIcon name="add-service" size="sm" variant="sage" />
-            <span className="font-medium text-sage-900">My submissions</span>
-          </span>
-          <span className="flex items-center gap-2 text-sm text-sage-500">
-            {submissions.length}
-            <ChevronRight className="h-4 w-4" />
-          </span>
-        </Link>
-
-        <Link
           to="/submitted-reports"
           className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm hover:shadow-md focus-ring"
         >
@@ -201,7 +185,7 @@ export function ProfilePage() {
           <p className="text-sm text-sage-600">
             Demo services are clearly labelled. Community submissions are stored locally on this device.
           </p>
-          <Button variant="secondary" onClick={clearDemoData} className="w-full">
+          <Button variant="secondary" onClick={() => void clearDemoData()} className="w-full">
             <Trash2 className="h-4 w-4" />
             Clear demo data
           </Button>
@@ -225,23 +209,20 @@ export function ProfilePage() {
 }
 
 export function MySubmissionsPage() {
-  const { deleteService, duplicateService } = useApp()
-  const submissions = dataService.getUserSubmissions()
+  const { services, deleteService, duplicateService } = useApp()
+  const submissions = isSupabaseEnabled
+    ? services
+    : services.filter((s) => s.submittedByCurrentUser || s.source === 'community')
 
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold text-sage-900">My submissions</h1>
-        <p className="text-sage-600">Services you&apos;ve added to Reily</p>
+        <p className="text-sage-600">Services you&apos;ve added to Reilly</p>
       </header>
 
       {submissions.length === 0 ? (
-        <div className="rounded-2xl bg-white p-8 text-center space-y-4">
-          <p className="text-sage-600">You haven&apos;t added any services yet.</p>
-          <Button asChild>
-            <Link to="/add-service">Add a service</Link>
-          </Button>
-        </div>
+        <p className="text-center text-sage-600 py-8">No submissions yet.</p>
       ) : (
         <div className="space-y-3">
           {submissions.map((s) => (
@@ -255,9 +236,13 @@ export function MySubmissionsPage() {
                   <Link to={`/service/${s.id}`}>Preview</Link>
                 </Button>
                 <Button asChild size="sm" variant="secondary">
-                  <Link to={`/edit-service/${s.id}`}>Edit</Link>
+                  <Link to={`/add-service/edit/${s.id}`}>Edit</Link>
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => duplicateService(s.id)}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => void duplicateService(s.id)}
+                >
                   Duplicate
                 </Button>
                 <Button
@@ -269,7 +254,7 @@ export function MySubmissionsPage() {
                         'Are you sure you want to delete this service? This cannot be undone.',
                       )
                     ) {
-                      deleteService(s.id)
+                      void deleteService(s.id)
                     }
                   }}
                 >

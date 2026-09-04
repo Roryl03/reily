@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ReilyIconGlyph } from '@/components/icons'
+import { ServiceImage } from '@/components/services/ServiceImage'
 import { CommunityBadge, DemoBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useApp } from '@/context/AppContext'
+import { hasAdminAccess } from '@/lib/config'
 import { enrichService } from '@/lib/filters'
 import { formatDayHours, formatOpenStatus } from '@/lib/openingHours'
 import {
@@ -37,7 +39,6 @@ import {
   formatPhoneLink,
   formatWebsiteUrl,
   getDirectionsUrl,
-  getPlaceholderImage,
   shareService,
 } from '@/lib/utils'
 
@@ -66,13 +67,15 @@ export function ServiceDetailsPage() {
   const [reportSubmitted, setReportSubmitted] = useState(false)
 
   const service = id ? getServiceById(id) : undefined
-  const enriched = service ? enrichService(service, location) : undefined
+  const isPending = service?.verificationStatus === 'pending'
+  const canView = service && (!isPending || hasAdminAccess())
+  const enriched = canView ? enrichService(service, location) : undefined
 
   useEffect(() => {
-    if (id) addRecentlyViewed(id)
-  }, [id, addRecentlyViewed])
+    if (id && canView) addRecentlyViewed(id)
+  }, [id, canView, addRecentlyViewed])
 
-  if (!service || !enriched) {
+  if (!canView || !enriched) {
     return (
       <div className="py-16 text-center space-y-4">
         <p className="text-sage-600">Service not found.</p>
@@ -83,7 +86,6 @@ export function ServiceDetailsPage() {
     )
   }
 
-  const image = service.images[0] ?? getPlaceholderImage(service.category)
   const status = formatOpenStatus(enriched.openStatus)
 
   const handleReport = () => {
@@ -100,7 +102,11 @@ export function ServiceDetailsPage() {
   return (
     <div className="space-y-6 -mx-4 sm:mx-0">
       <div className="relative">
-        <img src={image} alt="" className="h-56 w-full object-cover sm:rounded-2xl" />
+        <ServiceImage
+          src={service.images[0]}
+          category={service.category}
+          className="h-56 w-full object-cover sm:rounded-2xl"
+        />
         <button
           type="button"
           onClick={() => toggleFavourite(service.id)}
@@ -225,7 +231,7 @@ export function ServiceDetailsPage() {
             <ul className="space-y-2 text-sm text-sage-700">
               {service.senSessions.map((s, i) => (
                 <li key={i} className="rounded-lg bg-sage-50 p-3">
-                  <strong className="capitalize">{s.day}</strong> {s.start}–{s.end}: {s.label}
+                  <strong className="capitalize">{s.day}</strong> {s.start}-{s.end}: {s.label}
                 </li>
               ))}
             </ul>
@@ -238,7 +244,7 @@ export function ServiceDetailsPage() {
             <ul className="space-y-2 text-sm text-sage-700">
               {service.quietHours.map((q, i) => (
                 <li key={i} className="rounded-lg bg-blue-muted-light p-3">
-                  <strong className="capitalize">{q.day}</strong> {q.start}–{q.end}
+                  <strong className="capitalize">{q.day}</strong> {q.start}-{q.end}
                   {q.label && `: ${q.label}`}
                 </li>
               ))}
@@ -268,7 +274,7 @@ export function ServiceDetailsPage() {
 
         {reportSubmitted && (
           <p className="text-sm text-sage-600 text-center" role="status">
-            Thank you — your report has been saved locally.
+            Thank you - your report has been saved locally.
           </p>
         )}
       </div>

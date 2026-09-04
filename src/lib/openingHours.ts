@@ -89,7 +89,7 @@ export function formatDayHours(hours?: WeekOpeningHours): string[] {
   return (Object.keys(labels) as DayKey[]).map((day) => {
     const d = hours[day]
     if (!d || d.closed) return `${labels[day]}: Closed`
-    return `${labels[day]}: ${d.open} – ${d.close}`
+    return `${labels[day]}: ${d.open} - ${d.close}`
   })
 }
 
