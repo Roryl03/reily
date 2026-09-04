@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-
 import { AdminRoute } from '@/components/auth/AdminRoute'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { AppProvider } from '@/context/AppContext'
+import { AboutPage } from '@/pages/About'
 import { AddServicePage, EditServicePage, SubmitFacilityPage } from '@/pages/AddService'
 import { AdminFacilitiesPage } from '@/pages/AdminFacilities'
 import { ExplorePage } from '@/pages/Explore'
@@ -30,6 +31,7 @@ export default function App() {
           <Routes>
             <Route element={<AppLayout />}>
               <Route index element={<HomePage />} />
+              <Route path="about" element={<AboutPage />} />
               <Route path="explore" element={<ExplorePage />} />
               <Route path="map" element={<MapPage />} />
               <Route path="favourites" element={<FavouritesPage />} />

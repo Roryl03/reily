@@ -58,6 +58,10 @@ export function ProfilePage() {
           <span className="flex-1">Saved places</span>
           <span className="text-[15px] text-sage-500">{favourites.length}</span>
         </IOSRow>
+        <IOSRow href="/about">
+          <ReilyIcon name="community-groups" size="sm" variant="terracotta" label="" />
+          <span className="flex-1">About Us</span>
+        </IOSRow>
       </IOSGroup>
 
       {hasAdminAccess() && (

@@ -98,6 +98,13 @@
     font-family: var(--font-decorative);
   }
 
+  /** White DM Serif text on hunter green backgrounds (beats global heading colour) */
+  .about-display-on-hunter {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: #ffffff !important;
+  }
+
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }

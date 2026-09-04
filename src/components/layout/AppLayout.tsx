@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   { to: '/', label: 'Home', ...NAV_ICON_CONFIG[0] },
+  { to: '/about', label: 'About Us', name: 'community-groups' as const, variant: 'terracotta' as const },
   { to: '/support', label: 'Support', ...NAV_ICON_CONFIG[1] },
   { to: '/explore', label: 'Explore', ...NAV_ICON_CONFIG[2] },
   { to: '/map', label: 'Map', ...NAV_ICON_CONFIG[3] },

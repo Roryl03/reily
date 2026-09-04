@@ -11,9 +11,12 @@ export function isAdminPath(pathname: string): boolean {
   return pathname === ADMIN_PATH_PREFIX || pathname.startsWith(`${ADMIN_PATH_PREFIX}/`)
 }
 
+/** About Us page */
+export const ABOUT_PATH = '/about'
+
 /** Routes that should work before onboarding (direct links, bookmarks, email CTAs) */
 export function bypassesOnboarding(pathname: string): boolean {
-  return isAdminPath(pathname) || pathname === LIST_FACILITY_PATH
+  return isAdminPath(pathname) || pathname === LIST_FACILITY_PATH || pathname === ABOUT_PATH
 }
 
 /** @deprecated Use LIST_FACILITY_PATH - kept for backwards compatibility */

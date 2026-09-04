@@ -1,18 +1,32 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { AskReillyLogo } from '@/components/icons/AskReillyLogo'
+import { cn } from '@/lib/utils'
 
 /** Minimal iOS-style navigation bar - large titles live in page content */
 export function MobileHeader() {
   return (
     <header className="ios-nav-bar sticky top-0 z-30 lg:hidden">
-      <div className="flex min-h-14 items-center px-4 py-2">
+      <div className="flex min-h-14 items-center justify-between gap-3 px-4 py-2">
         <Link
           to="/"
-          className="touch-scale flex items-center rounded-lg focus-ring"
+          className="touch-scale flex min-w-0 items-center rounded-lg focus-ring"
           aria-label="Ask Reilly home"
         >
-          <AskReillyLogo size="md" className="max-w-[min(100vw-2rem,16rem)]" />
+          <AskReillyLogo size="md" className="max-w-[min(100vw-8rem,16rem)]" />
         </Link>
+        <NavLink
+          to="/about"
+          className={({ isActive }) =>
+            cn(
+              'shrink-0 rounded-lg px-3 py-2 text-sm font-medium focus-ring',
+              isActive
+                ? 'bg-hunter-light text-hunter font-semibold'
+                : 'text-sage-600 hover:text-sage-900',
+            )
+          }
+        >
+          About Us
+        </NavLink>
       </div>
     </header>
   )
