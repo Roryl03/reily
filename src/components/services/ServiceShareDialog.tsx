@@ -17,8 +17,10 @@ import {
   saveImageToCameraRoll,
   shareImageFilename,
   urlToDataUrl,
+  waitForImages,
 } from '@/lib/generateShareImage'
 import { resolveServiceImageSrc } from '@/lib/serviceImages'
+import { getPlaceholderImage } from '@/lib/utils'
 import type { Service } from '@/types/service'
 
 interface ServiceShareDialogProps {
@@ -44,9 +46,10 @@ export function ServiceShareButton({ service }: { service: Service }) {
 }
 
 export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShareDialogProps) {
-  const cardRef = useRef<HTMLDivElement>(null)
+  const exportRef = useRef<HTMLDivElement>(null)
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [exportReady, setExportReady] = useState(false)
   const [savingAction, setSavingAction] = useState<SaveAction | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [cameraRollAvailable, setCameraRollAvailable] = useState(false)
@@ -58,21 +61,33 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   useEffect(() => {
     if (!open) {
       setImageSrc(null)
+      setExportReady(false)
       setError(null)
       return
     }
 
     let cancelled = false
     setLoading(true)
+    setExportReady(false)
     setError(null)
 
     void (async () => {
       try {
         const resolved = await resolveServiceImageSrc(service.images[0], service.category)
-        const dataUrl = await urlToDataUrl(resolved)
+        let dataUrl = await urlToDataUrl(resolved)
+        if (!dataUrl.startsWith('data:')) {
+          dataUrl = await urlToDataUrl(getPlaceholderImage(service.category))
+        }
         if (!cancelled) setImageSrc(dataUrl)
       } catch {
-        if (!cancelled) setError('Could not load the service image.')
+        if (!cancelled) {
+          try {
+            const fallback = await urlToDataUrl(getPlaceholderImage(service.category))
+            setImageSrc(fallback)
+          } catch {
+            setError('Could not load the service image.')
+          }
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -83,9 +98,26 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
     }
   }, [open, service.images, service.category])
 
+  useEffect(() => {
+    if (!imageSrc || !exportRef.current) {
+      setExportReady(false)
+      return
+    }
+
+    let cancelled = false
+    void waitForImages(exportRef.current).then(() => {
+      if (!cancelled) setExportReady(true)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [imageSrc])
+
   const generatePng = useCallback(async () => {
-    if (!cardRef.current) throw new Error('Share card not ready')
-    return generateShareImage(cardRef.current)
+    if (!exportRef.current) throw new Error('Share card not ready')
+    await waitForImages(exportRef.current)
+    return generateShareImage(exportRef.current)
   }, [])
 
   const handleDownload = useCallback(async () => {
@@ -115,6 +147,7 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   }, [generatePng, service.id, service.name])
 
   const busy = savingAction !== null
+  const canSave = Boolean(imageSrc && exportReady && !loading && !busy)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -134,9 +167,18 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
         ) : error && !imageSrc ? (
           <p className="py-8 text-center text-error">{error}</p>
         ) : imageSrc ? (
-          <div className="flex justify-center rounded-xl border border-border bg-sage-100 p-4">
-            <ServiceShareCard ref={cardRef} service={service} imageSrc={imageSrc} />
-          </div>
+          <>
+            <div className="flex justify-center rounded-xl bg-sage-100 p-4">
+              <ServiceShareCard service={service} imageSrc={imageSrc} />
+            </div>
+            {/* Off-screen card used only for export — avoids dialog borders in the PNG */}
+            <div
+              aria-hidden
+              className="pointer-events-none fixed left-[-9999px] top-0 opacity-0"
+            >
+              <ServiceShareCard ref={exportRef} service={service} imageSrc={imageSrc} />
+            </div>
+          </>
         ) : null}
 
         {error && imageSrc && <p className="text-sm text-error">{error}</p>}
@@ -154,7 +196,7 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
           {cameraRollAvailable && (
             <Button
               className="gap-1.5"
-              disabled={!imageSrc || loading || busy}
+              disabled={!canSave}
               onClick={() => void handleSaveToCameraRoll()}
             >
               {savingAction === 'camera-roll' ? (
@@ -168,7 +210,7 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
           <Button
             variant={cameraRollAvailable ? 'secondary' : 'default'}
             className="gap-1.5"
-            disabled={!imageSrc || loading || busy}
+            disabled={!canSave}
             onClick={() => void handleDownload()}
           >
             {savingAction === 'download' ? (

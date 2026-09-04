@@ -4,32 +4,82 @@ import { toPng } from 'html-to-image'
 export const SHARE_IMAGE_SIZE = 1080
 export const SHARE_IMAGE_PREVIEW_SIZE = 540
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
+/** Load a remote image through an Image element + canvas (CORS permitting). */
+function loadImageAsDataUrl(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.naturalWidth || 1
+        canvas.height = img.naturalHeight || 1
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error('Canvas unavailable')
+        ctx.drawImage(img, 0, 0)
+        resolve(canvas.toDataURL('image/jpeg', 0.92))
+      } catch (err) {
+        reject(err instanceof Error ? err : new Error('Could not encode image'))
+      }
+    }
+    img.onerror = () => reject(new Error('Image failed to load'))
+    img.src = url.includes('?') ? `${url}&_share=${Date.now()}` : `${url}?_share=${Date.now()}`
+  })
+}
+
+/** Always returns an inline data URL so html-to-image can embed photos reliably. */
 export async function urlToDataUrl(url: string): Promise<string> {
   if (url.startsWith('data:')) return url
+
   try {
-    const res = await fetch(url)
-    const blob = await res.blob()
-    return await new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = reject
-      reader.readAsDataURL(blob)
-    })
+    const res = await fetch(url, { mode: 'cors', cache: 'no-store' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return blobToDataUrl(await res.blob())
   } catch {
-    return url
+    return loadImageAsDataUrl(url)
   }
+}
+
+export async function waitForImages(element: HTMLElement): Promise<void> {
+  const images = [...element.querySelectorAll('img')].filter(
+    (img) => !img.classList.contains('hidden'),
+  )
+
+  await Promise.all(
+    images.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          const done = () => resolve()
+          if (img.complete && img.naturalWidth > 0) {
+            done()
+            return
+          }
+          img.addEventListener('load', done, { once: true })
+          img.addEventListener('error', done, { once: true })
+        }),
+    ),
+  )
 }
 
 export async function generateShareImage(element: HTMLElement): Promise<string> {
   await document.fonts.ready
-  await new Promise((resolve) => setTimeout(resolve, 150))
+  await waitForImages(element)
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
 
-  // Capture the fixed 540×540 preview at 2× — do not override width/height or flex
-  // children stretch and create a tall empty gap in the export.
   return toPng(element, {
     pixelRatio: 2,
     cacheBust: true,
     backgroundColor: '#FAF9F5',
+    skipAutoScale: true,
   })
 }
 

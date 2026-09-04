@@ -3,7 +3,6 @@ import { getCategoryIcon, ReilyIconGlyph } from '@/components/icons'
 import type { ReilyColorVariant } from '@/components/icons'
 import { ASK_REILLY_LOGO_SRC, AskReillyLogo } from '@/components/icons/AskReillyLogo'
 import { CommunityBadge, OpenStatusBadge, ServiceBadges } from '@/components/services/ServiceBadges'
-import { Card, CardContent } from '@/components/ui/card'
 import { enrichService } from '@/lib/filters'
 import { SHARE_IMAGE_PREVIEW_SIZE } from '@/lib/generateShareImage'
 import { formatOpenStatus } from '@/lib/openingHours'
@@ -34,10 +33,11 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
     return (
       <div
         ref={ref}
-        className={cn('box-border overflow-hidden bg-cream-50 px-6 py-5', className)}
+        className={cn('box-border overflow-hidden bg-[#FAF9F5]', className)}
         style={{
           width: SHARE_IMAGE_PREVIEW_SIZE,
           height: SHARE_IMAGE_PREVIEW_SIZE,
+          padding: '20px 24px',
           fontFamily: '"Nunito Sans", ui-sans-serif, system-ui, sans-serif',
         }}
       >
@@ -51,17 +51,17 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
           <AskReillyLogo size="md" className="mt-2 mx-auto object-center" />
         </div>
 
-        <Card className="mt-3 overflow-hidden border-border shadow-[var(--shadow-card)]">
+        <div className="mt-3 overflow-hidden rounded-2xl bg-white">
           <img
             src={imageSrc}
             alt=""
-            className="h-24 w-full object-cover"
-            crossOrigin="anonymous"
+            className="block h-24 w-full object-cover"
+            decoding="sync"
           />
-          <CardContent className="space-y-2 p-3">
+          <div className="space-y-2 p-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-w-0 items-start gap-2">
-                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sage-200 bg-sage-100">
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sage-100">
                   <ReilyIconGlyph
                     name={categoryIcon.name}
                     className={cn('h-4 w-4', CATEGORY_GLYPH_COLOR[categoryIcon.variant])}
@@ -87,8 +87,8 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
               {service.shortDescription}
             </p>
             <ServiceBadges features={service.accessibilityFeatures} limit={3} />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {(service.phone || service.website || service.pricing) && (
           <div className="mt-2 space-y-1 text-xs text-sage-700">
