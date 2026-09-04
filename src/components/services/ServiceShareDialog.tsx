@@ -1,4 +1,4 @@
-import { Download, ImageIcon, Loader2 } from 'lucide-react'
+import { Download, ImageIcon, Loader2, Smartphone } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ServiceShareCard } from '@/components/services/ServiceShareCard'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { downloadDataUrl, generateShareImage, urlToDataUrl } from '@/lib/generateShareImage'
+import {
+  canSaveToCameraRoll,
+  downloadDataUrl,
+  generateShareImage,
+  saveImageToCameraRoll,
+  shareImageFilename,
+  urlToDataUrl,
+} from '@/lib/generateShareImage'
 import { resolveServiceImageSrc } from '@/lib/serviceImages'
 import type { Service } from '@/types/service'
 
@@ -19,6 +26,8 @@ interface ServiceShareDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+
+type SaveAction = 'download' | 'camera-roll'
 
 export function ServiceShareButton({ service }: { service: Service }) {
   const [open, setOpen] = useState(false)
@@ -38,8 +47,13 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
   const cardRef = useRef<HTMLDivElement>(null)
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [generating, setGenerating] = useState(false)
+  const [savingAction, setSavingAction] = useState<SaveAction | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [cameraRollAvailable, setCameraRollAvailable] = useState(false)
+
+  useEffect(() => {
+    setCameraRollAvailable(canSaveToCameraRoll())
+  }, [])
 
   useEffect(() => {
     if (!open) {
@@ -69,23 +83,38 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
     }
   }, [open, service.images, service.category])
 
+  const generatePng = useCallback(async () => {
+    if (!cardRef.current) throw new Error('Share card not ready')
+    return generateShareImage(cardRef.current)
+  }, [])
+
   const handleDownload = useCallback(async () => {
-    if (!cardRef.current) return
-    setGenerating(true)
+    setSavingAction('download')
     setError(null)
     try {
-      const dataUrl = await generateShareImage(cardRef.current)
-      const slug = service.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-      downloadDataUrl(dataUrl, `ask-reilly-${slug || service.id}.png`)
+      const dataUrl = await generatePng()
+      downloadDataUrl(dataUrl, shareImageFilename(service.name, service.id))
     } catch {
       setError('Could not generate the image. Please try again.')
     } finally {
-      setGenerating(false)
+      setSavingAction(null)
     }
-  }, [service.id, service.name])
+  }, [generatePng, service.id, service.name])
+
+  const handleSaveToCameraRoll = useCallback(async () => {
+    setSavingAction('camera-roll')
+    setError(null)
+    try {
+      const dataUrl = await generatePng()
+      await saveImageToCameraRoll(dataUrl, shareImageFilename(service.name, service.id))
+    } catch {
+      setError('Could not save to camera roll. Try Download PNG instead.')
+    } finally {
+      setSavingAction(null)
+    }
+  }, [generatePng, service.id, service.name])
+
+  const busy = savingAction !== null
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,7 +122,7 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
         <DialogHeader>
           <DialogTitle>Share card</DialogTitle>
           <DialogDescription>
-            Preview the promotional image for {service.name}, then download it to share.
+            Preview the promotional image for {service.name}, then save or download it to share.
           </DialogDescription>
         </DialogHeader>
 
@@ -114,16 +143,37 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
 
         {error && imageSrc && <p className="text-sm text-error">{error}</p>}
 
-        <DialogFooter>
+        {cameraRollAvailable && imageSrc && !loading && (
+          <p className="text-xs text-sage-500">
+            Tap Add to camera roll, then choose Save Image on iPhone or Save to Photos on Android.
+          </p>
+        )}
+
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Close
           </Button>
+          {cameraRollAvailable && (
+            <Button
+              className="gap-1.5"
+              disabled={!imageSrc || loading || busy}
+              onClick={() => void handleSaveToCameraRoll()}
+            >
+              {savingAction === 'camera-roll' ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <Smartphone className="h-4 w-4" aria-hidden />
+              )}
+              Add to camera roll
+            </Button>
+          )}
           <Button
+            variant={cameraRollAvailable ? 'secondary' : 'default'}
             className="gap-1.5"
-            disabled={!imageSrc || loading || generating}
+            disabled={!imageSrc || loading || busy}
             onClick={() => void handleDownload()}
           >
-            {generating ? (
+            {savingAction === 'download' ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             ) : (
               <Download className="h-4 w-4" aria-hidden />
