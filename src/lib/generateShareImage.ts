@@ -24,10 +24,10 @@ export async function generateShareImage(element: HTMLElement): Promise<string> 
   await document.fonts.ready
   await new Promise((resolve) => setTimeout(resolve, 150))
 
+  // Capture the fixed 540×540 preview at 2× — do not override width/height or flex
+  // children stretch and create a tall empty gap in the export.
   return toPng(element, {
-    width: SHARE_IMAGE_SIZE,
-    height: SHARE_IMAGE_SIZE,
-    pixelRatio: 1,
+    pixelRatio: 2,
     cacheBust: true,
     backgroundColor: '#FAF9F5',
   })

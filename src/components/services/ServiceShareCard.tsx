@@ -34,17 +34,14 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
     return (
       <div
         ref={ref}
-        className={cn(
-          'flex flex-col overflow-hidden bg-cream-50 px-6 py-5',
-          className,
-        )}
+        className={cn('box-border overflow-hidden bg-cream-50 px-6 py-5', className)}
         style={{
           width: SHARE_IMAGE_PREVIEW_SIZE,
           height: SHARE_IMAGE_PREVIEW_SIZE,
           fontFamily: '"Nunito Sans", ui-sans-serif, system-ui, sans-serif',
         }}
       >
-        <div className="flex shrink-0 flex-col items-center text-center">
+        <div className="flex flex-col items-center text-center">
           <p
             className="font-decorative text-3xl text-hunter leading-none"
             style={{ fontFamily: '"Caveat", cursive' }}
@@ -54,16 +51,14 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
           <AskReillyLogo size="md" className="mt-2 mx-auto object-center" />
         </div>
 
-        <Card className="mt-3 flex min-h-0 flex-1 flex-col overflow-hidden border-border shadow-[var(--shadow-card)]">
-          <div className="relative shrink-0">
-            <img
-              src={imageSrc}
-              alt=""
-              className="h-24 w-full object-cover"
-              crossOrigin="anonymous"
-            />
-          </div>
-          <CardContent className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-3">
+        <Card className="mt-3 overflow-hidden border-border shadow-[var(--shadow-card)]">
+          <img
+            src={imageSrc}
+            alt=""
+            className="h-24 w-full object-cover"
+            crossOrigin="anonymous"
+          />
+          <CardContent className="space-y-2 p-3">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-w-0 items-start gap-2">
                 <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-sage-200 bg-sage-100">
@@ -95,17 +90,19 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
           </CardContent>
         </Card>
 
-        <div className="mt-2 shrink-0 space-y-1 text-xs text-sage-700">
-          {service.phone && <CompactDetail label="Phone">{service.phone}</CompactDetail>}
-          {service.website && (
-            <CompactDetail label="Website">
-              {service.website.replace(/^https?:\/\//, '')}
-            </CompactDetail>
-          )}
-          {service.pricing && <CompactDetail label="Pricing">{service.pricing}</CompactDetail>}
-        </div>
+        {(service.phone || service.website || service.pricing) && (
+          <div className="mt-2 space-y-1 text-xs text-sage-700">
+            {service.phone && <CompactDetail label="Phone">{service.phone}</CompactDetail>}
+            {service.website && (
+              <CompactDetail label="Website">
+                {service.website.replace(/^https?:\/\//, '')}
+              </CompactDetail>
+            )}
+            {service.pricing && <CompactDetail label="Pricing">{service.pricing}</CompactDetail>}
+          </div>
+        )}
 
-        <p className="mt-auto shrink-0 pt-2 text-center text-[10px] text-sage-500">
+        <p className="mt-3 text-center text-[10px] text-sage-500">
           Find more on Ask Reilly · askreillyni.com
         </p>
 
