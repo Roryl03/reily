@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { ReilyLogoFull } from '@/components/icons'
+import { AskReillyMark } from '@/components/icons'
 import { OnboardingWelcome } from '@/components/onboarding/OnboardingWelcome'
 import { useApp } from '@/context/AppContext'
 import { DEMO_LOCATION } from '@/types/service'
@@ -38,7 +38,7 @@ export function OnboardingGuard({ children }: { children: React.ReactNode }) {
   if (locationLoading) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-gradient-to-b from-hunter-light/30 to-cream-200 px-6 safe-top safe-bottom">
-        <ReilyLogoFull size="md" />
+        <AskReillyMark size="lg" />
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-hunter" aria-label="Loading" />
           <p className="text-[17px] font-medium text-sage-800">Finding your location…</p>
