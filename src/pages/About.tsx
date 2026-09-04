@@ -3,8 +3,8 @@ import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { usePageMeta } from '@/hooks/usePageMeta'
 import { cn } from '@/lib/utils'
 
-/** Place Bronagh's family photograph at public/about/bronagh-family.jpg */
-export const ABOUT_FAMILY_PHOTO_SRC = '/about/bronagh-family.jpg'
+/** Bronagh and family photograph */
+export const ABOUT_FAMILY_PHOTO_SRC = '/about/bronagh-family.png'
 
 const FAMILY_PHOTO_ALT =
   'Bronagh O\'Reilly with her husband and three sons, smiling together outdoors in a family photograph.'
@@ -82,7 +82,7 @@ export function AboutPage() {
                 <p className="font-display text-xl text-sage-900">Bronagh and family</p>
                 <p className="mt-2 max-w-xs text-sm text-sage-600">
                   {photoError
-                    ? 'Add the family photograph to public/about/bronagh-family.jpg to display it here.'
+                    ? 'Could not load the family photograph.'
                     : 'Loading family photograph…'}
                 </p>
               </div>
