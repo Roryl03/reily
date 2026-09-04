@@ -98,10 +98,6 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
 
           {service.pricing && <DetailRow label="Pricing">{service.pricing}</DetailRow>}
 
-          {service.fullDescription && (
-            <DetailRow label="About">{service.fullDescription}</DetailRow>
-          )}
-
           {service.quietHours && service.quietHours.length > 0 && (
             <DetailRow label="Quiet hours">
               <ul className="mt-1 space-y-0.5">
