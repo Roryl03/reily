@@ -134,10 +134,8 @@ export function ServiceShareDialog({ service, open, onOpenChange }: ServiceShare
         ) : error && !imageSrc ? (
           <p className="py-8 text-center text-error">{error}</p>
         ) : imageSrc ? (
-          <div className="max-h-[55vh] overflow-auto rounded-xl border border-border bg-sage-100">
-            <div className="flex justify-center p-4">
-              <ServiceShareCard ref={cardRef} service={service} imageSrc={imageSrc} />
-            </div>
+          <div className="flex justify-center rounded-xl border border-border bg-sage-100 p-4">
+            <ServiceShareCard ref={cardRef} service={service} imageSrc={imageSrc} />
           </div>
         ) : null}
 

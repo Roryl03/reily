@@ -1,5 +1,9 @@
 import { toPng } from 'html-to-image'
 
+/** Instagram feed post - 1:1 square at 1080px. */
+export const SHARE_IMAGE_SIZE = 1080
+export const SHARE_IMAGE_PREVIEW_SIZE = 540
+
 export async function urlToDataUrl(url: string): Promise<string> {
   if (url.startsWith('data:')) return url
   try {
@@ -21,7 +25,9 @@ export async function generateShareImage(element: HTMLElement): Promise<string> 
   await new Promise((resolve) => setTimeout(resolve, 150))
 
   return toPng(element, {
-    pixelRatio: 2,
+    width: SHARE_IMAGE_SIZE,
+    height: SHARE_IMAGE_SIZE,
+    pixelRatio: 1,
     cacheBust: true,
     backgroundColor: '#FAF9F5',
   })
