@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { useApp } from '@/context/AppContext'
+import { hasAdminAccess } from '@/lib/config'
 import { isSupabaseEnabled } from '@/lib/supabase'
 import type { RadiusOption } from '@/types/service'
 
@@ -58,6 +59,29 @@ export function ProfilePage() {
           <span className="text-[15px] text-sage-500">{favourites.length}</span>
         </IOSRow>
       </IOSGroup>
+
+      {hasAdminAccess() && (
+        <IOSGroup className="lg:hidden">
+          <IOSRow href="/add-service">
+            <ReilyIcon name="add-service" size="sm" variant="sage" label="" />
+            <span className="flex-1">Manage facilities</span>
+          </IOSRow>
+        </IOSGroup>
+      )}
+
+      {hasAdminAccess() && (
+        <Card className="hidden lg:block">
+          <CardContent className="p-5">
+            <h2 className="font-semibold text-sage-900">Admin</h2>
+            <p className="mt-1 text-sm text-sage-600">
+              Add, edit and review listings on Ask Reilly.
+            </p>
+            <Button asChild className="mt-4">
+              <Link to="/add-service">Manage facilities</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Location */}
       <Card>

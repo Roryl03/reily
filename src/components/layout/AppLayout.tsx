@@ -3,6 +3,7 @@ import { SecretAddFab, SecretAddSidebarLink } from '@/components/admin/SecretAdd
 import { NAV_ICON_CONFIG, ReilyIcon, ReilyLogoWordmark } from '@/components/icons'
 import { MobileHeader } from '@/components/layout/MobileHeader'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
+import { hasAdminAccess } from '@/lib/config'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -42,6 +43,24 @@ export function AppLayout() {
             </NavLink>
           ))}
         </nav>
+        {hasAdminAccess() && (
+          <div className="border-t border-sage-100 p-4">
+            <NavLink
+              to="/add-service"
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-ring min-h-11',
+                  isActive
+                    ? 'bg-hunter-light text-hunter font-semibold'
+                    : 'text-sage-500 hover:bg-sage-50',
+                )
+              }
+            >
+              <ReilyIcon name="add-service" size="md" variant="sage" />
+              Manage facilities
+            </NavLink>
+          </div>
+        )}
         <SecretAddSidebarLink />
       </aside>
 

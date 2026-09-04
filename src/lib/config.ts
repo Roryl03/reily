@@ -1,6 +1,21 @@
 /** Public facility submission form */
 export const LIST_FACILITY_PATH = '/list-facility'
 
+/** Production site URL */
+export const SITE_URL = 'https://askreillyni.com'
+
+/** Admin hub and CRUD routes */
+export const ADMIN_PATH_PREFIX = '/add-service'
+
+export function isAdminPath(pathname: string): boolean {
+  return pathname === ADMIN_PATH_PREFIX || pathname.startsWith(`${ADMIN_PATH_PREFIX}/`)
+}
+
+/** Routes that should work before onboarding (direct links, bookmarks, email CTAs) */
+export function bypassesOnboarding(pathname: string): boolean {
+  return isAdminPath(pathname) || pathname === LIST_FACILITY_PATH
+}
+
 /** @deprecated Use LIST_FACILITY_PATH - kept for backwards compatibility */
 export const LIST_YOUR_FACILITY_URL = LIST_FACILITY_PATH
 

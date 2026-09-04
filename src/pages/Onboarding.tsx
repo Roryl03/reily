@@ -1,8 +1,9 @@
 import { Loader2 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AskReillyMark } from '@/components/icons'
 import { OnboardingWelcome } from '@/components/onboarding/OnboardingWelcome'
 import { useApp } from '@/context/AppContext'
+import { bypassesOnboarding } from '@/lib/config'
 import { DEMO_LOCATION } from '@/types/service'
 
 export function OnboardingPage() {
@@ -30,6 +31,11 @@ export function OnboardingPage() {
 
 export function OnboardingGuard({ children }: { children: React.ReactNode }) {
   const { preferences, locationLoading } = useApp()
+  const { pathname } = useLocation()
+
+  if (bypassesOnboarding(pathname)) {
+    return <>{children}</>
+  }
 
   if (!preferences.onboardingComplete) {
     return <OnboardingPage />
