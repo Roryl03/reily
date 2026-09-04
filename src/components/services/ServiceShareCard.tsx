@@ -5,7 +5,7 @@ import { ASK_REILLY_LOGO_SRC, AskReillyLogo } from '@/components/icons/AskReilly
 import { CommunityBadge, OpenStatusBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { Card, CardContent } from '@/components/ui/card'
 import { enrichService } from '@/lib/filters'
-import { formatDayHours, formatOpenStatus } from '@/lib/openingHours'
+import { formatOpenStatus } from '@/lib/openingHours'
 import { cn } from '@/lib/utils'
 import type { Service } from '@/types/service'
 
@@ -29,7 +29,6 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
     const enriched = enrichService(service)
     const status = formatOpenStatus(enriched.openStatus)
     const categoryIcon = getCategoryIcon(service.category)
-    const hours = formatDayHours(service.openingHours)
 
     return (
       <div
@@ -87,10 +86,6 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
         </Card>
 
         <div className="mt-6 space-y-4 text-sm text-sage-700">
-          <DetailRow label="Address">
-            {service.address}, {service.town}, {service.postcode}
-          </DetailRow>
-
           {service.phone && <DetailRow label="Phone">{service.phone}</DetailRow>}
 
           {service.website && (
@@ -101,20 +96,7 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
 
           {service.email && <DetailRow label="Email">{service.email}</DetailRow>}
 
-          {(service.pricing || service.ageRange) && (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {service.pricing && <DetailRow label="Pricing">{service.pricing}</DetailRow>}
-              {service.ageRange && <DetailRow label="Age range">{service.ageRange}</DetailRow>}
-            </div>
-          )}
-
-          <DetailRow label="Opening hours">
-            <ul className="mt-1 space-y-0.5">
-              {hours.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          </DetailRow>
+          {service.pricing && <DetailRow label="Pricing">{service.pricing}</DetailRow>}
 
           {service.fullDescription && (
             <DetailRow label="About">{service.fullDescription}</DetailRow>
@@ -146,7 +128,7 @@ export const ServiceShareCard = forwardRef<HTMLDivElement, ServiceShareCardProps
         </div>
 
         <p className="mt-8 text-center text-xs text-sage-500">
-          Find more on Ask Reilly · reily.vercel.app
+          Find more on Ask Reilly · askreillyni.com
         </p>
 
         {/* Preload logo for html-to-image capture */}
