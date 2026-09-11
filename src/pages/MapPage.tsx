@@ -92,6 +92,7 @@ export function MapPage() {
             services={mapServices}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            showPopups={false}
             height="calc(100dvh - 14rem - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))"
           />
           {selectedEnriched && (
