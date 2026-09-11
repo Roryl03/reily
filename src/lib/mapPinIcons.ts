@@ -47,12 +47,13 @@ function PinCategoryTile({
   glyphPx,
 }: {
   category: string
-  tilePx: number
-  glyphPx: number
+  tilePx: number | string
+  glyphPx: number | string
 }) {
   const { name, variant } = getCategoryIcon(category)
   const tile = TILE_INLINE[variant]
-  const radius = Math.round(tilePx * 0.36)
+  const radius =
+    typeof tilePx === 'number' ? Math.round(tilePx * 0.36) : '36%'
 
   return createElement(
     'span',
@@ -61,13 +62,14 @@ function PinCategoryTile({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: tilePx,
-        height: tilePx,
+        width: typeof tilePx === 'number' ? tilePx : '100%',
+        height: typeof tilePx === 'number' ? tilePx : '100%',
         borderRadius: radius,
         background: tile.background,
         boxShadow: `${tile.boxShadow}, 0 1px 2px rgba(11, 61, 46, 0.08)`,
         flexShrink: 0,
         lineHeight: 0,
+        boxSizing: 'border-box',
       },
     },
     createElement(ReilyIconGlyph, {
@@ -87,13 +89,18 @@ function PinCategoryTile({
 export function getCategoryPinTileMarkup(
   category: string,
   selected = false,
+  embedded = false,
 ): string {
-  const tilePx = selected ? 20 : 18
-  const glyphPx = selected ? 11 : 10
+  const tilePx = embedded ? '100%' : selected ? 20 : 18
+  const glyphPx = embedded ? '62%' : selected ? 11 : 10
   return renderToStaticMarkup(
     createElement(PinCategoryTile, { category, tilePx, glyphPx }),
   )
 }
 
-/** Pin-head centre in viewBox coordinates (0 0 30 36). */
-export const PIN_HEAD_CENTER_Y_RATIO = 8 / 36
+/** Icon tile placement inside the pin SVG viewBox (0 0 30 36). */
+export const PIN_TILE_VIEWBOX = {
+  x: 10,
+  y: 5,
+  size: 10,
+} as const
