@@ -11,15 +11,24 @@ import {
   PREVIEW_MAP_ZOOM,
   SERVICE_MAP_ZOOM,
 } from '@/lib/mapConfig'
+import { getCategoryPinIconMarkup } from '@/lib/mapPinIcons'
 import { formatDistance, getCategoryColor } from '@/lib/utils'
 import type { ServiceWithMeta, UserLocation } from '@/types/service'
 
-function createPinIcon(color: string, selected = false, count = 1) {
+function createPinIcon(
+  category: string,
+  color: string,
+  selected = false,
+  count = 1,
+) {
   const size = selected ? 36 : 30
   const height = selected ? 44 : 36
+  const iconSize = selected ? 15 : 13
+  const iconTop = selected ? 7 : 5
+  const iconMarkup = getCategoryPinIconMarkup(category, iconSize)
   const badge =
     count > 1
-      ? `<span style="position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#0B3D2E;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;border:2px solid #fff">${count}</span>`
+      ? `<span style="position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#0B3D2E;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;border:2px solid #fff;z-index:2">${count}</span>`
       : ''
   return L.divIcon({
     className: 'reily-map-pin',
@@ -27,8 +36,10 @@ function createPinIcon(color: string, selected = false, count = 1) {
       ${badge}
       <svg width="${size}" height="${height}" viewBox="0 0 30 36" aria-hidden="true" style="display:block;filter:drop-shadow(0 2px 4px rgba(11,61,46,0.25))">
         <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 21 15 21s15-9.75 15-21C30 6.716 23.284 0 15 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
-        <circle cx="15" cy="14" r="5" fill="#ffffff" opacity="0.95"/>
       </svg>
+      <div style="position:absolute;left:50%;top:${iconTop}px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;width:${iconSize}px;height:${iconSize}px;pointer-events:none">
+        ${iconMarkup}
+      </div>
     </div>`,
     iconSize: [size, height],
     iconAnchor: [size / 2, height],
@@ -137,6 +148,7 @@ export function MapView({
         lng,
         items,
         icon: createPinIcon(
+          primary.category,
           getCategoryColor(primary.category),
           items.some((s) => s.id === selectedId),
           items.length,
@@ -232,7 +244,7 @@ export function MapPreview({
   onMove?: (lat: number, lng: number) => void
   height?: string
 }) {
-  const icon = createPinIcon('#0B3D2E')
+  const icon = createPinIcon('Activities', '#0B3D2E')
 
   return (
     <div style={{ height }} className="reily-map-shell overflow-hidden rounded-xl border border-sage-200">
