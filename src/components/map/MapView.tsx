@@ -142,7 +142,7 @@ export function MapView({
         <TileLayer
           attribution={MAP_TILES.attribution}
           url={MAP_TILES.url}
-          subdomains={MAP_TILES.subdomains}
+          {...(MAP_TILES.subdomains ? { subdomains: MAP_TILES.subdomains } : {})}
           maxZoom={MAP_TILES.maxZoom}
         />
         <FitServiceBounds points={markerPoints} userPoint={userPoint} />
@@ -217,7 +217,7 @@ export function MapPreview({
         <TileLayer
           attribution={MAP_TILES.attribution}
           url={MAP_TILES.url}
-          subdomains={MAP_TILES.subdomains}
+          {...(MAP_TILES.subdomains ? { subdomains: MAP_TILES.subdomains } : {})}
           maxZoom={MAP_TILES.maxZoom}
         />
         <MapController center={[lat, lng]} zoom={PREVIEW_MAP_ZOOM} />
