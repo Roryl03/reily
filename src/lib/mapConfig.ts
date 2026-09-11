@@ -1,5 +1,9 @@
 /** CARTO Voyager — clean basemap. Free key: https://carto.com/basemaps/apikey */
-const CARTO_API_KEY = import.meta.env.VITE_CARTO_API_KEY?.trim()
+const CARTO_API_KEY = (
+  import.meta.env.CARTO_API_KEY ??
+  import.meta.env.VITE_CARTO_API_KEY ??
+  ''
+).trim()
 
 export interface MapTileConfig {
   url: string
