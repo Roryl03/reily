@@ -9,7 +9,12 @@ import {
 } from 'react'
 import { filterServices, sortServices } from '@/lib/filters'
 import { dataService } from '@/lib/storage'
-import { fetchServices, removeService, upsertService } from '@/lib/serviceRepository'
+import {
+  fetchServices,
+  refreshAllServiceLocations,
+  removeService,
+  upsertService,
+} from '@/lib/serviceRepository'
 import { isSupabaseEnabled } from '@/lib/supabase'
 import { initializeSupportStorage } from '@/lib/supportStorage'
 import { generateId } from '@/lib/utils'
@@ -53,6 +58,7 @@ interface AppContextValue {
   saveReport: (report: Omit<ServiceReport, 'id' | 'createdAt'>) => void
   reports: ServiceReport[]
   refreshServices: () => Promise<void>
+  refreshAllMapLocations: () => Promise<{ updated: number; failed: number; skipped: number }>
   clearDemoData: () => Promise<void>
   resetApp: () => void
   getServiceById: (id: string) => Service | undefined
@@ -239,6 +245,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [deleteService],
   )
 
+  const refreshAllMapLocations = useCallback(async () => {
+    if (!isSupabaseEnabled) {
+      return { updated: 0, failed: 0, skipped: services.length }
+    }
+    const result = await refreshAllServiceLocations(services)
+    await refreshServices()
+    return result
+  }, [services, refreshServices])
+
   const duplicateService = useCallback(
     async (id: string) => {
       const original = services.find((s) => s.id === id)
@@ -357,6 +372,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     saveReport,
     reports,
     refreshServices,
+    refreshAllMapLocations,
     clearDemoData,
     resetApp,
     getServiceById,

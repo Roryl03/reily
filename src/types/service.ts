@@ -107,6 +107,10 @@ export interface Service {
   town: string
   county: string
   postcode: string
+  /** Pop-up groups, mobile services, etc. without a permanent address */
+  noFixedLocation?: boolean
+  /** How to find the service when noFixedLocation is true */
+  locationInstructions?: string
   latitude: number
   longitude: number
   phone?: string

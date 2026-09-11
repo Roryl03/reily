@@ -1,9 +1,8 @@
 import { Check, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { MapPreview } from '@/components/map/MapView'
 import { ServiceImage } from '@/components/services/ServiceImage'
-import { LocationButton } from '@/components/location/LocationSearch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckboxField } from '@/components/ui/checkbox'
@@ -18,6 +17,15 @@ import {
 import { useApp } from '@/context/AppContext'
 import { isSupabaseEnabled } from '@/lib/supabase'
 import { uploadServiceImage } from '@/lib/serviceImages'
+import { geocodeAddress } from '@/lib/geocode'
+import {
+  normalizeAddress,
+  normalizeLocationFields,
+  normalizePostcode,
+  normalizeTown,
+  isValidPostcode,
+  type LocationFields,
+} from '@/lib/locationFormat'
 import { generateId, fileToDataUrl } from '@/lib/utils'
 import type {
   AccessibilityFeatures,
@@ -28,7 +36,7 @@ import type {
   WeekOpeningHours,
 } from '@/types/service'
 import { IRISH_COUNTIES } from '@/data/irishCounties'
-import { CATEGORIES, DEMO_LOCATION } from '@/types/service'
+import { CATEGORIES } from '@/types/service'
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const
 
@@ -51,8 +59,8 @@ const emptyService = (): Partial<Service> => ({
   town: '',
   county: 'Antrim',
   postcode: '',
-  latitude: DEMO_LOCATION.latitude,
-  longitude: DEMO_LOCATION.longitude,
+  latitude: 0,
+  longitude: 0,
   images: [],
   openingHours: defaultHours(),
   accessibilityFeatures: {},
@@ -65,6 +73,8 @@ const emptyService = (): Partial<Service> => ({
   senSessions: [],
   events: [],
   parkingInformation: '',
+  noFixedLocation: false,
+  locationInstructions: '',
 })
 
 const ACCESSIBILITY_OPTIONS: { key: keyof AccessibilityFeatures; label: string }[] = [
@@ -92,8 +102,7 @@ const ACCESSIBILITY_OPTIONS: { key: keyof AccessibilityFeatures; label: string }
 
 export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
   const isRequest = mode === 'request'
-  const [searchParams] = useSearchParams()
-  const { saveService, location, getServiceById } = useApp()
+  const { saveService, getServiceById } = useApp()
   const { id: editId } = useParams<{ id: string }>()
   const isEdit = !isRequest && !!editId
 
@@ -105,27 +114,89 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
   const [savedId, setSavedId] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
-
-  useEffect(() => {
-    const lat = searchParams.get('lat')
-    const lng = searchParams.get('lng')
-    if (lat && lng) {
-      setData((d) => ({ ...d, latitude: Number(lat), longitude: Number(lng) }))
-    } else if (location) {
-      setData((d) => ({
-        ...d,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      }))
-    }
-  }, [searchParams, location])
+  const [geocodeStatus, setGeocodeStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
+  const [geocodeError, setGeocodeError] = useState('')
+  const geocodeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (isEdit && editId) {
       const existing = getServiceById(editId)
-      if (existing) setData(existing)
+      if (existing) {
+        setData(existing)
+        if (
+          !existing.noFixedLocation &&
+          existing.latitude &&
+          existing.longitude &&
+          (existing.latitude !== 0 || existing.longitude !== 0)
+        ) {
+          setGeocodeStatus('ok')
+        }
+      }
     }
   }, [isEdit, editId, getServiceById])
+
+  useEffect(() => {
+    if (data.noFixedLocation) {
+      setGeocodeStatus('idle')
+      setGeocodeError('')
+      return
+    }
+
+    const address = data.address?.trim()
+    const town = data.town?.trim()
+    const postcode = data.postcode?.trim()
+    if (!address || !town || !postcode) {
+      setGeocodeStatus('idle')
+      setGeocodeError('')
+      return
+    }
+
+    if (geocodeTimer.current) clearTimeout(geocodeTimer.current)
+    setGeocodeStatus('loading')
+    setGeocodeError('')
+
+    geocodeTimer.current = setTimeout(async () => {
+      const location = normalizeLocationFields({
+        address,
+        town,
+        county: data.county ?? 'Antrim',
+        postcode,
+      })
+
+      const result = await geocodeAddress(
+        location.address,
+        location.town,
+        location.postcode,
+        location.county,
+      )
+
+      if (result) {
+        setData((d) => ({
+          ...d,
+          ...location,
+          latitude: result.latitude,
+          longitude: result.longitude,
+        }))
+        setGeocodeStatus('ok')
+        setGeocodeError('')
+      } else {
+        setGeocodeStatus('error')
+        setGeocodeError(
+          'We could not find this address on the map. Please check the street number and postcode.',
+        )
+      }
+    }, 600)
+
+    return () => {
+      if (geocodeTimer.current) clearTimeout(geocodeTimer.current)
+    }
+  }, [
+    data.address,
+    data.town,
+    data.postcode,
+    data.county,
+    data.noFixedLocation,
+  ])
 
   const update = (partial: Partial<Service>) => setData((d) => ({ ...d, ...partial }))
   const updateAccessibility = (key: keyof AccessibilityFeatures, value: boolean) =>
@@ -139,22 +210,56 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
       sensoryInformation: { ...d.sensoryInformation, ...partial },
     }))
 
-  const validateStep = (s: number): boolean => {
+  const currentLocationFields = (): LocationFields => ({
+    address: data.noFixedLocation ? 'No fixed location' : (data.address ?? ''),
+    town: data.town ?? '',
+    county: data.county ?? 'Antrim',
+    postcode: data.postcode ?? '',
+    noFixedLocation: data.noFixedLocation,
+  })
+
+  const validateStep = (s: number, locationOverride?: LocationFields): boolean => {
     const e: Record<string, string> = {}
+    const location = locationOverride ?? normalizeLocationFields(currentLocationFields())
+
     if (s === 1) {
       if (!data.name?.trim()) e.name = 'Name is required'
       if (!data.shortDescription?.trim()) e.shortDescription = 'Short description is required'
     }
     if (s === 2) {
-      if (!data.address?.trim()) e.address = 'Address is required'
-      if (!data.town?.trim()) e.town = 'Town is required'
-      if (!data.postcode?.trim()) e.postcode = 'Postcode is required'
+      if (location.noFixedLocation) {
+        if (!data.locationInstructions?.trim()) {
+          e.locationInstructions = 'Tell people how they can find you'
+        }
+      } else {
+        if (!location.address?.trim()) e.address = 'Address is required'
+        if (!location.town?.trim()) e.town = 'Town is required'
+        if (!location.postcode?.trim()) {
+          e.postcode = 'Postcode is required'
+        } else if (!isValidPostcode(location.postcode)) {
+          e.postcode = 'Enter a valid postcode (e.g. BT1 4DA)'
+        }
+        if (geocodeStatus === 'loading') {
+          e.geocode = 'Finding this address on the map…'
+        } else if (geocodeStatus !== 'ok') {
+          e.geocode =
+            geocodeError ||
+            'Enter a valid address and postcode so we can place it accurately on the map'
+        }
+      }
     }
     setErrors(e)
     return Object.keys(e).length === 0
   }
 
   const next = () => {
+    if (step === 2) {
+      const location = normalizeLocationFields(currentLocationFields())
+      update(location)
+      if (!validateStep(2, location)) return
+      setStep((s) => Math.min(s + 1, 5))
+      return
+    }
     if (validateStep(step)) setStep((s) => Math.min(s + 1, 5))
   }
   const back = () => setStep((s) => Math.max(s - 1, 1))
@@ -195,18 +300,52 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
     const serviceId =
       isEdit && editId ? editId : isSupabaseEnabled ? crypto.randomUUID() : generateId()
 
+    const location = normalizeLocationFields({
+      address: data.noFixedLocation ? 'No fixed location' : (data.address ?? ''),
+      town: data.town?.trim() || (data.noFixedLocation ? 'Various' : ''),
+      county: data.county ?? 'Antrim',
+      postcode: data.noFixedLocation ? (data.postcode?.trim() || 'N/A') : (data.postcode ?? ''),
+      noFixedLocation: data.noFixedLocation,
+    })
+
+    let latitude = data.latitude ?? 0
+    let longitude = data.longitude ?? 0
+
+    if (!data.noFixedLocation) {
+      const geocoded = await geocodeAddress(
+        location.address,
+        location.town,
+        location.postcode,
+        location.county,
+      )
+      if (!geocoded) {
+        setSubmitError(
+          'We could not verify this address on the map. Please check the street number and postcode.',
+        )
+        setStep(2)
+        setSubmitting(false)
+        return
+      }
+      latitude = geocoded.latitude
+      longitude = geocoded.longitude
+    }
+
     const service: Service = {
       id: serviceId,
       name: data.name!,
       category: (data.category ?? 'Activities') as Category,
       shortDescription: data.shortDescription!,
       fullDescription: data.fullDescription ?? data.shortDescription!,
-      address: data.address!,
-      town: data.town!,
-      county: data.county ?? 'Antrim',
-      postcode: data.postcode!,
-      latitude: data.latitude ?? DEMO_LOCATION.latitude,
-      longitude: data.longitude ?? DEMO_LOCATION.longitude,
+      address: location.address,
+      town: location.town,
+      county: location.county,
+      postcode: location.postcode,
+      noFixedLocation: data.noFixedLocation ?? false,
+      locationInstructions: data.noFixedLocation
+        ? data.locationInstructions?.trim()
+        : undefined,
+      latitude,
+      longitude,
       phone: data.phone,
       email: data.email,
       website: data.website,
@@ -385,73 +524,160 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
 
       {step === 2 && (
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="address">Address line *</Label>
-            <Input id="address" value={data.address ?? ''} onChange={(e) => update({ address: e.target.value })} />
-            {errors.address && <p className="text-sm text-error" role="alert">{errors.address}</p>}
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="town">Town *</Label>
-              <Input id="town" value={data.town ?? ''} onChange={(e) => update({ town: e.target.value })} />
-              {errors.town && <p className="text-sm text-error" role="alert">{errors.town}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="county">County</Label>
-              <Select
-                value={data.county ?? 'Antrim'}
-                onValueChange={(v) => update({ county: v })}
-              >
-                <SelectTrigger id="county">
-                  <SelectValue placeholder="Select county" />
-                </SelectTrigger>
-                <SelectContent>
-                  {IRISH_COUNTIES.map((county) => (
-                    <SelectItem key={county} value={county}>
-                      {county}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="postcode">Postcode *</Label>
-            <Input id="postcode" value={data.postcode ?? ''} onChange={(e) => update({ postcode: e.target.value })} />
-            {errors.postcode && <p className="text-sm text-error" role="alert">{errors.postcode}</p>}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <LocationButton
-              variant="secondary"
-              onComplete={() => {
-                if (location) update({ latitude: location.latitude, longitude: location.longitude })
-              }}
-            />
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => update({ latitude: data.latitude, longitude: data.longitude })}
-            >
-              Use centre of map
-            </Button>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="lat">Latitude</Label>
-              <Input id="lat" type="number" step="any" value={data.latitude ?? ''} onChange={(e) => update({ latitude: Number(e.target.value) })} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lng">Longitude</Label>
-              <Input id="lng" type="number" step="any" value={data.longitude ?? ''} onChange={(e) => update({ longitude: Number(e.target.value) })} />
-            </div>
-          </div>
-          {data.latitude && data.longitude && (
-            <MapPreview
-              lat={data.latitude}
-              lng={data.longitude}
-              onMove={(lat, lng) => update({ latitude: lat, longitude: lng })}
-              height="240px"
-            />
+          <Card className="border-hunter/25 bg-hunter-light/40">
+            <CardContent className="space-y-3 p-4 sm:p-5">
+              <CheckboxField
+                id="no-fixed-location"
+                label="No fixed location"
+                checked={data.noFixedLocation ?? false}
+                onCheckedChange={(checked) =>
+                  update({
+                    noFixedLocation: checked,
+                    ...(checked
+                      ? {}
+                      : { locationInstructions: '' }),
+                  })
+                }
+              />
+              <p className="text-sm leading-relaxed text-sage-700 pl-8">
+                For pop-up groups, mobile services, or anywhere that does not have a permanent
+                address people can visit.
+              </p>
+            </CardContent>
+          </Card>
+
+          {data.noFixedLocation ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="location-instructions">How can people find you? *</Label>
+                <Textarea
+                  id="location-instructions"
+                  value={data.locationInstructions ?? ''}
+                  onChange={(e) => update({ locationInstructions: e.target.value })}
+                  placeholder="e.g. Venue details are posted on our Facebook page each week, or message us to book and we will share the location."
+                  rows={4}
+                />
+                {errors.locationInstructions && (
+                  <p className="text-sm text-error" role="alert">
+                    {errors.locationInstructions}
+                  </p>
+                )}
+                <p className="text-sm text-sage-600">
+                  Give a short, clear instruction so families know how to get details before they
+                  travel.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="town">General area (optional)</Label>
+                  <Input
+                    id="town"
+                    value={data.town ?? ''}
+                    onChange={(e) => update({ town: e.target.value })}
+                    onBlur={(e) => update({ town: normalizeTown(e.target.value) })}
+                    placeholder="e.g. Belfast area, Mid Ulster"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="county">County</Label>
+                  <Select
+                    value={data.county ?? 'Antrim'}
+                    onValueChange={(v) => update({ county: v })}
+                  >
+                    <SelectTrigger id="county">
+                      <SelectValue placeholder="Select county" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {IRISH_COUNTIES.map((county) => (
+                        <SelectItem key={county} value={county}>
+                          {county}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="address">Address line *</Label>
+                <Input
+                  id="address"
+                  value={data.address ?? ''}
+                  onChange={(e) => update({ address: e.target.value })}
+                  onBlur={(e) => update({ address: normalizeAddress(e.target.value) })}
+                  placeholder="e.g. 12 Main Street"
+                />
+                {errors.address && <p className="text-sm text-error" role="alert">{errors.address}</p>}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="town">Town *</Label>
+                  <Input
+                    id="town"
+                    value={data.town ?? ''}
+                    onChange={(e) => update({ town: e.target.value })}
+                    onBlur={(e) => update({ town: normalizeTown(e.target.value) })}
+                    placeholder="e.g. Belfast"
+                  />
+                  {errors.town && <p className="text-sm text-error" role="alert">{errors.town}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="county">County</Label>
+                  <Select
+                    value={data.county ?? 'Antrim'}
+                    onValueChange={(v) => update({ county: v })}
+                  >
+                    <SelectTrigger id="county">
+                      <SelectValue placeholder="Select county" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {IRISH_COUNTIES.map((county) => (
+                        <SelectItem key={county} value={county}>
+                          {county}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="postcode">Postcode *</Label>
+                <Input
+                  id="postcode"
+                  value={data.postcode ?? ''}
+                  onChange={(e) => update({ postcode: e.target.value.toUpperCase() })}
+                  onBlur={(e) => update({ postcode: normalizePostcode(e.target.value) })}
+                  placeholder="e.g. BT1 4DA"
+                />
+                {errors.postcode && <p className="text-sm text-error" role="alert">{errors.postcode}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Map preview</Label>
+                {geocodeStatus === 'loading' && (
+                  <p className="text-sm text-sage-600">Finding this address on the map…</p>
+                )}
+                {geocodeStatus === 'ok' && data.latitude && data.longitude && (
+                  <>
+                    <p className="text-sm text-sage-600">
+                      Pin placed from your address and postcode — no need to adjust coordinates.
+                    </p>
+                    <MapPreview lat={data.latitude} lng={data.longitude} height="240px" />
+                  </>
+                )}
+                {geocodeStatus === 'error' && (
+                  <p className="text-sm text-error" role="alert">
+                    {geocodeError}
+                  </p>
+                )}
+                {errors.geocode && geocodeStatus !== 'error' && (
+                  <p className="text-sm text-error" role="alert">
+                    {errors.geocode}
+                  </p>
+                )}
+              </div>
+            </>
           )}
         </div>
       )}
@@ -595,7 +821,16 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
               <ReviewRow label="Name" value={data.name} step={1} onEdit={() => setStep(1)} />
               <ReviewRow label="Category" value={data.category} step={1} onEdit={() => setStep(1)} />
               <ReviewRow label="Description" value={data.shortDescription} step={1} onEdit={() => setStep(1)} />
-              <ReviewRow label="Address" value={`${data.address}, ${data.town}, ${data.postcode}`} step={2} onEdit={() => setStep(2)} />
+              <ReviewRow
+                label="Location"
+                value={
+                  data.noFixedLocation
+                    ? `No fixed location. ${data.locationInstructions ?? ''}${data.town ? ` (${data.town})` : ''}`
+                    : `${data.address}, ${data.town}, ${data.postcode}`
+                }
+                step={2}
+                onEdit={() => setStep(2)}
+              />
               <ReviewRow label="Accessibility" value={`${Object.values(data.accessibilityFeatures ?? {}).filter(Boolean).length} features selected`} step={3} onEdit={() => setStep(3)} />
             </CardContent>
           </Card>

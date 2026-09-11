@@ -219,8 +219,28 @@
 .leaflet-container {
   font-family: inherit;
   z-index: 0;
+  background: #eef2f0;
+}
+
+.reily-map-shell .leaflet-tile {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.reily-map-pin,
+.reily-map-user {
+  background: transparent !important;
+  border: none !important;
 }
 
 .leaflet-popup-content-wrapper {
   border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(11, 61, 46, 0.12);
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 10px !important;
 }

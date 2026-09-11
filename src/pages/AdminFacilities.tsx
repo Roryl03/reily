@@ -27,6 +27,7 @@ export function AdminFacilitiesPage() {
     deleteService,
     acceptServiceRequest,
     declineServiceRequest,
+    refreshAllMapLocations,
   } = useApp()
 
   const facilities = (isSupabaseEnabled
@@ -125,7 +126,7 @@ export function AdminFacilitiesPage() {
       {servicesLoading ? (
         <p className="text-center text-sage-600 py-12">Loading…</p>
       ) : tab === 'dashboard' ? (
-        <AdminDashboard stats={stats} />
+        <AdminDashboard stats={stats} onRefreshMapLocations={refreshAllMapLocations} />
       ) : tab === 'requests' ? (
         requests.length === 0 ? (
           <div className="ios-card p-8 text-center">

@@ -1,4 +1,5 @@
 import { seedServices } from '@/data/seedServices'
+import { normalizeLocationFields } from '@/lib/locationFormat'
 import { initializeSupportStorage } from '@/lib/supportStorage'
 import { generateId } from '@/lib/utils'
 import type {
@@ -46,8 +47,19 @@ export function initializeStorage(): void {
   }
 }
 
+function withNormalizedLocation(service: Service): Service {
+  const location = normalizeLocationFields({
+    address: service.address,
+    town: service.town,
+    county: service.county,
+    postcode: service.postcode,
+    noFixedLocation: service.noFixedLocation,
+  })
+  return { ...service, ...location }
+}
+
 export function loadServices(): Service[] {
-  return readJson<Service[]>(KEYS.services, seedServices)
+  return readJson<Service[]>(KEYS.services, seedServices).map(withNormalizedLocation)
 }
 
 export function saveService(service: Service): Service {
