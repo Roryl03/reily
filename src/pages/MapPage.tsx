@@ -1,5 +1,5 @@
 import { Crosshair, List, SlidersHorizontal } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MapPreviewCard, MapView } from '@/components/map/MapView'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
@@ -7,24 +7,38 @@ import { ListYourFacilityCta } from '@/components/services/ListYourFacilityCta'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
-import { DEFAULT_FILTERS } from '@/types/service'
+import { filterServices, sortServices } from '@/lib/filters'
+import { DEFAULT_FILTERS, isLiveService } from '@/types/service'
 
 export function MapPage() {
   const {
     location,
     filteredServices,
+    services,
     filters,
+    sort,
     setFilters,
     requestCurrentLocation,
     isFavourite,
     toggleFavourite,
   } = useApp()
+
+  /** Map shows all of NI — don't hide listings outside the search radius. */
+  const mapServices = useMemo(() => {
+    const visible = services.filter(isLiveService)
+    const filtered = filterServices(
+      visible,
+      { ...filters, radius: 'anywhere' },
+      location,
+    )
+    return sortServices(filtered, sort)
+  }, [services, filters, location, sort])
   const [view, setView] = useState<'map' | 'list'>('map')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
   const selectedEnriched = selectedId
-    ? filteredServices.find((s) => s.id === selectedId) ?? null
+    ? mapServices.find((s) => s.id === selectedId) ?? null
     : null
 
   const handleClearFilters = () => {
@@ -75,7 +89,7 @@ export function MapPage() {
         <div className="relative -mx-4 lg:mx-0">
           <MapView
             location={location}
-            services={filteredServices}
+            services={mapServices}
             selectedId={selectedId}
             onSelect={setSelectedId}
             height="calc(100dvh - 14rem - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))"

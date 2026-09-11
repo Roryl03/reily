@@ -14,15 +14,22 @@ import {
 import { formatDistance, getCategoryColor } from '@/lib/utils'
 import type { ServiceWithMeta, UserLocation } from '@/types/service'
 
-function createPinIcon(color: string, selected = false) {
+function createPinIcon(color: string, selected = false, count = 1) {
   const size = selected ? 36 : 30
   const height = selected ? 44 : 36
+  const badge =
+    count > 1
+      ? `<span style="position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#0B3D2E;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;border:2px solid #fff">${count}</span>`
+      : ''
   return L.divIcon({
     className: 'reily-map-pin',
-    html: `<svg width="${size}" height="${height}" viewBox="0 0 30 36" aria-hidden="true" style="display:block;filter:drop-shadow(0 2px 4px rgba(11,61,46,0.25))">
-      <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 21 15 21s15-9.75 15-21C30 6.716 23.284 0 15 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
-      <circle cx="15" cy="14" r="5" fill="#ffffff" opacity="0.95"/>
-    </svg>`,
+    html: `<div style="position:relative;width:${size}px;height:${height}px">
+      ${badge}
+      <svg width="${size}" height="${height}" viewBox="0 0 30 36" aria-hidden="true" style="display:block;filter:drop-shadow(0 2px 4px rgba(11,61,46,0.25))">
+        <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 21 15 21s15-9.75 15-21C30 6.716 23.284 0 15 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+        <circle cx="15" cy="14" r="5" fill="#ffffff" opacity="0.95"/>
+      </svg>
+    </div>`,
     iconSize: [size, height],
     iconAnchor: [size / 2, height],
     popupAnchor: [0, -height + 4],
@@ -102,26 +109,45 @@ export function MapView({
     ? [location.latitude, location.longitude]
     : NI_MAP_CENTER
 
-  const markers = useMemo(
-    () =>
-      services
-        .filter(
-          (s) =>
-            !s.noFixedLocation &&
-            Number.isFinite(s.latitude) &&
-            Number.isFinite(s.longitude) &&
-            (s.latitude !== 0 || s.longitude !== 0),
-        )
-        .map((s) => ({
-          ...s,
-          icon: createPinIcon(getCategoryColor(s.category), s.id === selectedId),
-        })),
-    [services, selectedId],
-  )
+  const markerGroups = useMemo(() => {
+    const mappable = services.filter(
+      (s) =>
+        !s.noFixedLocation &&
+        Number.isFinite(s.latitude) &&
+        Number.isFinite(s.longitude) &&
+        (s.latitude !== 0 || s.longitude !== 0),
+    )
+
+    const groups = new Map<string, ServiceWithMeta[]>()
+    for (const service of mappable) {
+      const key = `${service.latitude.toFixed(5)},${service.longitude.toFixed(5)}`
+      const list = groups.get(key) ?? []
+      list.push(service)
+      groups.set(key, list)
+    }
+
+    return [...groups.entries()].map(([key, items]) => {
+      const [lat, lng] = key.split(',').map(Number)
+      const primary =
+        items.find((s) => s.id === selectedId) ??
+        items[0]
+      return {
+        key,
+        lat,
+        lng,
+        items,
+        icon: createPinIcon(
+          getCategoryColor(primary.category),
+          items.some((s) => s.id === selectedId),
+          items.length,
+        ),
+      }
+    })
+  }, [services, selectedId])
 
   const markerPoints = useMemo(
-    () => markers.map((s) => [s.latitude, s.longitude] as [number, number]),
-    [markers],
+    () => markerGroups.map((g) => [g.lat, g.lng] as [number, number]),
+    [markerGroups],
   )
 
   const userPoint = location
@@ -158,30 +184,34 @@ export function MapView({
           </Marker>
         )}
 
-        {markers.map((s) => (
+        {markerGroups.map((group) => (
           <Marker
-            key={s.id}
-            position={[s.latitude, s.longitude]}
-            icon={s.icon}
-            zIndexOffset={s.id === selectedId ? 1000 : 0}
+            key={group.key}
+            position={[group.lat, group.lng]}
+            icon={group.icon}
+            zIndexOffset={group.items.some((s) => s.id === selectedId) ? 1000 : 0}
             eventHandlers={{
-              click: () => onSelect?.(s.id),
+              click: () => onSelect?.(group.items[0]?.id ?? null),
             }}
           >
             {showPopups && (
               <Popup className="reily-map-popup">
-                <div className="min-w-[200px] space-y-2">
-                  <p className="text-sm font-semibold text-sage-900">{s.name}</p>
-                  <p className="text-xs text-sage-600">{s.category}</p>
-                  <p className="text-xs leading-relaxed text-sage-700">
-                    {s.address}, {s.town}, {s.postcode}
-                  </p>
-                  {s.distanceMiles !== undefined && (
-                    <p className="text-xs text-sage-500">{formatDistance(s.distanceMiles)} away</p>
-                  )}
-                  <Button asChild size="sm" className="w-full">
-                    <Link to={`/service/${s.id}`}>View details</Link>
-                  </Button>
+                <div className="min-w-[200px] space-y-3">
+                  {group.items.map((s) => (
+                    <div key={s.id} className="space-y-2 border-b border-sage-100 pb-3 last:border-0 last:pb-0">
+                      <p className="text-sm font-semibold text-sage-900">{s.name}</p>
+                      <p className="text-xs text-sage-600">{s.category}</p>
+                      <p className="text-xs leading-relaxed text-sage-700">
+                        {s.address}, {s.town}, {s.postcode}
+                      </p>
+                      {s.distanceMiles !== undefined && (
+                        <p className="text-xs text-sage-500">{formatDistance(s.distanceMiles)} away</p>
+                      )}
+                      <Button asChild size="sm" className="w-full">
+                        <Link to={`/service/${s.id}`}>View details</Link>
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </Popup>
             )}
