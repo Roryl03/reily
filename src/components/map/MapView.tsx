@@ -11,7 +11,7 @@ import {
   PREVIEW_MAP_ZOOM,
   SERVICE_MAP_ZOOM,
 } from '@/lib/mapConfig'
-import { getCategoryPinIconMarkup } from '@/lib/mapPinIcons'
+import { getCategoryPinTileMarkup, PIN_HEAD_CENTER_Y_RATIO } from '@/lib/mapPinIcons'
 import { formatDistance, getCategoryColor } from '@/lib/utils'
 import type { ServiceWithMeta, UserLocation } from '@/types/service'
 
@@ -21,29 +21,28 @@ function createPinIcon(
   selected = false,
   count = 1,
 ) {
-  const size = selected ? 36 : 30
-  const height = selected ? 44 : 36
-  const iconSize = selected ? 15 : 13
-  const iconTop = selected ? 7 : 5
-  const iconMarkup = getCategoryPinIconMarkup(category, iconSize)
+  const width = selected ? 36 : 32
+  const height = selected ? 44 : 38
+  const headY = Math.round(height * PIN_HEAD_CENTER_Y_RATIO)
+  const tileMarkup = getCategoryPinTileMarkup(category, selected)
   const badge =
     count > 1
-      ? `<span style="position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#0B3D2E;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;border:2px solid #fff;z-index:2">${count}</span>`
+      ? `<span class="reily-map-pin-badge">${count}</span>`
       : ''
   return L.divIcon({
     className: 'reily-map-pin',
-    html: `<div style="position:relative;width:${size}px;height:${height}px">
+    html: `<div class="reily-map-pin-wrap" style="width:${width}px;height:${height}px">
       ${badge}
-      <svg width="${size}" height="${height}" viewBox="0 0 30 36" aria-hidden="true" style="display:block;filter:drop-shadow(0 2px 4px rgba(11,61,46,0.25))">
+      <svg class="reily-map-pin-shape" width="${width}" height="${height}" viewBox="0 0 30 36" aria-hidden="true">
         <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 21 15 21s15-9.75 15-21C30 6.716 23.284 0 15 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
       </svg>
-      <div style="position:absolute;left:50%;top:${iconTop}px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;width:${iconSize}px;height:${iconSize}px;pointer-events:none">
-        ${iconMarkup}
+      <div class="reily-map-pin-tile" style="left:50%;top:${headY}px">
+        ${tileMarkup}
       </div>
     </div>`,
-    iconSize: [size, height],
-    iconAnchor: [size / 2, height],
-    popupAnchor: [0, -height + 4],
+    iconSize: [width, height],
+    iconAnchor: [width / 2, height],
+    popupAnchor: [0, -height + 6],
   })
 }
 

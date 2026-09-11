@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   Accessibility,
@@ -76,16 +77,19 @@ export function ReilyIconGlyph({
   name,
   className,
   filled,
+  style,
 }: {
   name: ReilyIconName
   className?: string
   filled?: boolean
+  style?: CSSProperties
 }) {
   const Icon = ICONS[name]
 
   return (
     <Icon
       className={cn('shrink-0', className)}
+      style={style}
       strokeWidth={1.75}
       absoluteStrokeWidth
       fill={filled ? 'currentColor' : 'none'}

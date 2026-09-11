@@ -232,6 +232,48 @@
   border: none !important;
 }
 
+.reily-map-pin-wrap {
+  position: relative;
+}
+
+.reily-map-pin-shape {
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(11, 61, 46, 0.22));
+}
+
+.reily-map-pin-tile {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.reily-map-pin-tile svg {
+  display: block;
+}
+
+.reily-map-pin-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 2;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #0b3d2e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(11, 61, 46, 0.2);
+}
+
 .leaflet-popup-content-wrapper {
   border-radius: 1rem;
   box-shadow: 0 8px 24px rgba(11, 61, 46, 0.12);
