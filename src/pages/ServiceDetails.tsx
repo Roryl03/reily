@@ -38,6 +38,7 @@ import {
   formatDistance,
   formatPhoneLink,
   formatWebsiteUrl,
+  formatServiceAddress,
   getDirectionsUrl,
   shareService,
 } from '@/lib/utils'
@@ -166,7 +167,11 @@ export function ServiceDetailsPage() {
           {!service.noFixedLocation && (
             <Button asChild>
               <a
-                href={getDirectionsUrl(service.latitude, service.longitude, service.name)}
+                href={getDirectionsUrl(
+                  service.latitude,
+                  service.longitude,
+                  formatServiceAddress(service),
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
               >

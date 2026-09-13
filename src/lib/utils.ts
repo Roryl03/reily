@@ -36,27 +36,52 @@ export function isAppleMapsPreferred(): boolean {
   return isIOS || isIPadOS || isMac
 }
 
-export function getAppleMapsDirectionsUrl(lat: number, lng: number, name?: string): string {
-  const coords = `${lat},${lng}`
-  if (name) {
-    return `https://maps.apple.com/?daddr=${encodeURIComponent(name)}&ll=${coords}`
-  }
-  return `https://maps.apple.com/?daddr=${coords}`
+export function formatServiceAddress(service: {
+  address: string
+  town: string
+  postcode: string
+  county?: string
+}): string {
+  return [service.address, service.town, service.postcode, service.county]
+    .filter(Boolean)
+    .join(', ')
 }
 
-export function getGoogleMapsDirectionsUrl(lat: number, lng: number, name?: string): string {
-  const params = new URLSearchParams({
-    api: '1',
-    destination: name ? `${name}@${lat},${lng}` : `${lat},${lng}`,
-  })
+export function getAppleMapsDirectionsUrl(
+  lat: number,
+  lng: number,
+  address?: string,
+): string {
+  const coords = `${lat},${lng}`
+  if (address) {
+    const params = new URLSearchParams({
+      daddr: address,
+      ll: coords,
+    })
+    return `https://maps.apple.com/?${params.toString()}`
+  }
+  return `https://maps.apple.com/?daddr=${encodeURIComponent(coords)}`
+}
+
+export function getGoogleMapsDirectionsUrl(
+  lat: number,
+  lng: number,
+  address?: string,
+): string {
+  const params = new URLSearchParams({ api: '1' })
+  params.set('destination', address ?? `${lat},${lng}`)
   return `https://www.google.com/maps/dir/?${params.toString()}`
 }
 
 /** Opens Apple Maps on iOS/macOS, Google Maps elsewhere */
-export function getDirectionsUrl(lat: number, lng: number, name?: string): string {
+export function getDirectionsUrl(
+  lat: number,
+  lng: number,
+  address?: string,
+): string {
   return isAppleMapsPreferred()
-    ? getAppleMapsDirectionsUrl(lat, lng, name)
-    : getGoogleMapsDirectionsUrl(lat, lng, name)
+    ? getAppleMapsDirectionsUrl(lat, lng, address)
+    : getGoogleMapsDirectionsUrl(lat, lng, address)
 }
 
 export function shareService(name: string, url: string): void {

@@ -36,9 +36,18 @@ const EXTRA_TOWNS: Record<string, string> = {
   'holywood': 'Holywood',
   'comber': 'Comber',
   'antrim town': 'Antrim',
+  londonderry: 'Derry',
+  'derry/londonderry': 'Derry',
+  'londonderry/derry': 'Derry',
 }
 
 Object.assign(TOWN_CANONICAL, EXTRA_TOWNS)
+
+const COUNTY_ALIASES: Record<string, string> = {
+  londonderry: 'Derry',
+  'co. londonderry': 'Derry',
+  'co londonderry': 'Derry',
+}
 
 const LOWERCASE_WORDS = new Set(['and', 'of', 'the', 'in', 'on', 'at', 'de', 'la', 'an'])
 const ADDRESS_ABBREVIATIONS: Record<string, string> = {
@@ -111,6 +120,8 @@ export function normalizeTown(raw: string): string {
 
   const key = trimmed.toLowerCase()
   if (TOWN_CANONICAL[key]) return TOWN_CANONICAL[key]
+  if (/^derry(\s*\/\s*londonderry)?$/i.test(trimmed)) return 'Derry'
+  if (/^londonderry(\s*\/\s*derry)?$/i.test(trimmed)) return 'Derry'
 
   // "belfast area", "mid ulster" — title-case each word
   return trimmed
@@ -146,12 +157,19 @@ export function normalizeAddress(raw: string): string {
     .join(' ')
 }
 
-/** Match county against the official list (Antrim, Londonderry, etc.). */
+/** Match county against the official list (Antrim, Derry, etc.). Never use Londonderry. */
 export function normalizeCounty(raw: string): string {
   const trimmed = raw.trim()
   if (!trimmed) return 'Antrim'
+  const alias = COUNTY_ALIASES[trimmed.toLowerCase()]
+  if (alias) return alias
   const match = IRISH_COUNTIES.find((c) => c.toLowerCase() === trimmed.toLowerCase())
   return match ?? titleCaseSegment(trimmed)
+}
+
+/** Display label for counties in admin and public UI. */
+export function displayCounty(raw: string): string {
+  return normalizeCounty(raw)
 }
 
 export interface LocationFields {

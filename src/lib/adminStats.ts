@@ -1,3 +1,4 @@
+import { displayCounty } from '@/lib/locationFormat'
 import type { Service } from '@/types/service'
 import { isLiveService } from '@/types/service'
 
@@ -18,7 +19,12 @@ function countBy(services: Service[], key: 'county' | 'category'): CountEntry[] 
 
   for (const service of services) {
     const raw = service[key]?.trim()
-    const label = raw || 'Not specified'
+    const label =
+      raw == null || raw === ''
+        ? 'Not specified'
+        : key === 'county'
+          ? displayCounty(raw)
+          : raw
     counts.set(label, (counts.get(label) ?? 0) + 1)
   }
 

@@ -62,10 +62,10 @@ export function AboutPage() {
                 src={ABOUT_FAMILY_PHOTO_SRC}
                 alt={FAMILY_PHOTO_ALT}
                 className={cn(
-                  'mx-auto block w-full rounded-xl object-contain object-center',
+                  'mx-auto block w-full rounded-xl object-cover object-center',
                   photoLoaded ? 'opacity-100' : 'opacity-0',
                 )}
-                style={{ maxHeight: 'min(70vh, 520px)' }}
+                style={{ maxHeight: 'min(80vh, 640px)', aspectRatio: '3 / 4' }}
                 onLoad={() => setPhotoLoaded(true)}
                 onError={() => setPhotoError(true)}
               />

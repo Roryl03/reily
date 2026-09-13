@@ -17,7 +17,7 @@ export const IRISH_COUNTIES = [
   'Laois',
   'Leitrim',
   'Limerick',
-  'Londonderry',
+  'Derry',
   'Longford',
   'Louth',
   'Mayo',
