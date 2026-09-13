@@ -36,13 +36,23 @@ export function isAppleMapsPreferred(): boolean {
   return isIOS || isIPadOS || isMac
 }
 
+function isIOSDevice(): boolean {
+  if (typeof navigator === 'undefined') return false
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) return true
+  return navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+}
+
+function hasValidCoords(lat: number, lng: number): boolean {
+  return Number.isFinite(lat) && Number.isFinite(lng) && !(lat === 0 && lng === 0)
+}
+
 export function formatServiceAddress(service: {
   address: string
   town: string
   postcode: string
   county?: string
 }): string {
-  return [service.address, service.town, service.postcode, service.county]
+  return [service.address, service.town, service.postcode, service.county, 'Northern Ireland']
     .filter(Boolean)
     .join(', ')
 }
@@ -52,15 +62,20 @@ export function getAppleMapsDirectionsUrl(
   lng: number,
   address?: string,
 ): string {
-  const coords = `${lat},${lng}`
-  if (address) {
-    const params = new URLSearchParams({
-      daddr: address,
-      ll: coords,
-    })
-    return `https://maps.apple.com/?${params.toString()}`
+  const base = isIOSDevice() ? 'maps://?' : 'https://maps.apple.com/?'
+
+  if (hasValidCoords(lat, lng)) {
+    const coords = `${lat},${lng}`
+    let url = `${base}daddr=${coords}&dirflg=d`
+    if (address) url += `&q=${encodeURIComponent(address)}`
+    return url
   }
-  return `https://maps.apple.com/?daddr=${encodeURIComponent(coords)}`
+
+  if (address) {
+    return `${base}daddr=${encodeURIComponent(address)}&dirflg=d`
+  }
+
+  return `${base}daddr=${lat},${lng}&dirflg=d`
 }
 
 export function getGoogleMapsDirectionsUrl(
@@ -68,8 +83,11 @@ export function getGoogleMapsDirectionsUrl(
   lng: number,
   address?: string,
 ): string {
-  const params = new URLSearchParams({ api: '1' })
-  params.set('destination', address ?? `${lat},${lng}`)
+  const params = new URLSearchParams({ api: '1', travelmode: 'driving' })
+  params.set(
+    'destination',
+    hasValidCoords(lat, lng) ? `${lat},${lng}` : (address ?? `${lat},${lng}`),
+  )
   return `https://www.google.com/maps/dir/?${params.toString()}`
 }
 
@@ -82,6 +100,16 @@ export function getDirectionsUrl(
   return isAppleMapsPreferred()
     ? getAppleMapsDirectionsUrl(lat, lng, address)
     : getGoogleMapsDirectionsUrl(lat, lng, address)
+}
+
+/** Open directions in the native maps app (same-tab on Apple for proper handoff). */
+export function openDirections(lat: number, lng: number, address?: string): void {
+  const url = getDirectionsUrl(lat, lng, address)
+  if (isAppleMapsPreferred()) {
+    window.location.assign(url)
+  } else {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 }
 
 export function shareService(name: string, url: string): void {

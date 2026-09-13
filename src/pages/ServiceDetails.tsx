@@ -39,7 +39,7 @@ import {
   formatPhoneLink,
   formatWebsiteUrl,
   formatServiceAddress,
-  getDirectionsUrl,
+  openDirections,
   shareService,
 } from '@/lib/utils'
 
@@ -165,19 +165,18 @@ export function ServiceDetailsPage() {
 
         <div className="flex flex-wrap gap-2">
           {!service.noFixedLocation && (
-            <Button asChild>
-              <a
-                href={getDirectionsUrl(
+            <Button
+              type="button"
+              onClick={() =>
+                openDirections(
                   service.latitude,
                   service.longitude,
                   formatServiceAddress(service),
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Navigation className="h-4 w-4" />
-                Get directions
-              </a>
+                )
+              }
+            >
+              <Navigation className="h-4 w-4" />
+              Get directions
             </Button>
           )}
           {service.phone && (
