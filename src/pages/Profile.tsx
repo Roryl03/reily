@@ -1,8 +1,4 @@
-import {
-  ChevronRight,
-  RotateCcw,
-  Trash2,
-} from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ReilyIcon } from '@/components/icons'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
@@ -40,8 +36,6 @@ export function ProfilePage() {
     updatePreferences,
     favourites,
     reports,
-    clearDemoData,
-    resetApp,
   } = useApp()
 
   return (
@@ -202,36 +196,6 @@ export function ProfilePage() {
           </span>
         </Link>
       </div>
-
-      {/* Data management */}
-      <Card>
-        <CardContent className="space-y-3 p-5">
-          <h2 className="font-semibold text-sage-900 flex items-center gap-2">
-            <ReilyIcon name="booking-required" size="sm" variant="gold" />
-            Data management
-          </h2>
-          <p className="text-sm text-sage-600">
-            Demo services are clearly labelled. Community submissions are stored locally on this device.
-          </p>
-          <Button variant="secondary" onClick={() => void clearDemoData()} className="w-full">
-            <Trash2 className="h-4 w-4" />
-            Clear demo data
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              if (confirm('Reset the app? All local data will be cleared.')) {
-                resetApp()
-                window.location.href = '/'
-              }
-            }}
-            className="w-full"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Reset app
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   )
 }
