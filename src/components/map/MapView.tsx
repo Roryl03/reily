@@ -11,40 +11,33 @@ import {
   PREVIEW_MAP_ZOOM,
   SERVICE_MAP_ZOOM,
 } from '@/lib/mapConfig'
-import { getCategoryPinTileMarkup, PIN_TILE_VIEWBOX } from '@/lib/mapPinIcons'
-import { formatDistance, getCategoryColor } from '@/lib/utils'
+import {
+  getMapPinPalette,
+  getPinIconMarkup,
+  MAP_PIN_SIZE,
+} from '@/lib/mapPinIcons'
+import { formatDistance } from '@/lib/utils'
 import type { ServiceWithMeta, UserLocation } from '@/types/service'
 
-function createPinIcon(
-  category: string,
-  color: string,
-  selected = false,
-  count = 1,
-) {
-  const width = selected ? 36 : 32
-  const height = selected ? 44 : 38
-  const { x, y, size } = PIN_TILE_VIEWBOX
-  const tileMarkup = getCategoryPinTileMarkup(category, selected, true)
+function createPinIcon(category: string, selected = false, count = 1) {
+  const size = selected ? MAP_PIN_SIZE.selected : MAP_PIN_SIZE.default
+  const iconSize = selected ? MAP_PIN_SIZE.iconSelected : MAP_PIN_SIZE.iconDefault
+  const { fill, ring } = getMapPinPalette(category)
+  const iconMarkup = getPinIconMarkup(category, iconSize)
   const badge =
-    count > 1
-      ? `<span class="reily-map-pin-badge">${count}</span>`
-      : ''
+    count > 1 ? `<span class="reily-pin__badge" aria-label="${count} locations">${count}</span>` : ''
+  const selectedClass = selected ? ' reily-pin--selected' : ''
+
   return L.divIcon({
-    className: 'reily-map-pin',
-    html: `<div class="reily-map-pin-wrap" style="width:${width}px;height:${height}px">
+    className: 'reily-pin-marker',
+    html: `<div class="reily-pin${selectedClass}" style="--pin-fill:${fill};--pin-ring:${ring};width:${size}px;height:${size}px" role="img" aria-label="${category}">
       ${badge}
-      <svg class="reily-map-pin-shape" width="${width}" height="${height}" viewBox="0 0 30 36" aria-hidden="true">
-        <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 21 15 21s15-9.75 15-21C30 6.716 23.284 0 15 0z" fill="${color}" stroke="#ffffff" stroke-width="2"/>
-        <foreignObject x="${x}" y="${y}" width="${size}" height="${size}">
-          <div xmlns="http://www.w3.org/1999/xhtml" class="reily-map-pin-tile-inner">
-            ${tileMarkup}
-          </div>
-        </foreignObject>
-      </svg>
+      <div class="reily-pin__disc">${iconMarkup}</div>
+      <div class="reily-pin__shadow" aria-hidden="true"></div>
     </div>`,
-    iconSize: [width, height],
-    iconAnchor: [width / 2, height],
-    popupAnchor: [0, -height + 6],
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -(size / 2 + 4)],
   })
 }
 
@@ -150,7 +143,6 @@ export function MapView({
         items,
         icon: createPinIcon(
           primary.category,
-          getCategoryColor(primary.category),
           items.some((s) => s.id === selectedId),
           items.length,
         ),
@@ -245,7 +237,7 @@ export function MapPreview({
   onMove?: (lat: number, lng: number) => void
   height?: string
 }) {
-  const icon = createPinIcon('Activities', '#0B3D2E')
+  const icon = createPinIcon('Activities')
 
   return (
     <div style={{ height }} className="reily-map-shell overflow-hidden rounded-xl border border-sage-200">

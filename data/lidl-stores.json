@@ -1,0 +1,310 @@
+[
+  {
+    "name": "Lidl Antrim",
+    "address": "Ballymena Road",
+    "town": "Antrim",
+    "county": "Antrim",
+    "postcode": "BT41 4LL"
+  },
+  {
+    "name": "Lidl Armagh",
+    "address": "Moy Road",
+    "town": "Armagh",
+    "county": "Armagh",
+    "postcode": "BT61 8DB"
+  },
+  {
+    "name": "Lidl Ballyclare",
+    "address": "44 Ballynure Road",
+    "town": "Ballyclare",
+    "county": "Antrim",
+    "postcode": "BT39 9AG"
+  },
+  {
+    "name": "Lidl Ballymena",
+    "address": "Larne Road Link",
+    "town": "Ballymena",
+    "county": "Antrim",
+    "postcode": "BT44 0BD"
+  },
+  {
+    "name": "Lidl Ballymoney",
+    "address": "Meeting House Street",
+    "town": "Ballymoney",
+    "county": "Antrim",
+    "postcode": "BT53 6JN"
+  },
+  {
+    "name": "Lidl Ballynahinch",
+    "address": "Harmony Way",
+    "town": "Ballynahinch",
+    "county": "Down",
+    "postcode": "BT24 8DW"
+  },
+  {
+    "name": "Lidl Banbridge",
+    "address": "2A Newry Road",
+    "town": "Banbridge",
+    "county": "Down",
+    "postcode": "BT32 3HF"
+  },
+  {
+    "name": "Lidl Bangor",
+    "address": "97 Bloomfield Road",
+    "town": "Bangor",
+    "county": "Down",
+    "postcode": "BT20 4XA"
+  },
+  {
+    "name": "Lidl Belfast - Andersonstown",
+    "address": "14 Andersonstown Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT11 9AJ"
+  },
+  {
+    "name": "Lidl Belfast - Ballysillan",
+    "address": "Ballysillan Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT14 7QP"
+  },
+  {
+    "name": "Lidl Belfast - Castlereagh",
+    "address": "Castlereagh Road / Montgomery Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT6 9HL"
+  },
+  {
+    "name": "Lidl Belfast - Connswater",
+    "address": "4 Connswater Link",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT5 5DL"
+  },
+  {
+    "name": "Lidl Belfast - Crumlin Road",
+    "address": "Crumlin Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT14 7EE"
+  },
+  {
+    "name": "Lidl Belfast - High Street",
+    "address": "Hi-Park Centre, High Street",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT1 2JZ"
+  },
+  {
+    "name": "Lidl Belfast - Holywood Exchange",
+    "address": "Unit A, Holywood Exchange Retail Park, 306 Airport Road West",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT3 9EJ"
+  },
+  {
+    "name": "Lidl Belfast - Shore Road",
+    "address": "176-202 Shore Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT15 3QA"
+  },
+  {
+    "name": "Lidl Belfast - Stewartstown Road",
+    "address": "Stewartstown Road",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT11 9JQ"
+  },
+  {
+    "name": "Lidl Belfast - Windsor Way",
+    "address": "2 Windsor Way",
+    "town": "Belfast",
+    "county": "Antrim",
+    "postcode": "BT12 6HR"
+  },
+  {
+    "name": "Lidl Belfast - Church Road",
+    "address": "28 Church Road",
+    "town": "Carryduff",
+    "county": "Down",
+    "postcode": "BT8 8DT"
+  },
+  {
+    "name": "Lidl Carrickfergus",
+    "address": "75D Belfast Road",
+    "town": "Carrickfergus",
+    "county": "Antrim",
+    "postcode": "BT38 8BY"
+  },
+  {
+    "name": "Lidl Coleraine",
+    "address": "Riverside Regional Centre, Castleroe Road",
+    "town": "Coleraine",
+    "county": "Derry",
+    "postcode": "BT51 3QQ"
+  },
+  {
+    "name": "Lidl Cookstown",
+    "address": "24 Orritor Road",
+    "town": "Cookstown",
+    "county": "Tyrone",
+    "postcode": "BT80 8BN"
+  },
+  {
+    "name": "Lidl Craigavon",
+    "address": "Central Way",
+    "town": "Craigavon",
+    "county": "Armagh",
+    "postcode": "BT64 1YE"
+  },
+  {
+    "name": "Lidl Derry",
+    "address": "7-11 Springtown Road",
+    "town": "Derry",
+    "county": "Derry",
+    "postcode": "BT48 0LY"
+  },
+  {
+    "name": "Lidl Downpatrick",
+    "address": "Market Street",
+    "town": "Downpatrick",
+    "county": "Down",
+    "postcode": "BT30 6LZ"
+  },
+  {
+    "name": "Lidl Dundonald",
+    "address": "Dunlady Road",
+    "town": "Dundonald",
+    "county": "Down",
+    "postcode": "BT16 1TT"
+  },
+  {
+    "name": "Lidl Dungannon",
+    "address": "Scotch Street / Market Yard",
+    "town": "Dungannon",
+    "county": "Tyrone",
+    "postcode": "BT70 1ES"
+  },
+  {
+    "name": "Lidl Enniskillen",
+    "address": "Unit 1, Railway Junction Retail Park, Hollyhill Crescent",
+    "town": "Enniskillen",
+    "county": "Fermanagh",
+    "postcode": "BT74 6DB"
+  },
+  {
+    "name": "Lidl Larne",
+    "address": "63 Circular Road",
+    "town": "Larne",
+    "county": "Antrim",
+    "postcode": "BT40 1JS"
+  },
+  {
+    "name": "Lidl Limavady",
+    "address": "83 Main Street / Connell Street",
+    "town": "Limavady",
+    "county": "Derry",
+    "postcode": "BT49 0EP"
+  },
+  {
+    "name": "Lidl Lisburn - Bentrim",
+    "address": "Bentrim Court",
+    "town": "Lisburn",
+    "county": "Antrim",
+    "postcode": "BT28 3YP"
+  },
+  {
+    "name": "Lidl Lisburn - Moira Road",
+    "address": "45 Moira Road",
+    "town": "Lisburn",
+    "county": "Antrim",
+    "postcode": "BT28 1RH"
+  },
+  {
+    "name": "Lidl Lisnaskea",
+    "address": "Main Street, Drumhaw",
+    "town": "Lisnaskea",
+    "county": "Fermanagh",
+    "postcode": "BT92 0JB"
+  },
+  {
+    "name": "Lidl Lurgan",
+    "address": "Pinehurst",
+    "town": "Lurgan",
+    "county": "Armagh",
+    "postcode": "BT66 6AZ"
+  },
+  {
+    "name": "Lidl Magherafelt",
+    "address": "Castledawson Road",
+    "town": "Magherafelt",
+    "county": "Derry",
+    "postcode": "BT45 6PA"
+  },
+  {
+    "name": "Lidl Newcastle",
+    "address": "30 Bryansford Road",
+    "town": "Newcastle",
+    "county": "Down",
+    "postcode": "BT33 0HJ"
+  },
+  {
+    "name": "Lidl Newry - Buttercrane",
+    "address": "Buttercrane Quay",
+    "town": "Newry",
+    "county": "Down",
+    "postcode": "BT35 8HJ"
+  },
+  {
+    "name": "Lidl Newry - Damolly",
+    "address": "5A Damolly Retail Park, Armagh Road",
+    "town": "Newry",
+    "county": "Down",
+    "postcode": "BT35 6PR"
+  },
+  {
+    "name": "Lidl Newtownabbey",
+    "address": "2 Glenmount Road",
+    "town": "Newtownabbey",
+    "county": "Antrim",
+    "postcode": "BT36 7DN"
+  },
+  {
+    "name": "Lidl Newtownards",
+    "address": "Unit 8, Castlebawn Retail Park",
+    "town": "Newtownards",
+    "county": "Down",
+    "postcode": "BT23 8NN"
+  },
+  {
+    "name": "Lidl Omagh",
+    "address": "15 James Street",
+    "town": "Omagh",
+    "county": "Tyrone",
+    "postcode": "BT78 1QX"
+  },
+  {
+    "name": "Lidl Portadown",
+    "address": "Unit 1A, High Street Mall, High Street",
+    "town": "Portadown",
+    "county": "Armagh",
+    "postcode": "BT62 1HX"
+  },
+  {
+    "name": "Lidl Portrush",
+    "address": "55 Glenmanus Road",
+    "town": "Portrush",
+    "county": "Antrim",
+    "postcode": "BT56 8HN"
+  },
+  {
+    "name": "Lidl Strabane",
+    "address": "1 Bradley Way, Strabane Shopping Park",
+    "town": "Strabane",
+    "county": "Tyrone",
+    "postcode": "BT82 8EW"
+  }
+]

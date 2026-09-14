@@ -2,105 +2,55 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ReilyIconGlyph } from '@/components/icons/ReilyIconGlyph'
 import { getCategoryIcon } from '@/components/icons/config'
-import type { ReilyColorVariant } from '@/components/icons/types'
+import type { Category } from '@/types/service'
 
-/** Inline styles matching ReilyIcon tiles on the home screen. */
-const TILE_INLINE: Record<
-  ReilyColorVariant,
-  { background: string; boxShadow: string; color: string }
+/** Muted, distinct pin colours — easy on the eye, still readable with white icons. */
+export const MAP_PIN_PALETTE: Record<
+  Category,
+  { fill: string; ring: string }
 > = {
-  sage: {
-    background: '#dde8e2',
-    boxShadow: '0 0 0 1px rgba(11, 61, 46, 0.12)',
-    color: '#0b3d2e',
-  },
-  blue: {
-    background: '#dde8e2',
-    boxShadow: '0 0 0 1px rgba(138, 155, 121, 0.25)',
-    color: '#0b3d2e',
-  },
-  terracotta: {
-    background: '#fceeee',
-    boxShadow: '0 0 0 1px rgba(233, 141, 141, 0.3)',
-    color: '#20332d',
-  },
-  gold: {
-    background: '#faf0df',
-    boxShadow: '0 0 0 1px rgba(223, 161, 56, 0.35)',
-    color: '#20332d',
-  },
-  lavender: {
-    background: '#dde8e2',
-    boxShadow: '0 0 0 1px rgba(138, 155, 121, 0.25)',
-    color: '#0b3d2e',
-  },
-  cream: {
-    background: '#ffffff',
-    boxShadow: '0 0 0 1px #d7dfd3',
-    color: '#20332d',
-  },
+  Activities: { fill: '#3D6B52', ring: '#B8D4C4' },
+  'Food and drink': { fill: '#A86B58', ring: '#E8D0C8' },
+  'Parks and outdoors': { fill: '#4F8089', ring: '#BFD8DD' },
+  'Support services': { fill: '#6E6794', ring: '#CDC8E0' },
+  Shopping: { fill: '#9A7654', ring: '#E2D4C4' },
+  Cinema: { fill: '#5A6F8F', ring: '#C4D0E4' },
+  'Soft play': { fill: '#A8864A', ring: '#E4DAC4' },
+  Accommodation: { fill: '#5F8578', ring: '#C4DDD4' },
+  Education: { fill: '#5B7890', ring: '#C0D0E0' },
+  Healthcare: { fill: '#6E8560', ring: '#CDDCC4' },
+  Haircuts: { fill: '#94685E', ring: '#E4CCC8' },
+  'Community groups': { fill: '#5C6570', ring: '#D0D4D8' },
 }
 
-function PinCategoryTile({
-  category,
-  tilePx,
-  glyphPx,
-}: {
-  category: string
-  tilePx: number | string
-  glyphPx: number | string
-}) {
-  const { name, variant } = getCategoryIcon(category)
-  const tile = TILE_INLINE[variant]
-  const radius =
-    typeof tilePx === 'number' ? Math.round(tilePx * 0.36) : '36%'
+const DEFAULT_PIN = { fill: '#3D6B52', ring: '#B8D4C4' }
 
-  return createElement(
-    'span',
-    {
-      style: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: typeof tilePx === 'number' ? tilePx : '100%',
-        height: typeof tilePx === 'number' ? tilePx : '100%',
-        borderRadius: radius,
-        background: tile.background,
-        boxShadow: `${tile.boxShadow}, 0 1px 2px rgba(11, 61, 46, 0.08)`,
-        flexShrink: 0,
-        lineHeight: 0,
-        boxSizing: 'border-box',
-      },
+export function getMapPinPalette(category: string): { fill: string; ring: string } {
+  return MAP_PIN_PALETTE[category as Category] ?? DEFAULT_PIN
+}
+
+function PinIcon({ category, size }: { category: string; size: number }) {
+  const { name } = getCategoryIcon(category)
+  return createElement(ReilyIconGlyph, {
+    name,
+    style: {
+      width: size,
+      height: size,
+      color: '#ffffff',
+      display: 'block',
+      filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.15))',
     },
-    createElement(ReilyIconGlyph, {
-      name,
-      className: undefined,
-      style: {
-        width: glyphPx,
-        height: glyphPx,
-        color: tile.color,
-        display: 'block',
-      },
-    }),
-  )
+  })
 }
 
-/** Home-screen style category tile markup for map pin heads. */
-export function getCategoryPinTileMarkup(
-  category: string,
-  selected = false,
-  embedded = false,
-): string {
-  const tilePx = embedded ? '100%' : selected ? 20 : 18
-  const glyphPx = embedded ? '62%' : selected ? 11 : 10
-  return renderToStaticMarkup(
-    createElement(PinCategoryTile, { category, tilePx, glyphPx }),
-  )
+/** White category icon markup for map pin discs. */
+export function getPinIconMarkup(category: string, sizePx: number): string {
+  return renderToStaticMarkup(createElement(PinIcon, { category, size: sizePx }))
 }
 
-/** Icon tile placement inside the pin SVG viewBox (0 0 30 36). */
-export const PIN_TILE_VIEWBOX = {
-  x: 10,
-  y: 5,
-  size: 10,
+export const MAP_PIN_SIZE = {
+  default: 36,
+  selected: 42,
+  iconDefault: 16,
+  iconSelected: 18,
 } as const
