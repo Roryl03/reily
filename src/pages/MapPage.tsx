@@ -30,16 +30,22 @@ export function MapPage() {
     toggleFavourite,
   } = useApp()
 
+  const activeServices = useMemo(
+    () => services.filter(isLiveService),
+    [services],
+  )
+
   /** Map shows all of NI — don't hide listings outside the search radius. */
   const mapServices = useMemo(() => {
-    const visible = services.filter(isLiveService)
     const filtered = filterServices(
-      visible,
+      activeServices,
       { ...filters, radius: 'anywhere' },
       location,
     )
     return sortServices(filtered, sort)
-  }, [services, filters, location, sort])
+  }, [activeServices, filters, location, sort])
+
+  const activeCount = activeServices.length
   const [view, setView] = useState<'map' | 'list'>('map')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
@@ -93,24 +99,36 @@ export function MapPage() {
       <FilterChips filters={filters} onChange={setFilters} onClear={handleClearFilters} />
 
       {view === 'map' ? (
-        <div className="relative -mx-4 lg:mx-0">
-          <MapView
-            location={location}
-            services={mapServices}
-            selectedId={selectedId}
-            onSelect={(id) => {
-              setSelectedId(id)
-              if (id) track('MAP_INTERACTION', { action: 'pin_select' })
-            }}
-            showPopups={false}
-            hidePins={hidePins}
-            height="calc(100dvh - 14rem - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))"
-          />
-          {!hidePins && selectedEnriched && (
-            <div className="absolute bottom-4 left-4 right-4 z-[1000] lg:max-w-sm">
-              <MapPreviewCard service={selectedEnriched} />
-            </div>
-          )}
+        <div className="space-y-3">
+          <div className="px-1 lg:px-0" aria-live="polite">
+            <p className="font-display text-2xl sm:text-[1.75rem] text-sage-900 leading-tight">
+              {activeCount} active {activeCount === 1 ? 'service' : 'services'}
+            </p>
+            {mapServices.length < activeCount && (
+              <p className="mt-1 text-sm text-sage-600">
+                Showing {mapServices.length} on the map
+              </p>
+            )}
+          </div>
+          <div className="relative -mx-4 lg:mx-0">
+            <MapView
+              location={location}
+              services={mapServices}
+              selectedId={selectedId}
+              onSelect={(id) => {
+                setSelectedId(id)
+                if (id) track('MAP_INTERACTION', { action: 'pin_select' })
+              }}
+              showPopups={false}
+              hidePins={hidePins}
+              height="calc(100dvh - 14rem - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))"
+            />
+            {!hidePins && selectedEnriched && (
+              <div className="absolute bottom-4 left-4 right-4 z-[1000] lg:max-w-sm">
+                <MapPreviewCard service={selectedEnriched} />
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
