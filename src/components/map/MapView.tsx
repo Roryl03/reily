@@ -99,6 +99,8 @@ interface MapViewProps {
   interactive?: boolean
   height?: string
   showPopups?: boolean
+  /** Hide all markers — for empty-map screenshots */
+  hidePins?: boolean
 }
 
 export function MapView({
@@ -109,13 +111,17 @@ export function MapView({
   interactive = true,
   height = '400px',
   showPopups = true,
+  hidePins = false,
 }: MapViewProps) {
-  const center: [number, number] = location
+  const showLocation = !hidePins && location
+  const visibleServices = hidePins ? [] : services
+
+  const center: [number, number] = showLocation
     ? [location.latitude, location.longitude]
     : NI_MAP_CENTER
 
   const markerGroups = useMemo(() => {
-    const mappable = services.filter(
+    const mappable = visibleServices.filter(
       (s) =>
         !s.noFixedLocation &&
         Number.isFinite(s.latitude) &&
@@ -148,22 +154,25 @@ export function MapView({
         ),
       }
     })
-  }, [services, selectedId])
+  }, [visibleServices, selectedId])
 
   const markerPoints = useMemo(
     () => markerGroups.map((g) => [g.lat, g.lng] as [number, number]),
     [markerGroups],
   )
 
-  const userPoint = location
+  const userPoint = showLocation
     ? ([location.latitude, location.longitude] as [number, number])
     : undefined
+
+  const mapKey = hidePins ? 'map-no-pins' : `map-${markerGroups.length}`
 
   return (
     <div style={{ height }} className="reily-map-shell overflow-hidden rounded-2xl border border-sage-100">
       <MapContainer
+        key={mapKey}
         center={center}
-        zoom={location ? SERVICE_MAP_ZOOM : NI_MAP_ZOOM}
+        zoom={showLocation ? SERVICE_MAP_ZOOM : NI_MAP_ZOOM}
         scrollWheelZoom={interactive}
         dragging={interactive}
         zoomControl={interactive}
@@ -178,7 +187,7 @@ export function MapView({
         />
         <FitServiceBounds points={markerPoints} userPoint={userPoint} />
 
-        {location && (
+        {showLocation && (
           <Marker position={[location.latitude, location.longitude]} icon={userIcon}>
             {showPopups && (
               <Popup className="reily-map-popup">

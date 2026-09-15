@@ -1,28 +1,41 @@
 import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AskReillyMark } from '@/components/icons'
+import { OnboardingAudience } from '@/components/onboarding/OnboardingAudience'
 import { OnboardingWelcome } from '@/components/onboarding/OnboardingWelcome'
 import { useApp } from '@/context/AppContext'
+import { track } from '@/lib/analytics'
 import { bypassesOnboarding } from '@/lib/config'
 import { DEMO_LOCATION } from '@/types/service'
 
 export function OnboardingPage() {
   const navigate = useNavigate()
   const { completeOnboarding, locationError, setLocation } = useApp()
+  const [step, setStep] = useState<'location' | 'audience'>('location')
 
   const finish = () => {
     completeOnboarding()
     navigate('/')
   }
 
+  const afterLocation = () => {
+    track('LOCATION_ONBOARDING_COMPLETED')
+    setStep('audience')
+  }
+
   const useDemo = () => {
     setLocation(DEMO_LOCATION)
-    finish()
+    afterLocation()
+  }
+
+  if (step === 'audience') {
+    return <OnboardingAudience onComplete={finish} />
   }
 
   return (
     <OnboardingWelcome
-      onLocationSuccess={finish}
+      onLocationSuccess={afterLocation}
       locationError={locationError}
       onUseDemo={useDemo}
     />

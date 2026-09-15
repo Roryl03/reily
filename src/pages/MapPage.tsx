@@ -1,5 +1,6 @@
 import { Crosshair, List, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { MapPreviewCard, MapView } from '@/components/map/MapView'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
@@ -7,10 +8,16 @@ import { ListYourFacilityCta } from '@/components/services/ListYourFacilityCta'
 import { ServiceCard } from '@/components/services/ServiceCard'
 import { Button } from '@/components/ui/button'
 import { useApp } from '@/context/AppContext'
+import { track } from '@/lib/analytics'
 import { filterServices, sortServices } from '@/lib/filters'
 import { DEFAULT_FILTERS, isLiveService } from '@/types/service'
 
 export function MapPage() {
+  const [searchParams] = useSearchParams()
+  const hidePins =
+    import.meta.env.VITE_HIDE_MAP_PINS === 'true' ||
+    searchParams.get('screenshot') === '1'
+
   const {
     location,
     filteredServices,
@@ -91,11 +98,15 @@ export function MapPage() {
             location={location}
             services={mapServices}
             selectedId={selectedId}
-            onSelect={setSelectedId}
+            onSelect={(id) => {
+              setSelectedId(id)
+              if (id) track('MAP_INTERACTION', { action: 'pin_select' })
+            }}
             showPopups={false}
+            hidePins={hidePins}
             height="calc(100dvh - 14rem - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))"
           />
-          {selectedEnriched && (
+          {!hidePins && selectedEnriched && (
             <div className="absolute bottom-4 left-4 right-4 z-[1000] lg:max-w-sm">
               <MapPreviewCard service={selectedEnriched} />
             </div>

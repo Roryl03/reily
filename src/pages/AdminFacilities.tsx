@@ -1,6 +1,7 @@
 import { Check, Plus, Trash2, X } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { AdminDashboard } from '@/components/admin/AdminDashboard'
+import { InsightsDashboard } from '@/components/admin/InsightsDashboard'
 import { ServiceImage } from '@/components/services/ServiceImage'
 import { ServiceShareButton } from '@/components/services/ServiceShareDialog'
 import { Button } from '@/components/ui/button'
@@ -11,10 +12,17 @@ import { cn } from '@/lib/utils'
 import { isLiveService } from '@/types/service'
 import type { Service } from '@/types/service'
 
-type AdminTab = 'dashboard' | 'facilities' | 'requests'
+type AdminTab = 'dashboard' | 'facilities' | 'requests' | 'insights'
 
 function parseAdminTab(value: string | null): AdminTab {
-  if (value === 'facilities' || value === 'requests' || value === 'dashboard') return value
+  if (
+    value === 'facilities' ||
+    value === 'requests' ||
+    value === 'dashboard' ||
+    value === 'insights'
+  ) {
+    return value
+  }
   return 'dashboard'
 }
 
@@ -121,12 +129,28 @@ export function AdminFacilitiesPage() {
             </span>
           )}
         </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'insights'}
+          className={cn(
+            'flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors focus-ring',
+            tab === 'insights'
+              ? 'bg-white text-sage-900 shadow-sm'
+              : 'text-sage-600 hover:text-sage-800',
+          )}
+          onClick={() => setTab('insights')}
+        >
+          Insights
+        </button>
       </div>
 
       {servicesLoading ? (
         <p className="text-center text-sage-600 py-12">Loading…</p>
       ) : tab === 'dashboard' ? (
         <AdminDashboard stats={stats} onRefreshMapLocations={refreshAllMapLocations} />
+      ) : tab === 'insights' ? (
+        <InsightsDashboard />
       ) : tab === 'requests' ? (
         requests.length === 0 ? (
           <div className="ios-card p-8 text-center">

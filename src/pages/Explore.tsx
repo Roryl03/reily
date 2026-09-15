@@ -1,5 +1,5 @@
 import { List, SlidersHorizontal } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { MobilePageHeader } from '@/components/layout/MobilePageHeader'
 import { FilterChips, FilterPanel } from '@/components/services/FilterPanel'
@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useApp } from '@/context/AppContext'
+import { track } from '@/lib/analytics'
 import { isSecretAddSearch } from '@/lib/config'
 import { DEFAULT_FILTERS, type SortOption } from '@/types/service'
 
@@ -39,12 +40,31 @@ export function ExplorePage() {
   const [showFilters, setShowFilters] = useState(false)
   const [searchParams] = useSearchParams()
 
+  const lastSearchTracked = useRef('')
+
   useEffect(() => {
     const category = searchParams.get('category')
     if (category) {
       setFilters((f) => ({ ...f, category: category as typeof f.category }))
     }
   }, [searchParams, setFilters])
+
+  useEffect(() => {
+    if (filters.category) {
+      track('CATEGORY_VIEWED', { category: filters.category })
+    }
+  }, [filters.category])
+
+  useEffect(() => {
+    const term = filters.search.trim()
+    if (term.length < 2) return
+    const timer = setTimeout(() => {
+      if (lastSearchTracked.current === term) return
+      lastSearchTracked.current = term
+      track('SEARCH_PERFORMED', { query_length: term.length })
+    }, 700)
+    return () => clearTimeout(timer)
+  }, [filters.search])
 
   const handleClearFilters = () => {
     setFilters({ ...DEFAULT_FILTERS, search: filters.search, radius: filters.radius })

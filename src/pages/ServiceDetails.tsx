@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useApp } from '@/context/AppContext'
+import { track } from '@/lib/analytics'
 import { hasAdminAccess } from '@/lib/config'
 import { enrichService } from '@/lib/filters'
 import { formatDayHours, formatOpenStatus } from '@/lib/openingHours'
@@ -73,8 +74,14 @@ export function ServiceDetailsPage() {
   const enriched = canView ? enrichService(service, location) : undefined
 
   useEffect(() => {
-    if (id && canView) addRecentlyViewed(id)
-  }, [id, canView, addRecentlyViewed])
+    if (!service || !canView) return
+    addRecentlyViewed(service.id)
+    track('SERVICE_VIEWED', {
+      service_id: service.id,
+      category: service.category,
+      county: service.county,
+    })
+  }, [service, canView, addRecentlyViewed])
 
   if (!canView || !enriched) {
     return (
@@ -110,7 +117,12 @@ export function ServiceDetailsPage() {
         />
         <button
           type="button"
-          onClick={() => toggleFavourite(service.id)}
+          onClick={() => {
+            const added = toggleFavourite(service.id)
+            if (added) {
+              track('FAVOURITE_ADDED', { service_id: service.id, category: service.category })
+            }
+          }}
           className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow focus-ring"
           aria-label={isFavourite(service.id) ? 'Remove from favourites' : 'Add to favourites'}
         >
@@ -167,13 +179,17 @@ export function ServiceDetailsPage() {
           {!service.noFixedLocation && (
             <Button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                track('SERVICE_DIRECTIONS_CLICKED', {
+                  service_id: service.id,
+                  category: service.category,
+                })
                 openDirections(
                   service.latitude,
                   service.longitude,
                   formatServiceAddress(service),
                 )
-              }
+              }}
             >
               <Navigation className="h-4 w-4" />
               Get directions
@@ -181,7 +197,15 @@ export function ServiceDetailsPage() {
           )}
           {service.phone && (
             <Button asChild variant="secondary">
-              <a href={formatPhoneLink(service.phone)}>
+              <a
+                href={formatPhoneLink(service.phone)}
+                onClick={() =>
+                  track('SERVICE_PHONE_CLICKED', {
+                    service_id: service.id,
+                    category: service.category,
+                  })
+                }
+              >
                 <Phone className="h-4 w-4" />
                 Call
               </a>
@@ -189,7 +213,17 @@ export function ServiceDetailsPage() {
           )}
           {service.website && (
             <Button asChild variant="secondary">
-              <a href={formatWebsiteUrl(service.website)} target="_blank" rel="noopener noreferrer">
+              <a
+                href={formatWebsiteUrl(service.website)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  track('SERVICE_WEBSITE_CLICKED', {
+                    service_id: service.id,
+                    category: service.category,
+                  })
+                }
+              >
                 <ExternalLink className="h-4 w-4" />
                 Visit website
               </a>
@@ -198,7 +232,10 @@ export function ServiceDetailsPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => shareService(service.name, window.location.href)}
+            onClick={() => {
+              track('SERVICE_SHARED', { service_id: service.id, category: service.category })
+              shareService(service.name, window.location.href)
+            }}
             aria-label="Share"
           >
             <Share2 className="h-4 w-4" />

@@ -83,7 +83,7 @@ function geocodeDevApi(): Plugin {
 export default defineConfig({
   plugins: [react(), tailwindcss(), geocodeDevApi()],
   // Vercel Marketplace syncs SUPABASE_* - expose those alongside VITE_*
-  envPrefix: ['VITE_', 'SUPABASE_', 'NEXT_PUBLIC_SUPABASE_', 'CARTO_'],
+  envPrefix: ['VITE_', 'SUPABASE_', 'NEXT_PUBLIC_SUPABASE_', 'CARTO_', 'ADMIN_'],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

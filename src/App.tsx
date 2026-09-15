@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { AdminRoute } from '@/components/auth/AdminRoute'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { AnalyticsInit } from '@/components/analytics/AnalyticsInit'
 import { AppProvider } from '@/context/AppContext'
 import { AboutPage } from '@/pages/About'
 import { AddServicePage, EditServicePage, SubmitFacilityPage } from '@/pages/AddService'
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppProvider>
+        <AnalyticsInit />
         <OnboardingGuard>
           <Routes>
             <Route element={<AppLayout />}>

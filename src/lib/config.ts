@@ -41,8 +41,9 @@ export function isAllowedAdminEmail(email: string): boolean {
 
 export const ADMIN_EMAIL_SESSION_KEY = 'reilly_admin_email'
 
-/** Legacy ?key= unlock - optional via VITE_ADMIN_KEY */
-export const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY ?? ''
+/** Legacy ?key= unlock + Insights API auth — set ADMIN_KEY in Vercel / .env.local */
+export const ADMIN_KEY =
+  import.meta.env.ADMIN_KEY ?? import.meta.env.VITE_ADMIN_KEY ?? ''
 export const ADMIN_SESSION_KEY = 'reilly_admin'
 
 export function hasAdminAccess(): boolean {
