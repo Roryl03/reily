@@ -18,6 +18,7 @@ import {
 import { ServiceDetailsPage } from '@/pages/ServiceDetails'
 import { SupportDetailPage } from '@/pages/SupportDetail'
 import { SupportPage } from '@/pages/Support'
+import { TopPicksPage } from '@/pages/TopPicks'
 
 function EditServiceRedirect() {
   const { id } = useParams<{ id: string }>()
@@ -35,6 +36,7 @@ export default function App() {
               <Route index element={<HomePage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="explore" element={<ExplorePage />} />
+              <Route path="top-picks" element={<TopPicksPage />} />
               <Route path="map" element={<MapPage />} />
               <Route path="favourites" element={<FavouritesPage />} />
               <Route path="profile" element={<ProfilePage />} />

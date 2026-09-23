@@ -6,9 +6,13 @@ import {
   Share2,
   AlertCircle,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ReilyIconGlyph } from '@/components/icons'
+import { ServiceRatingSummary } from '@/components/services/ServiceRatingSummary'
+import { ServiceTopPickBadges } from '@/components/services/ServiceTopPickBadges'
+import { ServiceRecommendations } from '@/components/services/ServiceRecommendations'
+import { ServiceReviews } from '@/components/services/ServiceReviews'
 import { ServiceImage } from '@/components/services/ServiceImage'
 import { CommunityBadge, DemoBadge, ServiceBadges } from '@/components/services/ServiceBadges'
 import { Badge } from '@/components/ui/badge'
@@ -67,6 +71,7 @@ export function ServiceDetailsPage() {
   const [reportType, setReportType] = useState('')
   const [reportDetails, setReportDetails] = useState('')
   const [reportSubmitted, setReportSubmitted] = useState(false)
+  const reviewsRef = useRef<HTMLDivElement>(null)
 
   const service = id ? getServiceById(id) : undefined
   const isPending = service?.verificationStatus === 'pending'
@@ -146,6 +151,15 @@ export function ServiceDetailsPage() {
           <h1 className="font-display text-3xl text-sage-900">{service.name}</h1>
           <p className="text-sage-600">{service.category}</p>
         </div>
+
+        <ServiceTopPickBadges serviceId={service.id} />
+
+        <ServiceRatingSummary
+          serviceId={service.id}
+          onScrollToReviews={() => {
+            reviewsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }}
+        />
 
         <div className="flex flex-wrap gap-4 text-sm text-sage-600">
           {service.noFixedLocation ? (
@@ -244,6 +258,8 @@ export function ServiceDetailsPage() {
 
         <p className="text-sage-700">{service.fullDescription}</p>
 
+        <ServiceRecommendations serviceId={service.id} />
+
         <section aria-labelledby="accessibility-heading">
           <h2 id="accessibility-heading" className="text-lg font-semibold text-sage-900 mb-3">
             Accessibility
@@ -327,6 +343,10 @@ export function ServiceDetailsPage() {
             Information last checked: {service.lastCheckedAt}
           </p>
         )}
+
+        <div ref={reviewsRef}>
+          <ServiceReviews serviceId={service.id} />
+        </div>
 
         <Button variant="outline" className="w-full" onClick={() => setReportOpen(true)}>
           <AlertCircle className="h-4 w-4" />

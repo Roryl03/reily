@@ -11,6 +11,7 @@ const navItems = [
   { to: '/about', label: 'About Us', name: 'community-groups' as const, variant: 'terracotta' as const },
   { to: '/support', label: 'Support', ...NAV_ICON_CONFIG[1] },
   { to: '/explore', label: 'Explore', ...NAV_ICON_CONFIG[2] },
+  { to: '/top-picks', label: 'Top Picks', name: 'community-groups' as const, variant: 'gold' as const },
   { to: '/map', label: 'Map', ...NAV_ICON_CONFIG[3] },
   { to: '/favourites', label: 'Saved', ...NAV_ICON_CONFIG[4] },
   { to: '/profile', label: 'Profile', ...NAV_ICON_CONFIG[5] },

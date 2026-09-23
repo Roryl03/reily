@@ -20,6 +20,14 @@ const ACTIONS = [
     accent: 'border-l-gold/50',
   },
   {
+    to: '/top-picks',
+    label: 'Top Picks',
+    hint: 'Community favourites',
+    icon: 'community-groups' as ReilyIconName,
+    variant: 'gold' as ReilyColorVariant,
+    accent: 'border-l-gold/50',
+  },
+  {
     to: '/map',
     label: 'Map',
     hint: 'See what\'s nearby',
