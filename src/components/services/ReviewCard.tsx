@@ -114,7 +114,7 @@ export function ReviewCard({
 
       {reportDone && (
         <p className="text-sm text-sage-600" role="status">
-          Thank you — we&apos;ll review your report.
+          Thank you. We&apos;ll review your report.
         </p>
       )}
 

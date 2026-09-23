@@ -32,7 +32,7 @@ export function CommunityDashboard() {
   const [insights, setInsights] = useState<CommunityInsights | null>(null)
   const [reviews, setReviews] = useState<ModerationReview[]>([])
   const [topPicks, setTopPicks] = useState<TopPickItem[]>([])
-  const [filter, setFilter] = useState<'pending' | 'reported'>('pending')
+  const [filter, setFilter] = useState<'pending' | 'reported' | 'approved' | 'all'>('pending')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [graphicScope, setGraphicScope] = useState<'across' | 'near'>('across')
@@ -62,7 +62,16 @@ export function CommunityDashboard() {
     void reload()
   }, [days, filter])
 
-  const act = async (reviewId: string, action: 'approve' | 'hide' | 'remove' | 'restore') => {
+  const act = async (
+    reviewId: string,
+    action: 'approve' | 'hide' | 'remove' | 'restore' | 'delete',
+  ) => {
+    if (
+      action === 'delete' &&
+      !confirm('Permanently delete this review? This cannot be undone.')
+    ) {
+      return
+    }
     await moderateReview(reviewId, action)
     void reload()
   }
@@ -149,7 +158,7 @@ export function CommunityDashboard() {
           <Metric label="Reviews submitted" value={insights.overview.reviewsSubmitted} />
           <Metric
             label="Average star rating"
-            value={insights.overview.averageStarRating?.toFixed(1) ?? '—'}
+            value={insights.overview.averageStarRating?.toFixed(1) ?? 'n/a'}
           />
           <Metric label="Recommendations this month" value={insights.overview.recommendationsThisMonth} />
           <Metric label="Reviews this month" value={insights.overview.reviewsThisMonth} />
@@ -160,7 +169,7 @@ export function CommunityDashboard() {
       </section>
 
       <section>
-        <h2 className="font-display text-2xl text-sage-900 mb-4">Current Top 10 — Across Ask Reilly</h2>
+        <h2 className="font-display text-2xl text-sage-900 mb-4">Current Top 10 across Ask Reilly</h2>
         {topPicks.length === 0 ? (
           <p className="text-sm text-sage-600">No ranked services yet this month.</p>
         ) : (
@@ -180,7 +189,7 @@ export function CommunityDashboard() {
                 </div>
                 {item.previousRank != null && (
                   <span className="text-sage-500">
-                    {item.rank < item.previousRank ? '↑' : item.rank > item.previousRank ? '↓' : '—'}
+                    {item.rank < item.previousRank ? '↑' : item.rank > item.previousRank ? '↓' : '·'}
                     {item.previousRank}
                   </span>
                 )}
@@ -224,7 +233,27 @@ export function CommunityDashboard() {
               filter === 'reported' ? 'bg-hunter text-white' : 'bg-sage-100',
             )}
           >
-            Reported reviews
+            Reported
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('approved')}
+            className={cn(
+              'rounded-full px-3 py-1.5 text-sm font-medium',
+              filter === 'approved' ? 'bg-hunter text-white' : 'bg-sage-100',
+            )}
+          >
+            Published
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('all')}
+            className={cn(
+              'rounded-full px-3 py-1.5 text-sm font-medium',
+              filter === 'all' ? 'bg-hunter text-white' : 'bg-sage-100',
+            )}
+          >
+            All
           </button>
         </div>
 
@@ -252,14 +281,18 @@ export function CommunityDashboard() {
                   <Button size="sm" variant="outline" onClick={() => void act(review.id, 'hide')}>
                     Hide
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => void act(review.id, 'remove')}>
-                    Remove
-                  </Button>
                   {review.status !== 'approved' && (
                     <Button size="sm" variant="ghost" onClick={() => void act(review.id, 'restore')}>
                       Restore
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => void act(review.id, 'delete')}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </article>
             ))}

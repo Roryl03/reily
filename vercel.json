@@ -1,5 +1,19 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/api/recommendations/stats", "destination": "/api/router?path=recommendations/stats" },
+    { "source": "/api/recommendations/vote", "destination": "/api/router?path=recommendations/vote" },
+    { "source": "/api/reviews/submit", "destination": "/api/router?path=reviews/submit" },
+    { "source": "/api/reviews/list", "destination": "/api/router?path=reviews/list" },
+    { "source": "/api/reviews/summary", "destination": "/api/router?path=reviews/summary" },
+    { "source": "/api/reviews/helpful", "destination": "/api/router?path=reviews/helpful" },
+    { "source": "/api/reviews/report", "destination": "/api/router?path=reviews/report" },
+    { "source": "/api/top-picks/archive", "destination": "/api/router?path=top-picks/archive" },
+    { "source": "/api/top-picks/badges", "destination": "/api/router?path=top-picks/badges" },
+    { "source": "/api/top-picks", "destination": "/api/router?path=top-picks" },
+    { "source": "/api/community/moderation", "destination": "/api/router?path=community/moderation" },
+    { "source": "/api/community/insights", "destination": "/api/router?path=community/insights" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

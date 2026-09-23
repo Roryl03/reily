@@ -57,6 +57,7 @@ export default async function handler(
       return res.status(200).json({ reviews, reports })
     }
     if (filter === 'all') statusFilter = ''
+    else if (filter === 'approved') statusFilter = 'status=eq.approved'
     else if (filter === 'hidden') statusFilter = 'status=eq.hidden'
     else if (filter === 'removed') statusFilter = 'status=eq.removed'
 
@@ -85,6 +86,44 @@ export default async function handler(
       return res.status(400).json({ error: 'Invalid review id' })
     }
 
+    const currentRes = await fetch(
+      `${config.url}/rest/v1/service_reviews?id=eq.${reviewId}&select=status,review_text`,
+      { headers },
+    )
+    const currentRows = currentRes.ok
+      ? ((await currentRes.json()) as Array<{ status: string; review_text: string }>)
+      : []
+    const current = currentRows[0]
+    if (!current) {
+      return res.status(404).json({ error: 'Review not found' })
+    }
+    const previousStatus = current.status
+
+    if (action === 'delete') {
+      await fetch(`${config.url}/rest/v1/review_moderation_log`, {
+        method: 'POST',
+        headers: supabaseHeaders(config.key, 'return=minimal'),
+        body: JSON.stringify({
+          review_id: reviewId,
+          action: 'delete',
+          previous_status: previousStatus,
+          new_status: 'deleted',
+          admin_note: note ?? current.review_text.slice(0, 120),
+        }),
+      })
+
+      const deleteRes = await fetch(`${config.url}/rest/v1/service_reviews?id=eq.${reviewId}`, {
+        method: 'DELETE',
+        headers: supabaseHeaders(config.key, 'return=minimal'),
+      })
+
+      if (!deleteRes.ok) {
+        return res.status(500).json({ error: 'Failed to delete review' })
+      }
+
+      return res.status(200).json({ ok: true, deleted: true })
+    }
+
     const statusMap: Record<string, string> = {
       approve: 'approved',
       hide: 'hidden',
@@ -95,15 +134,6 @@ export default async function handler(
     if (!newStatus) {
       return res.status(400).json({ error: 'Invalid action' })
     }
-
-    const currentRes = await fetch(
-      `${config.url}/rest/v1/service_reviews?id=eq.${reviewId}&select=status`,
-      { headers },
-    )
-    const currentRows = currentRes.ok
-      ? ((await currentRes.json()) as Array<{ status: string }>)
-      : []
-    const previousStatus = currentRows[0]?.status ?? null
 
     const patchRes = await fetch(`${config.url}/rest/v1/service_reviews?id=eq.${reviewId}`, {
       method: 'PATCH',

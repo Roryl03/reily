@@ -74,7 +74,7 @@ export function TopPicksPage() {
           <strong>The services our community has been recommending this month.</strong>
         </p>
         <p className="text-sm text-sage-600">
-          Rankings are based on community recommendations — not editorial choices by Ask Reilly.
+          Rankings are based on community recommendations, not editorial choices by Ask Reilly.
           Experiences shared by families help others discover places worth trying.
         </p>
       </header>
@@ -110,7 +110,7 @@ export function TopPicksPage() {
         <div className="ios-card space-y-3 p-5">
           <p className="font-semibold text-sage-900">Set your location to see Top Picks near you</p>
           <p className="text-sm text-sage-600">
-            Ask Reilly uses your chosen town or area — we won&apos;t ask for your exact location again.
+            Ask Reilly uses your chosen town or area. We won&apos;t ask for your exact location again.
           </p>
           <Button asChild>
             <Link to="/profile">Set location in Profile</Link>
@@ -120,7 +120,7 @@ export function TopPicksPage() {
         <>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-display text-xl text-sage-900">
-              Top 10 {scope === 'near' ? 'Near You' : 'Across Ask Reilly'} —{' '}
+              Top 10 {scope === 'near' ? 'Near You' : 'Across Ask Reilly'},{' '}
               {formatTopPicksMonth(displayYear, displayMonth)}
             </h2>
             {archive.length > 0 && (

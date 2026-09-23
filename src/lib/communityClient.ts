@@ -64,8 +64,10 @@ export async function fetchCommunityInsights(days = 30): Promise<CommunityInsigh
   return res.json() as Promise<CommunityInsights>
 }
 
+export type ModerationFilter = 'pending' | 'reported' | 'approved' | 'all'
+
 export async function fetchModerationReviews(
-  filter: 'pending' | 'reported' | 'all' = 'pending',
+  filter: ModerationFilter = 'pending',
 ): Promise<{ reviews: ModerationReview[]; reports?: Array<{ review_id: string; reason: string }> }> {
   const res = await fetch(`/api/community/moderation?filter=${filter}`, { headers: adminHeaders() })
   if (!res.ok) throw new Error('Failed to load moderation queue')
@@ -74,7 +76,7 @@ export async function fetchModerationReviews(
 
 export async function moderateReview(
   reviewId: string,
-  action: 'approve' | 'hide' | 'remove' | 'restore',
+  action: 'approve' | 'hide' | 'remove' | 'restore' | 'delete',
   adminNote?: string,
 ): Promise<void> {
   const res = await fetch('/api/community/moderation', {

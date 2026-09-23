@@ -42,12 +42,11 @@ export default async function handler(
     query?: Record<string, string | string[] | undefined>
     body?: Record<string, unknown>
     headers?: Record<string, string | undefined>
-    url?: string
   },
   res: { status: (code: number) => { json: (body: unknown) => void } },
 ) {
   const rawPath = req.query?.path
-  const segments = Array.isArray(rawPath) ? rawPath.join('/') : String(rawPath ?? '')
+  const segments = Array.isArray(rawPath) ? rawPath.join('/') : String(rawPath ?? '').replace(/^\//, '')
   const route = routes[segments]
 
   if (!route) {
