@@ -1,17 +1,12 @@
 {
   "rewrites": [
-    { "source": "/api/recommendations/stats", "destination": "/api/recommendations?action=stats" },
-    { "source": "/api/recommendations/vote", "destination": "/api/recommendations?action=vote" },
-    { "source": "/api/reviews/submit", "destination": "/api/reviews?action=submit" },
-    { "source": "/api/reviews/list", "destination": "/api/reviews?action=list" },
-    { "source": "/api/reviews/summary", "destination": "/api/reviews?action=summary" },
-    { "source": "/api/reviews/helpful", "destination": "/api/reviews?action=helpful" },
-    { "source": "/api/reviews/report", "destination": "/api/reviews?action=report" },
-    { "source": "/api/top-picks/archive", "destination": "/api/top-picks?action=archive" },
-    { "source": "/api/top-picks/badges", "destination": "/api/top-picks?action=badges" },
-    { "source": "/api/top-picks", "destination": "/api/top-picks?action=index" },
-    { "source": "/api/community/moderation", "destination": "/api/community?action=moderation" },
-    { "source": "/api/community/insights", "destination": "/api/community?action=insights" },
+    { "source": "/api/community/moderation", "destination": "/api/community-moderation" },
+    { "source": "/api/reviews/submit", "destination": "/api/reviews-submit" },
+    { "source": "/api/reviews/list", "destination": "/api/reviews-list" },
+    { "source": "/api/reviews/summary", "destination": "/api/reviews-summary" },
+    { "source": "/api/reviews/helpful", "destination": "/api/reviews-helpful" },
+    { "source": "/api/reviews/report", "destination": "/api/reviews-report" },
+    { "source": "/api/top-picks", "destination": "/api/top-picks-index" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [

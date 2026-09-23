@@ -1,8 +1,6 @@
 export default async function handler(
   req: { method?: string; query?: Record<string, string | string[] | undefined> },
-  res: {
-    status: (code: number) => { json: (body: unknown) => void }
-  },
+  res: { status: (code: number) => { json: (body: unknown) => void } },
 ) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -41,11 +39,13 @@ export default async function handler(
 
   const rows = (await fetchRes.json()) as Array<{ would_recommend: boolean }>
   let positive = 0
-  let negative = 0
   for (const row of rows) {
     if (row.would_recommend) positive++
-    else negative++
   }
 
-  return res.status(200).json({ positive, negative, total: positive + negative })
+  return res.status(200).json({
+    positive,
+    negative: rows.length - positive,
+    total: rows.length,
+  })
 }
