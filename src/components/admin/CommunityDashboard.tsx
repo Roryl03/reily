@@ -43,10 +43,10 @@ export function CommunityDashboard() {
     setLoading(true)
     setError('')
     try {
-      const [insightsData, moderationData, picks] = await Promise.all([
-        fetchCommunityInsights(days),
+      const [moderationData, picks, insightsData] = await Promise.all([
         fetchModerationReviews(filter),
         fetchAdminTopPicks('across'),
+        fetchCommunityInsights(days).catch(() => null),
       ])
       setInsights(insightsData)
       setReviews(moderationData.reviews)
@@ -113,21 +113,14 @@ export function CommunityDashboard() {
     return <p className="text-sage-600 py-8 text-center">Loading community data…</p>
   }
 
-  if (error && !insights) {
+  if (error && reviews.length === 0) {
     return (
       <div className="ios-card p-5 space-y-2">
         <p className="font-semibold text-sage-900">Community dashboard unavailable</p>
         <p className="text-sm text-sage-600">{error}</p>
-        <p className="text-sm text-sage-500">
-          Run <code className="text-xs bg-sage-100 px-1 rounded">supabase/recommendations.sql</code>,{' '}
-          <code className="text-xs bg-sage-100 px-1 rounded">community-reviews.sql</code> and{' '}
-          <code className="text-xs bg-sage-100 px-1 rounded">community-top-picks.sql</code> in Supabase.
-        </p>
       </div>
     )
   }
-
-  if (!insights) return null
 
   const now = new Date()
 
@@ -149,6 +142,7 @@ export function CommunityDashboard() {
         ))}
       </div>
 
+      {insights && (
       <section>
         <h2 className="font-display text-2xl text-sage-900 mb-4">Community overview</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -167,6 +161,7 @@ export function CommunityDashboard() {
           <Metric label="Suspicious voting activity" value={insights.overview.suspiciousActivity} />
         </div>
       </section>
+      )}
 
       <section>
         <h2 className="font-display text-2xl text-sage-900 mb-4">Current Top 10 across Ask Reilly</h2>
@@ -300,7 +295,7 @@ export function CommunityDashboard() {
         )}
       </section>
 
-      {insights.riskFlags.length > 0 && (
+      {insights && insights.riskFlags.length > 0 && (
         <section>
           <h2 className="font-display text-2xl text-sage-900 mb-4">Suspicious voting activity</h2>
           <div className="space-y-2">
