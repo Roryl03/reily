@@ -1,4 +1,4 @@
-import { getSupabaseConfig, supabaseHeaders, UUID_RE } from '../../_lib/supabaseAdmin'
+import { getSupabaseConfig, supabaseHeaders, UUID_RE } from '../../_lib/supabaseAdmin.js'
 
 type ReviewRow = {
   id: string
