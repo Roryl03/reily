@@ -1,4 +1,4 @@
-import { checkAdminKey, getSupabaseConfig, supabaseHeaders } from '../_lib/supabaseAdmin'
+import { checkAdminKey, getSupabaseConfig, supabaseHeaders } from '../../_lib/supabaseAdmin'
 
 function monthStart(): string {
   const now = new Date()

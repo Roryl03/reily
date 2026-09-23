@@ -1,4 +1,4 @@
-import { checkAdminKey, getSupabaseConfig, supabaseHeaders, UUID_RE } from '../_lib/supabaseAdmin'
+import { checkAdminKey, getSupabaseConfig, supabaseHeaders, UUID_RE } from '../../_lib/supabaseAdmin'
 
 type ReviewRow = {
   id: string

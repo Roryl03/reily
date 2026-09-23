@@ -1,4 +1,4 @@
-import { getSupabaseConfig, supabaseHeaders, UUID_RE } from '../_lib/supabaseAdmin'
+import { getSupabaseConfig, supabaseHeaders, UUID_RE } from '../../_lib/supabaseAdmin'
 
 const MIN_FOR_PERCENT = 5
 const MIN_FOR_AVG = 3

@@ -1,4 +1,4 @@
-import { getSupabaseConfig, supabaseHeaders } from '../_lib/supabaseAdmin'
+import { getSupabaseConfig, supabaseHeaders } from '../../_lib/supabaseAdmin'
 
 export default async function handler(
   req: { method?: string; query?: Record<string, string | string[] | undefined> },

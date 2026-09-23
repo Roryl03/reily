@@ -2,7 +2,7 @@ import {
   checkAdminKey,
   getSupabaseConfig,
   supabaseHeaders,
-} from '../_lib/supabaseAdmin'
+} from '../../_lib/supabaseAdmin'
 
 const EARTH_RADIUS_MILES = 3958.8
 const NEAR_RADIUS_MILES = 20
