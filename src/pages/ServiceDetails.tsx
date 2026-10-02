@@ -45,6 +45,7 @@ import {
   formatPhoneLink,
   formatWebsiteUrl,
   formatServiceAddress,
+  getBookingHref,
   openDirections,
   shareService,
 } from '@/lib/utils'
@@ -101,8 +102,7 @@ export function ServiceDetailsPage() {
   }
 
   const status = formatOpenStatus(enriched.openStatus)
-  const bookingUrl = service.bookingUrl?.trim()
-  const bookingHref = bookingUrl ? formatWebsiteUrl(bookingUrl) : undefined
+  const bookingHref = getBookingHref(service.bookingUrl)
 
   const handleReport = () => {
     saveReport({

@@ -27,6 +27,27 @@ export function formatWebsiteUrl(url?: string): string | undefined {
   return `https://${url}`
 }
 
+const BOOKING_URL_PLACEHOLDERS = new Set(['n/a', 'na', 'none', 'tbc', 'tba', '-', '—'])
+
+/** Returns a safe booking href, or undefined when no real link was provided. */
+export function getBookingHref(url?: string): string | undefined {
+  const trimmed = url?.trim()
+  if (!trimmed) return undefined
+  if (BOOKING_URL_PLACEHOLDERS.has(trimmed.toLowerCase())) return undefined
+
+  const href = formatWebsiteUrl(trimmed)
+  if (!href) return undefined
+
+  try {
+    const parsed = new URL(href)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return undefined
+    if (!parsed.hostname) return undefined
+    return href
+  } catch {
+    return undefined
+  }
+}
+
 export function isAppleMapsPreferred(): boolean {
   if (typeof navigator === 'undefined') return false
   const ua = navigator.userAgent

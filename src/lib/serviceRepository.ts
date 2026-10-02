@@ -146,7 +146,7 @@ function serviceToRow(service: Service): Omit<ServiceRow, 'created_at' | 'update
     age_range: service.ageRange ?? null,
     pricing: service.pricing ?? null,
     booking_required: service.bookingRequired ?? null,
-    booking_url: service.bookingUrl ?? null,
+    booking_url: service.bookingUrl?.trim() || null,
     quiet_hours: service.quietHours ?? null,
     sen_sessions: service.senSessions ?? null,
     events: service.events ?? null,
