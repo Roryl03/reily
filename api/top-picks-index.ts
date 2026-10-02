@@ -52,7 +52,7 @@ function computeTopPicksScore(
   reviewCount: number,
 ): number {
   const total = positive + negative
-  if (total < 3) return 0
+  if (total < 1) return 0
   const confidence = wilsonLowerBound(positive, total)
   let score = confidence * Math.log1p(positive)
   if (avgRating != null && reviewCount > 0) {
@@ -101,7 +101,8 @@ export default async function handler(
   const year = Number(req.query?.year) || new Date().getUTCFullYear()
   const month = Number(req.query?.month) || new Date().getUTCMonth() + 1
   const archive = req.query?.archive === '1'
-  const headers = supabaseHeaders(config.key)
+  const readKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(readKey)
 
   if (scope === 'near' && (!Number.isFinite(lat) || !Number.isFinite(lng))) {
     return res.status(400).json({ error: 'Location required for Near You rankings' })
@@ -166,11 +167,11 @@ export default async function handler(
 
   const [servicesRes, recsRes, reviewsRes, prevArchiveRes] = await Promise.all([
     fetch(
-      `${config.url}/rest/v1/services?source=neq.demo&select=id,name,category,town,county,latitude,longitude,images`,
+      `${config.url}/rest/v1/services?or=(source.is.null,source.neq.demo)&select=id,name,category,town,county,latitude,longitude,images`,
       { headers },
     ),
     fetch(
-      `${config.url}/rest/v1/service_recommendations?ranking_eligible=eq.true&created_at=gte.${encodeURIComponent(start)}&created_at=lt.${encodeURIComponent(end)}&select=service_id,would_recommend,updated_at`,
+      `${config.url}/rest/v1/service_recommendations?ranking_eligible=eq.true&updated_at=gte.${encodeURIComponent(start)}&updated_at=lt.${encodeURIComponent(end)}&select=service_id,would_recommend,updated_at`,
       { headers },
     ),
     fetch(
@@ -212,10 +213,11 @@ export default async function handler(
     recStats.set(rec.service_id, current)
   }
 
-  let eligibleServices = services.filter((s) => s.latitude != null && s.longitude != null)
+  let eligibleServices = services
   if (scope === 'near') {
-    eligibleServices = eligibleServices.filter((s) => {
-      const dist = haversineMiles(lat, lng, s.latitude!, s.longitude!)
+    eligibleServices = services.filter((s) => {
+      if (s.latitude == null || s.longitude == null) return false
+      const dist = haversineMiles(lat, lng, s.latitude, s.longitude)
       return dist <= NEAR_RADIUS_MILES
     })
   }
@@ -286,7 +288,7 @@ export default async function handler(
           `${config.url}/rest/v1/top_pick_results?on_conflict=service_id,period_year,period_month,scope,scope_key`,
           {
             method: 'POST',
-            headers: supabaseHeaders(config.key, 'resolution=merge-duplicates,return=minimal'),
+            headers: supabaseHeaders(readKey, 'resolution=merge-duplicates,return=minimal'),
             body: JSON.stringify({
               service_id: item.service.id,
               period_year: year,
@@ -316,7 +318,7 @@ export default async function handler(
             `${config.url}/rest/v1/top_pick_badges?on_conflict=service_id,period_year,period_month,scope`,
             {
               method: 'POST',
-              headers: supabaseHeaders(config.key, 'resolution=merge-duplicates,return=minimal'),
+              headers: supabaseHeaders(readKey, 'resolution=merge-duplicates,return=minimal'),
               body: JSON.stringify({
                 service_id: item.service.id,
                 period_year: year,

@@ -1,5 +1,6 @@
 import {
   Calendar,
+  CalendarCheck,
   ExternalLink,
   Navigation,
   Phone,
@@ -100,6 +101,8 @@ export function ServiceDetailsPage() {
   }
 
   const status = formatOpenStatus(enriched.openStatus)
+  const bookingUrl = service.bookingUrl?.trim()
+  const bookingHref = bookingUrl ? formatWebsiteUrl(bookingUrl) : undefined
 
   const handleReport = () => {
     saveReport({
@@ -207,6 +210,25 @@ export function ServiceDetailsPage() {
             >
               <Navigation className="h-4 w-4" />
               Get directions
+            </Button>
+          )}
+          {bookingHref && (
+            <Button asChild variant={service.bookingRequired ? 'default' : 'secondary'}>
+              <a
+                href={bookingHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  track('SERVICE_WEBSITE_CLICKED', {
+                    service_id: service.id,
+                    category: service.category,
+                    link_type: 'booking',
+                  })
+                }
+              >
+                <CalendarCheck className="h-4 w-4" />
+                Book now
+              </a>
             </Button>
           )}
           {service.phone && (

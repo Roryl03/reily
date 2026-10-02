@@ -26,6 +26,7 @@ export interface PublicReview {
   helpfulCount: number
   createdAt: string
   userFoundHelpful: boolean
+  isPending?: boolean
 }
 
 export interface ReviewSummary {

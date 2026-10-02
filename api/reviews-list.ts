@@ -57,17 +57,50 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid service id' })
   }
 
-  const headers = supabaseHeaders(config.key)
-  const reviewRes = await fetch(
-    `${config.url}/rest/v1/service_reviews?service_id=eq.${serviceId}&status=eq.approved&select=id,rating,would_recommend,visit_month,visit_year,review_text,display_name,is_anonymous,helpful_count,created_at&limit=100`,
-    { headers },
-  )
+  const readKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(readKey)
+
+  const [reviewRes, pendingRes] = await Promise.all([
+    fetch(
+      `${config.url}/rest/v1/service_reviews?service_id=eq.${serviceId}&status=eq.approved&select=id,rating,would_recommend,visit_month,visit_year,review_text,display_name,is_anonymous,helpful_count,created_at&limit=100`,
+      { headers },
+    ),
+    UUID_RE.test(visitorId)
+      ? fetch(
+          `${config.url}/rest/v1/service_reviews?service_id=eq.${serviceId}&visitor_id=eq.${visitorId}&status=eq.pending&select=id,rating,would_recommend,visit_month,visit_year,review_text,display_name,is_anonymous,helpful_count,created_at&limit=1`,
+          { headers },
+        )
+      : Promise.resolve(null),
+  ])
 
   if (!reviewRes.ok) {
     return res.status(500).json({ error: 'Failed to load reviews' })
   }
 
   let rows = (await reviewRes.json()) as ReviewRow[]
+
+  let pendingReview = null
+  if (pendingRes?.ok) {
+    const pendingRows = (await pendingRes.json()) as ReviewRow[]
+    const row = pendingRows[0]
+    if (row) {
+      pendingReview = {
+        id: row.id,
+        rating: row.rating,
+        wouldRecommend: row.would_recommend,
+        visitMonth: row.visit_month,
+        visitYear: row.visit_year,
+        reviewText: row.review_text,
+        displayName: row.is_anonymous
+          ? 'Anonymous Ask Reilly user'
+          : row.display_name?.trim() || 'Ask Reilly user',
+        helpfulCount: row.helpful_count,
+        createdAt: row.created_at,
+        userFoundHelpful: false,
+        isPending: true,
+      }
+    }
+  }
 
   switch (sort) {
     case 'newest':
@@ -114,5 +147,5 @@ export default async function handler(
     userFoundHelpful: helpfulIds.has(row.id),
   }))
 
-  return res.status(200).json({ reviews })
+  return res.status(200).json({ reviews, pendingReview })
 }

@@ -86,8 +86,8 @@ export function ReviewForm({
         <CardContent className="p-5 space-y-2">
           <p className="font-semibold text-sage-900">Thank you for sharing your experience.</p>
           <p className="text-sm text-sage-600">
-            Your review will appear once our team has checked it. This helps keep Ask Reilly safe
-            for families.
+            Your review is now live for other families. We may hide reviews that break our community
+            guidelines.
           </p>
         </CardContent>
       </Card>

@@ -62,6 +62,24 @@ function communityDevApi(env: Record<string, string>): Plugin {
 
         if (pathname === '/api/recommendations/stats' && req.method === 'GET') {
           const serviceId = query.get('service_id') ?? ''
+          const rpcRes = await fetch(`${url}/rest/v1/rpc/get_service_recommendation_stats`, {
+            method: 'POST',
+            headers: dbHeaders(),
+            body: JSON.stringify({ p_service_id: serviceId }),
+          })
+          if (rpcRes.ok) {
+            const data = (await rpcRes.json()) as {
+              positive?: number
+              negative?: number
+              total?: number
+            }
+            sendJson(res, 200, {
+              positive: Number(data.positive ?? 0),
+              negative: Number(data.negative ?? 0),
+              total: Number(data.total ?? 0),
+            })
+            return
+          }
           const statsRes = await fetch(
             `${url}/rest/v1/service_recommendations?service_id=eq.${encodeURIComponent(serviceId)}&ranking_eligible=eq.true&select=would_recommend`,
             { headers: dbHeaders() },
@@ -70,7 +88,11 @@ function communityDevApi(env: Record<string, string>): Plugin {
             ? ((await statsRes.json()) as Array<{ would_recommend: boolean }>)
             : []
           const positive = rows.filter((r) => r.would_recommend).length
-          sendJson(res, 200, { positive, negative: rows.length - positive })
+          sendJson(res, 200, {
+            positive,
+            negative: rows.length - positive,
+            total: rows.length,
+          })
           return
         }
 
@@ -136,11 +158,40 @@ function communityDevApi(env: Record<string, string>): Plugin {
 
         if (pathname === '/api/reviews/list' && req.method === 'GET') {
           const serviceId = query.get('service_id') ?? ''
+          const visitorId = query.get('visitor_id') ?? ''
           const listRes = await fetch(
             `${url}/rest/v1/service_reviews?service_id=eq.${serviceId}&status=eq.approved&select=id,rating,would_recommend,visit_month,visit_year,review_text,display_name,is_anonymous,helpful_count,created_at&order=helpful_count.desc&limit=100`,
             { headers: dbHeaders() },
           )
           const rows = listRes.ok ? ((await listRes.json()) as Array<Record<string, unknown>>) : []
+          let pendingReview = null
+          if (visitorId) {
+            const pendingRes = await fetch(
+              `${url}/rest/v1/service_reviews?service_id=eq.${serviceId}&visitor_id=eq.${visitorId}&status=eq.pending&select=id,rating,would_recommend,visit_month,visit_year,review_text,display_name,is_anonymous,helpful_count,created_at&limit=1`,
+              { headers: dbHeaders() },
+            )
+            if (pendingRes.ok) {
+              const pendingRows = (await pendingRes.json()) as Array<Record<string, unknown>>
+              const row = pendingRows[0]
+              if (row) {
+                pendingReview = {
+                  id: row.id,
+                  rating: row.rating,
+                  wouldRecommend: row.would_recommend,
+                  visitMonth: row.visit_month,
+                  visitYear: row.visit_year,
+                  reviewText: row.review_text,
+                  displayName: row.is_anonymous
+                    ? 'Anonymous Ask Reilly user'
+                    : row.display_name ?? 'Ask Reilly user',
+                  helpfulCount: row.helpful_count,
+                  createdAt: row.created_at,
+                  userFoundHelpful: false,
+                  isPending: true,
+                }
+              }
+            }
+          }
           sendJson(res, 200, {
             reviews: rows.map((row) => ({
               id: row.id,
@@ -156,6 +207,7 @@ function communityDevApi(env: Record<string, string>): Plugin {
               createdAt: row.created_at,
               userFoundHelpful: false,
             })),
+            pendingReview,
           })
           return
         }

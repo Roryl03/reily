@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { formatVisitDate, hasLocalHelpfulVote, markReviewHelpful, reportReview } from '@/lib/reviews'
+import { cn } from '@/lib/utils'
 import type { PublicReview } from '@/types/reviews'
 import { REVIEW_REPORT_REASONS } from '@/types/reviews'
 import { StarRating } from './StarRating'
@@ -64,11 +65,23 @@ export function ReviewCard({
   }
 
   return (
-    <article className="ios-card space-y-3 p-5">
+    <article
+      className={cn(
+        'ios-card space-y-3 p-5',
+        review.isPending && 'border-amber-200 bg-amber-50/40',
+      )}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
           <StarRating value={review.rating} readOnly size="sm" />
-          <p className="font-semibold text-sage-900">{review.displayName}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-semibold text-sage-900">{review.displayName}</p>
+            {review.isPending && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">
+                Pending approval
+              </span>
+            )}
+          </div>
           {visitLabel && (
             <p className="text-sm text-sage-500">Visited {visitLabel}</p>
           )}
@@ -88,29 +101,31 @@ export function ReviewCard({
 
       <p className="text-sage-800 leading-relaxed">&ldquo;{review.reviewText}&rdquo;</p>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-        <button
-          type="button"
-          disabled={foundHelpful || submitting}
-          onClick={() => void markHelpful()}
-          aria-pressed={foundHelpful}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-sage-700 hover:bg-sage-50 focus-ring disabled:opacity-60"
-        >
-          Was this helpful?
-          <span className="inline-flex items-center gap-1 text-hunter">
-            <ThumbsUp className="h-4 w-4" aria-hidden />
-            {helpfulCount}
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setReportOpen(true)}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-sage-500 hover:text-sage-700 focus-ring"
-        >
-          <Flag className="h-4 w-4" aria-hidden />
-          Report review
-        </button>
-      </div>
+      {!review.isPending && (
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <button
+            type="button"
+            disabled={foundHelpful || submitting}
+            onClick={() => void markHelpful()}
+            aria-pressed={foundHelpful}
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-sage-700 hover:bg-sage-50 focus-ring disabled:opacity-60"
+          >
+            Was this helpful?
+            <span className="inline-flex items-center gap-1 text-hunter">
+              <ThumbsUp className="h-4 w-4" aria-hidden />
+              {helpfulCount}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setReportOpen(true)}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm text-sage-500 hover:text-sage-700 focus-ring"
+          >
+            <Flag className="h-4 w-4" aria-hidden />
+            Report review
+          </button>
+        </div>
+      )}
 
       {reportDone && (
         <p className="text-sm text-sage-600" role="status">

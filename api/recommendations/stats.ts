@@ -28,9 +28,34 @@ export default async function handler(
     'Content-Type': 'application/json',
   }
 
+  const rpcRes = await fetch(`${url}/rest/v1/rpc/get_service_recommendation_stats`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ p_service_id: serviceId }),
+  })
+
+  if (rpcRes.ok) {
+    const data = (await rpcRes.json()) as {
+      positive?: number
+      negative?: number
+      total?: number
+    }
+    const positive = Number(data.positive ?? 0)
+    const negative = Number(data.negative ?? 0)
+    const total = Number(data.total ?? positive + negative)
+    return res.status(200).json({ positive, negative, total })
+  }
+
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceKey) {
+    return res.status(503).json({
+      error: 'Recommendation stats unavailable. Run supabase/community-stats-rpc.sql in Supabase.',
+    })
+  }
+
   const fetchRes = await fetch(
     `${url}/rest/v1/service_recommendations?service_id=eq.${encodeURIComponent(serviceId)}&ranking_eligible=eq.true&select=would_recommend`,
-    { headers },
+    { headers: { ...headers, Authorization: `Bearer ${serviceKey}`, apikey: serviceKey } },
   )
 
   if (!fetchRes.ok) {

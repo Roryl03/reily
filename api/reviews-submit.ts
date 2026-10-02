@@ -47,7 +47,7 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid service or visitor id' })
   }
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-    return res.status(400).json({ error: 'Rating must be 1–5' })
+    return res.status(400).json({ error: 'Rating must be 1-5' })
   }
   if (typeof wouldRecommend !== 'boolean') {
     return res.status(400).json({ error: 'Recommendation required' })
@@ -72,9 +72,10 @@ export default async function handler(
     return res.status(400).json({ error: 'Display name required when not posting anonymously' })
   }
 
-  const headers = supabaseHeaders(config.key, 'return=minimal')
+  const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(writeKey, 'return=minimal')
   const serviceCheck = await fetch(
-    `${config.url}/rest/v1/services?id=eq.${serviceId}&source=neq.demo&select=id`,
+    `${config.url}/rest/v1/services?id=eq.${serviceId}&select=id`,
     { headers },
   )
   const services = (await serviceCheck.json()) as unknown[]
@@ -94,7 +95,7 @@ export default async function handler(
     display_name: displayName,
     is_anonymous: anonymous,
     extra_answers: {},
-    status: 'pending',
+    status: process.env.AUTO_APPROVE_REVIEWS === 'false' ? 'pending' : 'approved',
     audience_type: req.body?.audience_type
       ? String(req.body.audience_type).slice(0, 64)
       : null,
@@ -113,5 +114,6 @@ export default async function handler(
     return res.status(500).json({ error: 'Failed to submit review', detail: text })
   }
 
-  return res.status(200).json({ ok: true, status: 'pending' })
+  const status = process.env.AUTO_APPROVE_REVIEWS === 'false' ? 'pending' : 'approved'
+  return res.status(200).json({ ok: true, status })
 }

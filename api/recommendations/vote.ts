@@ -19,6 +19,8 @@ export default async function handler(
     return res.status(503).json({ error: 'Database not configured' })
   }
 
+  const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? key
+
   const serviceId = String(req.body?.service_id ?? '')
   const visitorId = String(req.body?.visitor_id ?? '')
   const wouldRecommend = req.body?.would_recommend
@@ -31,14 +33,14 @@ export default async function handler(
   }
 
   const headers = {
-    apikey: key,
-    Authorization: `Bearer ${key}`,
+    apikey: writeKey,
+    Authorization: `Bearer ${writeKey}`,
     'Content-Type': 'application/json',
     Prefer: 'resolution=merge-duplicates,return=minimal',
   }
 
   const serviceCheck = await fetch(
-    `${url}/rest/v1/services?id=eq.${serviceId}&source=neq.demo&select=id`,
+    `${url}/rest/v1/services?id=eq.${serviceId}&select=id`,
     { headers },
   )
   const services = (await serviceCheck.json()) as unknown[]

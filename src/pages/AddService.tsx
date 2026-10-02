@@ -356,7 +356,7 @@ export function AddServicePage({ mode = 'admin' }: { mode?: ServiceFormMode }) {
       ageRange: data.ageRange,
       pricing: data.pricing,
       bookingRequired: data.bookingRequired,
-      bookingUrl: data.bookingUrl,
+      bookingUrl: data.bookingUrl?.trim() || undefined,
       quietHours: data.quietHours,
       senSessions: data.senSessions,
       events: data.events,

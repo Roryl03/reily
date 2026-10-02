@@ -72,7 +72,7 @@ function rowToService(row: ServiceRow): Service {
     ageRange: row.age_range ?? undefined,
     pricing: row.pricing ?? undefined,
     bookingRequired: row.booking_required ?? undefined,
-    bookingUrl: row.booking_url ?? undefined,
+    bookingUrl: row.booking_url?.trim() || undefined,
     quietHours: row.quiet_hours ?? undefined,
     senSessions: row.sen_sessions ?? undefined,
     events: row.events ?? undefined,

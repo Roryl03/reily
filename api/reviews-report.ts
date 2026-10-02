@@ -54,7 +54,8 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid report reason' })
   }
 
-  const headers = supabaseHeaders(config.key, 'return=minimal,resolution=ignore-duplicates')
+  const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(writeKey, 'return=minimal,resolution=ignore-duplicates')
   const insertRes = await fetch(`${config.url}/rest/v1/review_reports`, {
     method: 'POST',
     headers,

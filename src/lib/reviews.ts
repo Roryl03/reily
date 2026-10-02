@@ -57,13 +57,19 @@ export async function fetchReviewSummary(serviceId: string): Promise<ReviewSumma
 export async function fetchReviews(
   serviceId: string,
   sort: ReviewSort = 'helpful',
-): Promise<PublicReview[]> {
+): Promise<{ reviews: PublicReview[]; pendingReview: PublicReview | null }> {
   const res = await fetch(
     `/api/reviews/list?service_id=${encodeURIComponent(serviceId)}&sort=${sort}&visitor_id=${encodeURIComponent(getVisitorId())}`,
   )
-  if (!res.ok) return []
-  const data = (await res.json()) as { reviews?: PublicReview[] }
-  return data.reviews ?? []
+  if (!res.ok) return { reviews: [], pendingReview: null }
+  const data = (await res.json()) as {
+    reviews?: PublicReview[]
+    pendingReview?: PublicReview | null
+  }
+  return {
+    reviews: data.reviews ?? [],
+    pendingReview: data.pendingReview ?? null,
+  }
 }
 
 export async function submitReview(

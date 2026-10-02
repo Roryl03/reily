@@ -58,7 +58,8 @@ export default async function handler(
     return res.status(503).json({ error: 'Database not configured' })
   }
 
-  const headers = supabaseHeaders(config.key)
+  const readKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(readKey)
 
   if (req.method === 'GET') {
     const filter = String(req.query?.filter ?? 'pending')
@@ -128,7 +129,7 @@ export default async function handler(
     if (action === 'delete') {
       await fetch(`${config.url}/rest/v1/review_moderation_log`, {
         method: 'POST',
-        headers: supabaseHeaders(config.key, 'return=minimal'),
+        headers: supabaseHeaders(readKey, 'return=minimal'),
         body: JSON.stringify({
           review_id: reviewId,
           action: 'delete',
@@ -140,7 +141,7 @@ export default async function handler(
 
       const deleteRes = await fetch(`${config.url}/rest/v1/service_reviews?id=eq.${reviewId}`, {
         method: 'DELETE',
-        headers: supabaseHeaders(config.key, 'return=minimal'),
+        headers: supabaseHeaders(readKey, 'return=minimal'),
       })
 
       if (!deleteRes.ok) {
@@ -163,7 +164,7 @@ export default async function handler(
 
     const patchRes = await fetch(`${config.url}/rest/v1/service_reviews?id=eq.${reviewId}`, {
       method: 'PATCH',
-      headers: supabaseHeaders(config.key, 'return=minimal'),
+      headers: supabaseHeaders(readKey, 'return=minimal'),
       body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() }),
     })
 
@@ -173,7 +174,7 @@ export default async function handler(
 
     await fetch(`${config.url}/rest/v1/review_moderation_log`, {
       method: 'POST',
-      headers: supabaseHeaders(config.key, 'return=minimal'),
+      headers: supabaseHeaders(readKey, 'return=minimal'),
       body: JSON.stringify({
         review_id: reviewId,
         action,
@@ -186,7 +187,7 @@ export default async function handler(
     if (action === 'approve' && req.body?.report_id && UUID_RE.test(String(req.body.report_id))) {
       await fetch(`${config.url}/rest/v1/review_reports?id=eq.${req.body.report_id}`, {
         method: 'PATCH',
-        headers: supabaseHeaders(config.key, 'return=minimal'),
+        headers: supabaseHeaders(readKey, 'return=minimal'),
         body: JSON.stringify({ status: 'reviewed' }),
       })
     }

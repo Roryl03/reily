@@ -44,7 +44,8 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid service id' })
   }
 
-  const headers = supabaseHeaders(config.key)
+  const readKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(readKey)
 
   const [reviewsRes, recRes] = await Promise.all([
     fetch(

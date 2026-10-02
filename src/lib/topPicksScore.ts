@@ -9,7 +9,7 @@
  * A service with 180/190 positive recommendations outranks 2/2 positive.
  */
 
-export const TOP_PICKS_MIN_RECOMMENDATIONS = 3
+export const TOP_PICKS_MIN_RECOMMENDATIONS = 1
 
 export interface TopPicksInputs {
   positiveRecommendations: number

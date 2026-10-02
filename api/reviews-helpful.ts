@@ -40,7 +40,8 @@ export default async function handler(
     return res.status(400).json({ error: 'Invalid id' })
   }
 
-  const headers = supabaseHeaders(config.key, 'return=minimal,resolution=ignore-duplicates')
+  const writeKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? config.key
+  const headers = supabaseHeaders(writeKey, 'return=minimal,resolution=ignore-duplicates')
 
   const insertRes = await fetch(`${config.url}/rest/v1/review_helpful_votes`, {
     method: 'POST',
@@ -54,14 +55,14 @@ export default async function handler(
 
   const countRes = await fetch(
     `${config.url}/rest/v1/review_helpful_votes?review_id=eq.${reviewId}&select=id`,
-    { headers: supabaseHeaders(config.key) },
+    { headers: supabaseHeaders(writeKey) },
   )
   const votes = countRes.ok ? ((await countRes.json()) as unknown[]) : []
   const helpfulCount = votes.length
 
   await fetch(`${config.url}/rest/v1/service_reviews?id=eq.${reviewId}`, {
     method: 'PATCH',
-    headers: supabaseHeaders(config.key, 'return=minimal'),
+    headers: supabaseHeaders(writeKey, 'return=minimal'),
     body: JSON.stringify({ helpful_count: helpfulCount, updated_at: new Date().toISOString() }),
   })
 

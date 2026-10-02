@@ -14,13 +14,15 @@ const SORT_OPTIONS: { value: ReviewSort; label: string }[] = [
 
 export function ServiceReviews({ serviceId }: { serviceId: string }) {
   const [reviews, setReviews] = useState<PublicReview[]>([])
+  const [pendingReview, setPendingReview] = useState<PublicReview | null>(null)
   const [sort, setSort] = useState<ReviewSort>('helpful')
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
     setLoading(true)
     const data = await fetchReviews(serviceId, sort)
-    setReviews(data)
+    setReviews(data.reviews)
+    setPendingReview(data.pendingReview)
     setLoading(false)
   }, [serviceId, sort])
 
@@ -40,7 +42,16 @@ export function ServiceReviews({ serviceId }: { serviceId: string }) {
         </p>
       </div>
 
-      <ReviewForm serviceId={serviceId} onSubmitted={() => void load()} />
+      {!pendingReview && (
+        <ReviewForm serviceId={serviceId} onSubmitted={() => void load()} />
+      )}
+
+      {pendingReview && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-sage-800">Your review (awaiting approval)</p>
+          <ReviewCard review={pendingReview} />
+        </div>
+      )}
 
       {reviews.length > 0 && (
         <div className="flex flex-wrap gap-2">

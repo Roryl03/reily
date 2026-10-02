@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useApp } from '@/context/AppContext'
 import { track } from '@/lib/analytics'
 import {
+  buildRecommendationStats,
   fetchRecommendationStats,
   getLocalRecommendation,
   submitRecommendation,
@@ -28,10 +29,25 @@ export function ServiceRecommendations({ serviceId }: { serviceId: string }) {
     setMyVote(getLocalRecommendation(serviceId))
   }, [serviceId, loadStats])
 
+  const applyOptimisticStats = (wouldRecommend: boolean, previousVote: boolean | null) => {
+    setStats((prev) => {
+      const base = prev ?? buildRecommendationStats(0, 0)
+      let { positive, negative } = base
+
+      if (previousVote === true) positive = Math.max(0, positive - 1)
+      if (previousVote === false) negative = Math.max(0, negative - 1)
+      if (wouldRecommend) positive += 1
+      else negative += 1
+
+      return buildRecommendationStats(positive, negative)
+    })
+  }
+
   const vote = async (wouldRecommend: boolean) => {
     if (submitting) return
     setSubmitting(true)
     setError('')
+    const previousVote = myVote
     const result = await submitRecommendation(serviceId, wouldRecommend, location)
     setSubmitting(false)
 
@@ -41,6 +57,7 @@ export function ServiceRecommendations({ serviceId }: { serviceId: string }) {
     }
 
     setMyVote(wouldRecommend)
+    applyOptimisticStats(wouldRecommend, previousVote)
     setThanks(true)
     track('RECOMMENDATION_SUBMITTED', {
       service_id: serviceId,
@@ -61,7 +78,7 @@ export function ServiceRecommendations({ serviceId }: { serviceId: string }) {
         </p>
       </div>
 
-      {stats && stats.total > 0 && (
+      {stats && (stats.total > 0 || myVote !== null) && (
         <div className="rounded-xl bg-hunter-light/40 px-4 py-3 space-y-1">
           {stats.percentRecommend != null ? (
             <p className="font-display text-xl text-sage-900">
